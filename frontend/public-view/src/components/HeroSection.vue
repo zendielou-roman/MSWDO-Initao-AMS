@@ -35,7 +35,7 @@ function goToContact() {
       </span>
 
       <h2
-        class="font-['Anton',sans-serif] font-normal text-[2.1rem] md:text-[3.8rem] leading-[1.25] tracking-[0.5px] text-[#1f3a63] mt-2.5 mb-2"
+        class="font-['Anton',sans-serif] font-normal text-[2.1rem] md:text-[3.8rem] leading-[1.25] tracking-[0.5px] text-[#1f3a63] mt-2.5 mb-2 whitespace-pre-line"
       >
         {{ t('hero.heading') }}
       </h2>

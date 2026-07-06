@@ -1,12 +1,20 @@
 <script setup>
-import { computed, nextTick } from 'vue'
+import { nextTick, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { getServiceBySlug, iconTone } from '@/data/services.js'
+import { useI18n } from 'vue-i18n'
+import { getTranslatedServiceBySlug, iconTone } from '@/data/services.js'
 import { ArrowLeft, CheckCircle2, FileText, ListChecks, MapPin, Scale } from 'lucide-vue-next'
 
 const route = useRoute()
 const router = useRouter()
-const service = computed(() => getServiceBySlug(route.params.slug))
+const { t, locale } = useI18n()
+const service = ref(null)
+
+function loadService() {
+  service.value = getTranslatedServiceBySlug(route.params.slug, t)
+}
+
+watch([() => route.params.slug, locale], loadService, { immediate: true })
 
 async function backToServices() {
   await router.push({ path: '/', hash: '#services' })
@@ -40,7 +48,7 @@ async function backToServices() {
             class="inline-flex items-center gap-1.5 text-white/70 hover:text-white text-[0.82rem] font-semibold mb-6 transition"
           >
             <ArrowLeft class="w-4 h-4" />
-            Back to Services
+            {{ service.backToServicesKey ? t(service.backToServicesKey) : 'Back to Services' }}
           </a>
 
           <span
@@ -68,7 +76,7 @@ async function backToServices() {
             <div class="bg-white rounded-2xl border border-slate-200 p-7">
               <div class="flex items-center gap-2.5 mb-4">
                 <CheckCircle2 class="w-5 h-5 text-[#1e3a6e]" />
-                <h2 class="text-[#1f3a63] font-extrabold text-lg">Who Can Avail</h2>
+                <h2 class="text-[#1f3a63] font-extrabold text-lg">{{ service.whoCanAvailTitleKey ? t(service.whoCanAvailTitleKey) : 'Who Can Avail' }}</h2>
               </div>
               <ul class="space-y-2.5">
                 <li
@@ -86,7 +94,7 @@ async function backToServices() {
             <div class="bg-white rounded-2xl border border-slate-200 p-7">
               <div class="flex items-center gap-2.5 mb-4">
                 <FileText class="w-5 h-5 text-[#1e3a6e]" />
-                <h2 class="text-[#1f3a63] font-extrabold text-lg">What You Get</h2>
+                <h2 class="text-[#1f3a63] font-extrabold text-lg">{{ service.benefitsTitleKey ? t(service.benefitsTitleKey) : 'What You Get' }}</h2>
               </div>
               <ul class="space-y-2.5">
                 <li
@@ -104,7 +112,7 @@ async function backToServices() {
             <div class="bg-white rounded-2xl border border-slate-200 p-7">
               <div class="flex items-center gap-2.5 mb-4">
                 <ListChecks class="w-5 h-5 text-[#1e3a6e]" />
-                <h2 class="text-[#1f3a63] font-extrabold text-lg">Requirements</h2>
+                <h2 class="text-[#1f3a63] font-extrabold text-lg">{{ service.requirementsTitleKey ? t(service.requirementsTitleKey) : 'Requirements' }}</h2>
               </div>
               <ul class="space-y-2.5">
                 <li
@@ -120,7 +128,7 @@ async function backToServices() {
 
             <!-- HOW TO APPLY -->
             <div class="bg-white rounded-2xl border border-slate-200 p-7">
-              <h2 class="text-[#1f3a63] font-extrabold text-lg mb-5">How to Apply</h2>
+              <h2 class="text-[#1f3a63] font-extrabold text-lg mb-5">{{ service.processTitleKey ? t(service.processTitleKey) : 'How to Apply' }}</h2>
               <ol class="space-y-5">
                 <li v-for="(step, i) in service.process" :key="step.title" class="flex gap-4">
                   <span
@@ -140,42 +148,44 @@ async function backToServices() {
           </div>
 
           <!-- RIGHT · at-a-glance sidebar -->
-          <aside class="flex flex-col gap-4 md:sticky md:top-6">
-            <div class="bg-white rounded-2xl border border-slate-200 p-6">
-              <p class="text-[#1f3a63] text-[0.75rem] font-bold uppercase tracking-wide mb-2">
-                Processing Time
-              </p>
-              <p class="text-slate-600 text-[0.88rem] leading-relaxed">
-                {{ service.processingTime }}
-              </p>
-            </div>
-
-            <div class="bg-white rounded-2xl border border-slate-200 p-6">
-              <div class="flex items-center gap-2 mb-2">
-                <Scale class="w-4 h-4 text-[#1e3a6e]" />
-                <p class="text-[#1f3a63] text-[0.75rem] font-bold uppercase tracking-wide">
-                  Legal Basis
+          <aside class="w-full md:w-[280px] sticky top-6 self-start">
+            <div class="flex flex-col gap-4">
+              <div class="bg-white rounded-2xl border border-slate-200 p-6">
+                <p class="text-[#1f3a63] text-[0.75rem] font-bold uppercase tracking-wide mb-2">
+                  {{ service.processingTimeTitleKey ? t(service.processingTimeTitleKey) : 'Processing Time' }}
+                </p>
+                <p class="text-slate-600 text-[0.88rem] leading-relaxed">
+                  {{ service.processingTime }}
                 </p>
               </div>
-              <p class="text-slate-600 text-[0.85rem] leading-relaxed">{{ service.legalBasis }}</p>
-            </div>
 
-            <div class="bg-gradient-to-br from-[#16245a] to-[#1e3a6e] rounded-2xl p-6 text-white">
-              <div class="flex items-center gap-2 mb-2">
-                <MapPin class="w-4 h-4 text-amber-400" />
-                <p class="text-[0.75rem] font-bold uppercase tracking-wide text-amber-400">
-                  Apply In Person
-                </p>
+              <div class="bg-white rounded-2xl border border-slate-200 p-6">
+                <div class="flex items-center gap-2 mb-2">
+                  <Scale class="w-4 h-4 text-[#1e3a6e]" />
+                  <p class="text-[#1f3a63] text-[0.75rem] font-bold uppercase tracking-wide">
+                    {{ service.legalBasisTitleKey ? t(service.legalBasisTitleKey) : 'Legal Basis' }}
+                  </p>
+                </div>
+                <p class="text-slate-600 text-[0.85rem] leading-relaxed">{{ service.legalBasis }}</p>
               </div>
-              <p class="text-white/80 text-[0.85rem] leading-relaxed mb-4">
-                MSWDO Office, Municipal Hall, Initao, Misamis Oriental
-              </p>
-              <router-link
-                to="/contact"
-                class="inline-flex items-center justify-center w-full rounded-lg bg-amber-400 hover:bg-amber-300 text-[#1f3a63] font-bold text-[0.85rem] py-2.5 transition"
-              >
-                Get Directions & Contact Info
-              </router-link>
+
+              <div class="bg-gradient-to-br from-[#16245a] to-[#1e3a6e] rounded-2xl p-6 text-white">
+                <div class="flex items-center gap-2 mb-2">
+                  <MapPin class="w-4 h-4 text-amber-400" />
+                  <p class="text-[0.75rem] font-bold uppercase tracking-wide text-amber-400">
+                    {{ service.applyInPersonTitleKey ? t(service.applyInPersonTitleKey) : 'Apply In Person' }}
+                  </p>
+                </div>
+                <p class="text-white/80 text-[0.85rem] leading-relaxed mb-4">
+                  MSWDO Office, Municipal Hall, Initao, Misamis Oriental
+                </p>
+                <router-link
+                  to="/contact"
+                  class="inline-flex items-center justify-center w-full rounded-lg bg-amber-400 hover:bg-amber-300 text-[#1f3a63] font-bold text-[0.85rem] py-2.5 transition"
+                >
+                  {{ service.directionsTitleKey ? t(service.directionsTitleKey) : 'Get Directions & Contact Info' }}
+                </router-link>
+              </div>
             </div>
           </aside>
         </div>
@@ -184,9 +194,9 @@ async function backToServices() {
 
     <!-- ===== FALLBACK: unknown slug ===== -->
     <section v-else class="px-6 sm:px-12 py-24 text-center">
-      <p class="text-[#1f3a63] font-extrabold text-xl mb-3">Service not found</p>
+      <p class="text-[#1f3a63] font-extrabold text-xl mb-3">{{ service?.notFoundTitleKey ? t(service.notFoundTitleKey) : 'Service not found' }}</p>
       <p class="text-slate-500 text-sm mb-6">
-        The service you're looking for doesn't exist or may have been moved.
+        {{ service?.notFoundDescKey ? t(service.notFoundDescKey) : "The service you're looking for doesn't exist or may have been moved." }}
       </p>
       <a
         href="#"
@@ -194,7 +204,7 @@ async function backToServices() {
         class="inline-flex items-center gap-1.5 text-[#1e3a6e] font-semibold text-sm hover:underline"
       >
         <ArrowLeft class="w-4 h-4" />
-        Back to Services
+        {{ service?.backToServicesKey ? t(service.backToServicesKey) : 'Back to Services' }}
       </a>
     </section>
   </main>

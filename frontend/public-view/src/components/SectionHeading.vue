@@ -40,7 +40,7 @@ defineProps({
     </h2>
     <p
       v-if="subtitle"
-      class="text-[#6b7790] mx-auto text-[0.9rem] leading-[1.6] text-center whitespace-nowrap [hyphens:auto]"
+      class="text-[#6b7790] mx-auto text-[0.9rem] leading-[1.6] text-center whitespace-normal break-words [hyphens:auto]"
       :style="{ maxWidth: subtitleMaxWidth }"
     >
       {{ subtitle }}
