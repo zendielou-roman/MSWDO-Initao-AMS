@@ -190,86 +190,95 @@ function onFilterChange() {
       </button>
     </div>
 
+<!-- Table -->
     <!-- Table -->
     <div class="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-      <table class="w-full table-fixed text-left text-sm">
-        <colgroup>
-          <col class="w-[28%]" />
-          <col class="w-[13%]" />
-          <col class="w-[12%]" />
-          <col class="w-[15%]" />
-          <col class="w-[16%]" />
-          <col class="w-[16%]" />
-        </colgroup>
-        <thead class="border-b border-slate-200 bg-slate-50">
-          <tr>
-            <th class="px-6 py-3 font-semibold text-slate-500">User</th>
-            <th class="px-3 py-3 text-center font-semibold text-slate-500">Role</th>
-            <th class="px-3 py-3 text-center font-semibold text-slate-500">Status</th>
-            <th class="px-3 py-3 text-center font-semibold text-slate-500">Date Created</th>
-            <th class="px-3 py-3 text-center font-semibold text-slate-500">Last Login</th>
-            <th class="px-6 py-3 text-right font-semibold text-slate-500">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-slate-100">
-          <tr v-for="user in paginatedUsers" :key="user.id" class="transition hover:bg-slate-50">
-            <td class="px-6 py-3.5">
-              <div class="flex items-center gap-3">
-                <div
-                  class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#001d4c]/10 text-xs font-bold text-[#001d4c]"
-                >
-                  {{ getInitials(user.name) }}
-                </div>
-                <div class="min-w-0">
-                  <p class="truncate font-medium text-slate-800">{{ user.name }}</p>
-                  <p class="truncate text-xs text-slate-400">{{ user.email }}</p>
-                </div>
-              </div>
-            </td>
-            <td class="px-3 py-3.5 text-center">
-              <RoleBadge :role="user.role" />
-            </td>
-            <td class="px-3 py-3.5 text-center">
-              <StatusBadge :status="user.status" />
-            </td>
-            <td class="px-3 py-3.5 text-center text-slate-500">
-              {{ formatDate(user.dateCreated) }}
-            </td>
-            <td class="px-3 py-3.5 text-center">
-              <span :class="user.lastLogin ? 'text-slate-500' : 'italic text-slate-400'">
-                {{ formatLastLogin(user.lastLogin) }}
-              </span>
-            </td>
-            <td class="px-6 py-3.5">
-              <div class="flex items-center justify-end gap-1">
-                <button
-                  class="rounded-lg p-2 text-slate-400 transition hover:bg-[#001d4c]/10 hover:text-[#001d4c]"
-                  title="Edit user"
-                >
-                  <Pencil class="h-4 w-4" />
-                </button>
-                <button
-                  class="rounded-lg p-2 text-slate-400 transition hover:bg-rose-50 hover:text-rose-600"
-                  title="Deactivate user"
-                >
-                  <Trash2 class="h-4 w-4" />
-                </button>
-              </div>
-            </td>
-          </tr>
+      <!--
+        GRID LAYOUT (replaces <table>) — using CSS Grid instead of a table lets us define
+        column proportions ONCE here, and the browser spreads any leftover width
+        proportionally across ALL columns (not just dumped into one). To adjust spacing,
+        change the fr values below — e.g. "2fr" means "twice as wide as a column with 1fr".
+        Both the header row and every body row use this exact same grid-cols class so
+        columns always line up.
+      -->
+      <div
+        class="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_1fr] items-center border-b border-slate-200 bg-slate-50 px-6 py-3.5"
+      >
+        <div class="text-left font-semibold text-slate-500">User</div>
+        <div class="text-center font-semibold text-slate-500">Role</div>
+        <div class="text-center font-semibold text-slate-500">Status</div>
+        <div class="text-center font-semibold text-slate-500">Date Created</div>
+        <div class="text-center font-semibold text-slate-500">Last Login</div>
+        <div class="text-right font-semibold text-slate-500">Actions</div>
+      </div>
 
-          <!-- Empty state -->
-          <tr v-if="paginatedUsers.length === 0">
-            <td colspan="6" class="px-6 py-14 text-center">
-              <div class="flex flex-col items-center gap-2">
-                <UserRound class="h-8 w-8 text-slate-300" />
-                <p class="text-sm font-medium text-slate-500">No users found</p>
-                <p class="text-xs text-slate-400">Try adjusting your search or filters.</p>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="divide-y divide-slate-100">
+        <div
+          v-for="user in paginatedUsers"
+          :key="user.id"
+          class="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_1fr] items-center px-6 py-3.5 transition hover:bg-slate-50"
+        >
+          <!-- User: avatar + name/email, left-aligned -->
+          <div class="flex items-center gap-3">
+            <div
+              class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#001d4c]/10 text-xs font-bold text-[#001d4c]"
+            >
+              {{ getInitials(user.name) }}
+            </div>
+            <div class="min-w-0">
+              <p class="truncate font-medium text-slate-800">{{ user.name }}</p>
+              <p class="truncate text-xs text-slate-400">{{ user.email }}</p>
+            </div>
+          </div>
+
+          <!-- Role badge, centered -->
+          <div class="flex justify-center">
+            <RoleBadge :role="user.role" />
+          </div>
+
+          <!-- Status badge, centered -->
+          <div class="flex justify-center">
+            <StatusBadge :status="user.status" />
+          </div>
+
+          <!-- Date created, centered -->
+          <div class="text-center text-slate-500">
+            {{ formatDate(user.dateCreated) }}
+          </div>
+
+          <!-- Last login, centered ("Never" shown muted/italic) -->
+          <div class="text-center">
+            <span :class="user.lastLogin ? 'text-slate-500' : 'italic text-slate-400'">
+              {{ formatLastLogin(user.lastLogin) }}
+            </span>
+          </div>
+
+          <!-- Actions, right-aligned -->
+          <div class="flex items-center justify-end gap-1">
+            <button
+              class="rounded-lg p-2 text-slate-400 transition hover:bg-[#001d4c]/10 hover:text-[#001d4c]"
+              title="Edit user"
+            >
+              <Pencil class="h-4 w-4" />
+            </button>
+            <button
+              class="rounded-lg p-2 text-slate-400 transition hover:bg-rose-50 hover:text-rose-600"
+              title="Deactivate user"
+            >
+              <Trash2 class="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+
+        <!-- Empty state -->
+        <div v-if="paginatedUsers.length === 0" class="px-6 py-14 text-center">
+          <div class="flex flex-col items-center gap-2">
+            <UserRound class="h-8 w-8 text-slate-300" />
+            <p class="text-sm font-medium text-slate-500">No users found</p>
+            <p class="text-xs text-slate-400">Try adjusting your search or filters.</p>
+          </div>
+        </div>
+      </div>
 
       <!-- Pagination footer -->
       <div

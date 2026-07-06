@@ -74,11 +74,7 @@ function getInitials(name) {
         :class="isCollapsed ? 'justify-center px-2' : 'justify-between'"
       >
         <div class="flex items-center gap-0 overflow-hidden">
-          <img
-            src="/mswdo-logo.png"
-            alt="MSWDO Logo"
-            class="h-18 w-18 flex-shrink-0 object-contain"
-          />
+          <img src="/mswdo-logo.png" alt="MSWDO Logo" class="h-18 w-18 flex-shrink-0 object-contain" />
           <div v-if="!isCollapsed" class="leading-tight whitespace-nowrap">
             <p class="font-display text-2xl font-normal text-slate-100">MSWDO INITAO</p>
             <p class="text-[11px] text-white/50">Assistance Management System</p>
@@ -170,22 +166,34 @@ function getInitials(name) {
           <Users class="h-4 w-4 flex-shrink-0" />
           <span v-if="!isCollapsed">User Accounts</span>
         </router-link>
-        <div
-          class="flex items-center gap-3 rounded-lg py-2.5 text-white/70 hover:bg-white/5"
-          :class="isCollapsed ? 'justify-center px-0' : 'px-3'"
+        <router-link
+          to="/programs"
+          class="flex items-center gap-3 rounded-lg py-2.5 text-sm font-medium transition"
+          :class="[
+            isCollapsed ? 'justify-center px-0' : 'px-3',
+            route.path === '/programs'
+              ? 'bg-white/10 text-amber-400'
+              : 'text-white/70 hover:bg-white/5 hover:text-white',
+          ]"
           title="Program Management"
         >
           <Box class="h-4 w-4 flex-shrink-0" />
           <span v-if="!isCollapsed">Program Management</span>
-        </div>
-        <div
-          class="flex items-center gap-3 rounded-lg py-2.5 text-white/70 hover:bg-white/5"
-          :class="isCollapsed ? 'justify-center px-0' : 'px-3'"
-          title="Notifications"
-        >
-          <Bell class="h-4 w-4 flex-shrink-0" />
-          <span v-if="!isCollapsed">Notifications</span>
-        </div>
+        </router-link>
+<router-link
+            to="/notifications"
+            class="flex items-center gap-3 rounded-lg py-2.5 text-sm font-medium transition"
+            :class="[
+              isCollapsed ? 'justify-center px-0' : 'px-3',
+              route.path === '/notifications'
+                ? 'bg-white/10 text-amber-400'
+                : 'text-white/70 hover:bg-white/5 hover:text-white',
+            ]"
+            title="Notifications"
+          >
+            <Bell class="h-4 w-4 flex-shrink-0" />
+            <span v-if="!isCollapsed">Notifications</span>
+          </router-link>
       </nav>
 
       <!-- USER FOOTER -->

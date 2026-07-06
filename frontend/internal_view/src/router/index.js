@@ -24,13 +24,26 @@ const router = createRouter({
           component: () => import('@/views/DashboardView.vue'),
           meta: { title: 'Dashboard' },
         },
-        {
-          path: 'users',
-          name: 'users',
-          component: () => import('@/views/UserAccountsView.vue'),
-          meta: { title: 'User Accounts' },
-        },
-      ],
+        
+          {
+            path: 'users',
+            name: 'users',
+            component: () => import('@/views/UserAccountsView.vue'),
+            meta: { title: 'User Accounts' },
+          },
+         {
+            path: 'programs',
+            name: 'programs',
+            component: () => import('@/views/ProgramManagementView.vue'),
+            meta: { title: 'Program Management' },
+          },
+          {
+            path: 'notifications',
+            name: 'notifications',
+            component: () => import('@/views/NotificationsView.vue'),
+            meta: { title: 'Notifications' },
+          },
+        ],
     },
     {
       path: '/:pathMatch(.*)*',
