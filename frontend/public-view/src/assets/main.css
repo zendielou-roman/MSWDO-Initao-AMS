@@ -1,0 +1,9 @@
+@import 'tailwindcss';
+html {
+  scroll-behavior: smooth;
+}
+/* Every section with an id stops this far below the top,
+   leaving room for the floating navbar. THIS is your knob now. */
+[id] {
+  scroll-margin-top: 70px; /* ⬅️ change THIS number — it WILL move every time */
+}

@@ -1,0 +1,9 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-trajan: 'Cinzel', serif; /* → font-trajan     */
+  --font-alegreya: 'Alegreya Sans', sans-serif; /* → font-alegreya   */
+  --font-officeserif: 'Tinos', serif; /* → font-officeserif */
+  --font-display: 'Anton', sans-serif; /* → font-display    */
+  --color-navyblue: #1e2a5a; /* use your actual navy hex */
+}
