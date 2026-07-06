@@ -1,18 +1,21 @@
 <script setup>
 /* ===== SERVICES SECTION LOGIC ===== */
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import SectionHeader from '@/components/SectionHeading.vue'
 import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import { services, iconTone } from '@/data/services.js'
 
+const { t } = useI18n()
+
 /* The filter tabs shown above the cards.
    `key` is matched against each service's `category`. */
-const filters = [
-  { key: 'all', label: 'ALL' },
-  { key: 'health', label: 'HEALTH' },
-  { key: 'livelihood', label: 'LIVELIHOOD' },
-  { key: 'pwd', label: 'PWD' },
-]
+const filters = computed(() => [
+  { key: 'all', label: t('services.filters.all') },
+  { key: 'health', label: t('services.filters.health') },
+  { key: 'livelihood', label: t('services.filters.livelihood') },
+  { key: 'pwd', label: t('services.filters.pwd') },
+])
 
 const activeFilter = ref('all')
 
@@ -30,9 +33,9 @@ const visibleServices = computed(() =>
     class="bg-slate-100 px-6 sm:px-12 pt-11 pb-16 text-center border-t border-[#dfe6f0]"
   >
     <SectionHeader
-      eyebrow="WHAT WE DO"
-      title="Social Welfare Services"
-      subtitle="Programs and Services designed to support and uplift the most vulnerable sectors in our community."
+      :eyebrow="t('services.section.eyebrow')"
+      :title="t('services.section.title')"
+      :subtitle="t('services.section.subtitle')"
     />
 
     <!-- ===== FILTER TABS ===== -->
@@ -87,7 +90,7 @@ const visibleServices = computed(() =>
           <router-link
             :to="`/services/${s.slug}`"
             class="text-[#2a5caa] font-bold text-[0.82rem] no-underline hover:underline"
-            >Learn more &rsaquo;</router-link
+            >{{ t('services.card.learnMore') }} &rsaquo;</router-link
           >
           <!-- blue link -->
         </article>

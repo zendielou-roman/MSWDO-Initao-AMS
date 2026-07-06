@@ -1,4 +1,9 @@
 <script setup>
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
 // ===== ABOUT US SECTION (modern, reveal-all layout) =====
 // Vision + Mission shown side-by-side (no hidden tabs) for max accessibility,
 // followed by a numbered Mandates grid. Tailwind only, Lucide icons, brand palette.
@@ -16,10 +21,8 @@ import {
 import SectionHeading from './SectionHeading.vue'
 
 // VISION & MISSION statements (from the prototype)
-const vision =
-  'Empowered individuals, families and communities with improved quality of life, performing their expected roles and able to mobilize resources to meet their basic needs.'
-const mission =
-  'To care, protect, rehabilitate, develop and integrate into mainstream the vulnerable and socially dysfunctional sectors of society.'
+const vision = computed(() => t('about.vision'))
+const mission = computed(() => t('about.mission'))
 
 // MANDATES — seven legal mandates, each gets a number + icon
 const mandates = [
@@ -58,9 +61,9 @@ const mandates = [
       <!-- Uniform section heading -->
       <SectionHeading
         class="mb-12"
-        eyebrow="WHO WE ARE"
-        title="About the MSWDO"
-        subtitle="The vision, mission, and legal mandates that guide our work in serving the people of Initao."
+        :eyebrow="t('about.section.eyebrow')"
+        :title="t('about.section.title')"
+        :subtitle="t('about.section.subtitle')"
       />
 
       <!-- ===== VISION + MISSION (side-by-side, always visible) ===== -->
@@ -79,7 +82,7 @@ const mandates = [
               <Eye class="w-7 h-7 text-amber-400" />
             </div>
             <p class="text-amber-400 font-bold tracking-[3px] text-[0.8rem] uppercase mb-3">
-              Our Vision
+              {{ t('about.visionLabel') }}
             </p>
             <p class="text-white text-lg md:text-xl leading-relaxed">{{ vision }}</p>
           </div>
@@ -97,7 +100,7 @@ const mandates = [
               <Target class="w-7 h-7 text-[#1f3a63]" />
             </div>
             <p class="text-[#2a5caa] font-bold tracking-[3px] text-[0.8rem] uppercase mb-3">
-              Our Mission
+              {{ t('about.missionLabel') }}
             </p>
             <p class="text-[#34415c] text-lg md:text-xl leading-relaxed">{{ mission }}</p>
           </div>
@@ -108,7 +111,7 @@ const mandates = [
       <!-- mini sub-heading to label the block -->
       <div class="text-center mb-8">
         <p class="text-[#2a5caa] font-bold tracking-[3px] text-[0.8rem] uppercase mb-2">
-          Mandated By Law
+          {{ t('about.mandatesLabel') }}
         </p>
         <h3 class="font-['Anton'] text-[2rem] text-[#1f3a63] tracking-[0.5px]">Our Mandates</h3>
       </div>

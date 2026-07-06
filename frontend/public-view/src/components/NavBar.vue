@@ -1,5 +1,5 @@
 <script setup>
-import { ref, inject, computed } from 'vue'
+import { ref, inject, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
@@ -35,6 +35,12 @@ const active = ref('home') // now tracks sectionId instead of raw label text
 const search = ref('')
 const showResults = ref(false)
 const openMenu = ref(null)
+const localeMenuButton = ref(null)
+const showLocaleMenu = ref(false)
+const localeOptions = [
+  { value: 'en', label: 'English' },
+  { value: 'fil', label: 'Filipino' },
+]
 
 let closeTimer = null
 
@@ -96,9 +102,33 @@ function closeResultsDelayed() {
 }
 
 // --- Language ---
-function onLocaleChange() {
-  localStorage.setItem('locale', locale.value)
+const localeLabel = computed(() => {
+  return localeOptions.find((option) => option.value === locale.value)?.label || 'English'
+})
+
+function toggleLocaleMenu() {
+  showLocaleMenu.value = !showLocaleMenu.value
 }
+
+function selectLocale(value) {
+  locale.value = value
+  localStorage.setItem('locale', value)
+  showLocaleMenu.value = false
+}
+
+function handleClickOutside(event) {
+  if (localeMenuButton.value && !localeMenuButton.value.contains(event.target)) {
+    showLocaleMenu.value = false
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
 </script>
 
 <template>
@@ -217,18 +247,37 @@ function onLocaleChange() {
           </div>
         </div>
 
-        <div class="flex items-center gap-1.5 border border-gray-300 rounded px-2 py-0.5 text-sm">
-  <Globe :size="15" class="text-blue-700" />
-  <select
-    v-model="locale"
-    @change="onLocaleChange"
-    class="flex-1 border-none outline-none text-sm bg-transparent text-[#1f3a63] appearance-none cursor-pointer pr-0.5"
-  >
-    <option value="en">English</option>
-    <option value="fil">Filipino</option>
-  </select>
-  <ChevronDown :size="13" class="text-[#1f3a63] ml-auto pointer-events-none" />
-</div>
+        <div ref="localeMenuButton" class="relative">
+          <button
+            type="button"
+            class="flex items-center gap-1.5 border border-gray-300 rounded px-2 py-0.5 w-48 text-sm"
+            @click.stop="toggleLocaleMenu"
+          >
+            <Globe :size="15" class="text-blue-700" />
+            <span class="text-[#1f3a63]">{{ localeLabel }}</span>
+            <ChevronDown
+              :size="13"
+              class="text-[#1f3a63] ml-auto transition-transform"
+              :class="{ 'rotate-180': showLocaleMenu }"
+            />
+          </button>
+
+          <div
+            v-if="showLocaleMenu"
+            class="absolute top-full right-0 mt-2 w-48 bg-white rounded-xl shadow-xl p-1.5 z-50"
+            @click.stop
+          >
+            <button
+              v-for="option in localeOptions"
+              :key="option.value"
+              type="button"
+              class="flex w-full items-center justify-start px-3 py-2 text-sm rounded-lg hover:bg-gray-100 text-[#1f3a63]"
+              @click="selectLocale(option.value)"
+            >
+              <span>{{ option.label }}</span>
+            </button>
+          </div>
+        </div>
       </div>
     </nav>
   </div>

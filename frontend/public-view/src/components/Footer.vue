@@ -1,20 +1,21 @@
 <script setup>
-// ===== SITE FOOTER =====
-// Navy footer — four columns on large screens + amber copyright bar.
-// Tailwind only, Lucide icons. Seal imported via @/assets alias (same as SiteHeader).
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { MapPin, Phone, Mail, ChevronRight } from 'lucide-vue-next'
 import seal from '@/assets/seal.png' // MSWDO seal (column 1 + left bottom seal)
 import muniSeal from '@/assets/muni-seal.png' // Municipal Government seal (right bottom seal)
 
+const { t } = useI18n()
+
 // Quick-link list — label + in-page anchor (or external URL)
-const quickLinks = [
-  { label: 'Home', href: '#home' },
-  { label: 'News & Announcements', href: '#news' },
-  { label: 'About the Office', href: '#about' },
-  { label: 'Programs & Operations', href: '#operations' },
-  { label: 'DSWD Official Website', href: 'https://www.dswd.gov.ph', external: true },
-  { label: 'Municipal Government of Initao', href: '#home' },
-]
+const quickLinks = computed(() => [
+  { label: t('footer.links.home'), href: '#home' },
+  { label: t('footer.links.news'), href: '#news' },
+  { label: t('footer.links.about'), href: '#about' },
+  { label: t('footer.links.programs'), href: '#operations' },
+  { label: t('footer.links.dswd'), href: 'https://www.dswd.gov.ph', external: true },
+  { label: t('footer.links.municipal'), href: '#home' },
+])
 
 const year = new Date().getFullYear()
 </script>
@@ -39,31 +40,30 @@ const year = new Date().getFullYear()
         <p
           class="text-white/65 text-[0.85rem] leading-relaxed max-w-[258px] text-justify hyphens-auto ml-12 -mt-4"
         >
-          Serving the constituents of Initao, Misamis Oriental with compassion, integrity, and
-          professionalism in social welfare service delivery.
+          {{ t('footer.tagline') }}
         </p>
       </div>
 
       <!-- COLUMN 2 · Contact information -->
       <div>
         <h4 class="text-amber-400 font-bold uppercase tracking-[1.5px] text-[0.78rem] mb-4">
-          Contact Information
+          {{ t('footer.contactTitle') }}
         </h4>
         <ul class="space-y-3 text-[0.85rem] text-white/75">
           <!-- address -->
           <li class="flex gap-2.5">
             <MapPin class="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-            <span>Municipal Hall, Jampason,<br />Initao, Misamis Oriental 9022</span>
+            <span>{{ t('contact.info.addressLine1') }}<br />{{ t('contact.info.addressLine2') }}</span>
           </li>
           <!-- phone -->
           <li class="flex gap-2.5 items-center">
             <Phone class="w-4 h-4 text-amber-400 shrink-0" />
-            <span>(088) 857-1234</span>
+            <span>{{ t('contact.info.phoneLine1') }}</span>
           </li>
           <!-- email -->
           <li class="flex gap-2.5 items-center">
             <Mail class="w-4 h-4 text-amber-400 shrink-0" />
-            <span>mswdo.initao@gmail.com</span>
+            <span>{{ t('contact.info.emailLine1') }}</span>
           </li>
         </ul>
       </div>
@@ -71,16 +71,16 @@ const year = new Date().getFullYear()
       <!-- COLUMN 3 · Office hours -->
       <div>
         <h4 class="text-amber-400 font-bold uppercase tracking-[1.5px] text-[0.78rem] mb-5">
-          Office Hours
+          {{ t('footer.hoursTitle') }}
         </h4>
-        <p class="text-[0.85rem] text-white/75">Monday – Friday, 8:00 AM – 5:00 PM</p>
-        <p class="text-[0.78rem] text-white/45 mt-0.5">Closed on weekends &amp; public holidays</p>
+        <p class="text-[0.85rem] text-white/75">{{ t('footer.hoursValue') }}</p>
+        <p class="text-[0.78rem] text-white/45 mt-0.5">{{ t('footer.hoursNote') }}</p>
       </div>
 
       <!-- COLUMN 4 · Quick Links -->
       <div>
         <h4 class="text-amber-400 font-bold uppercase tracking-[1.5px] text-[0.78rem] mb-5">
-          Quick Links
+          {{ t('footer.linksTitle') }}
         </h4>
         <ul class="space-y-2.5 text-[0.85rem]">
           <li v-for="link in quickLinks" :key="link.label">
@@ -122,7 +122,7 @@ const year = new Date().getFullYear()
 
         <!-- COPYRIGHT TEXT -->
         <p class="text-[0.82rem] font-lightbold">
-          © {{ year }} MSWDO Initao, Misamis Oriental. All rights reserved.
+          {{ t('footer.copyright', { year }) }}
         </p>
       </div>
       <!-- /ROW -->

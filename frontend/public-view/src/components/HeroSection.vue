@@ -1,13 +1,15 @@
 <script setup>
-/* ── STAT CARDS ──────────────────────────────────────────────
-   Each card has: an icon NAME (mapped to an inline SVG below),
-   the big number, and its label. Edit values/labels freely.   */
-const stats = [
-  { icon: 'users', value: '1,450+', label: 'Beneficiaries Served' },
-  { icon: 'award', value: '38', label: 'Active Programs' },
-  { icon: 'pin', value: '16', label: 'Barangays Covered' },
-  { icon: 'star', value: '26+', label: 'Years of Service' },
-]
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
+const stats = computed(() => [
+  { icon: 'users', value: '1,450+', label: t('hero.stats.beneficiaries') },
+  { icon: 'award', value: '38', label: t('hero.stats.programs') },
+  { icon: 'pin', value: '16', label: t('hero.stats.barangays') },
+  { icon: 'star', value: '26+', label: t('hero.stats.years') },
+])
 
 function goToServices() {
   const el = document.getElementById('services')
@@ -29,22 +31,18 @@ function goToContact() {
     <div>
       <!-- Eyebrow badge: small gold pill for context/polish -->
       <span class="block text-[#2a5caa] text-[0.85rem] font-[650] tracking-[3px] uppercase mb-2">
-        WELCOME TO MSWDO INITAO
+        {{ t('hero.eyebrow') }}
       </span>
 
       <h2
         class="font-['Anton',sans-serif] font-normal text-[2.1rem] md:text-[3.8rem] leading-[1.25] tracking-[0.5px] text-[#1f3a63] mt-2.5 mb-2"
       >
-        Empowering Communities Through Responsive Social Welfare Services
+        {{ t('hero.heading') }}
       </h2>
       <p
         class="text-[#0d294f] text-[1.1rem] font-light mt-3 mb-0.01 leading-[1.85] tracking-[0.1px] max-w-[41.25rem] text-justify"
       >
-        The Municipal Social Welfare and Development Office (MSWDO) of Initao, Misamis Oriental is
-        dedicated to enhancing the well-being of our community through comprehensive social
-        services. Our office is committed to empowering individuals and families, promoting social
-        justice, and fostering sustainable development. We strive to create a supportive environment
-        where every member of our community can thrive and reach their full potential.
+        {{ t('hero.description') }}
       </p>
 
       <!-- CALL-TO-ACTION buttons -->
@@ -54,7 +52,7 @@ function goToContact() {
           @click="goToServices"
           class="group inline-flex items-center justify-center text-center gap-[0.6rem] border-none min-w-[200px] px-[1.6rem] py-[0.95rem] font-[650] text-[0.92rem] tracking-[0.3px] rounded-xl cursor-pointer transition-all duration-200 ease-out bg-[#d4a526] text-[#1f3a63] shadow-[0_6px_16px_rgba(212,165,38,0.35)] hover:-translate-y-0.5 active:translate-y-0"
         >
-          Explore Services
+          {{ t('hero.cta.primary') }}
           <svg
             class="w-[18px] h-[18px] transition-transform duration-200 ease-out group-hover:translate-x-1"
             viewBox="0 0 24 24"
@@ -72,7 +70,7 @@ function goToContact() {
           @click="goToContact"
           class="inline-flex items-center justify-center text-center gap-[0.6rem] border-none min-w-[200px] px-[1.6rem] py-[0.95rem] font-[650] text-[0.92rem] tracking-[0.3px] rounded-xl cursor-pointer transition-all duration-200 ease-out bg-[#1f3a63] text-white shadow-[0_6px_16px_rgba(31,58,99,0.25)] hover:-translate-y-0.5 active:translate-y-0"
         >
-          Learn More
+          {{ t('hero.cta.secondary') }}
         </button>
       </div>
     </div>

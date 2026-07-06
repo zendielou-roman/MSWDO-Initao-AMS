@@ -1,11 +1,15 @@
 <script setup>
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
 // ============================================================
 //  CONTACT US · SECTION  (redesigned — modern, unified layout)
 //  One elevated card: navy info panel (left) + Google Map (right),
 //  followed by the R.A. 11032 complaint/feedback banner.
 //  Tailwind only · Lucide icons · navy + amber brand palette.
 // ============================================================
-import { inject } from 'vue'
+import { computed, inject } from 'vue'
 import { MapPin, Phone, Mail, Clock, ExternalLink, Facebook, ShieldAlert } from 'lucide-vue-next'
 import SectionHeading from './SectionHeading.vue'
 
@@ -127,7 +131,7 @@ const details = [
             class="mt-4 inline-flex items-center justify-center gap-2 rounded-lg bg-amber-400 px-4 py-3 text-[0.92rem] font-bold text-[#1f3a63] shadow-md transition duration-200 hover:bg-amber-300 hover:shadow-lg"
           >
             <ExternalLink class="h-4 w-4" />
-            Get Directions
+            {{ t('contact.getDirections') }}
           </a>
         </aside>
 
@@ -155,11 +159,9 @@ const details = [
           <ShieldAlert class="w-5 h-5 text-rose-500" />
         </span>
         <div>
-          <p class="font-bold text-[#1f3a63] text-[0.95rem] mb-1">File a Complaint or Feedback</p>
+          <p class="font-bold text-[#1f3a63] text-[0.95rem] mb-1">{{ t('contact.complaint.title') }}</p>
           <p class="text-slate-500 text-[0.88rem] leading-relaxed">
-            In accordance with R.A. 11032, clients may file complaints against MSWDO employees for
-            acts of discourtesy, inefficiency, or delayed service. Click here to submit your
-            grievance or feedback.
+            {{ t('contact.complaint.description') }}
           </p>
         </div>
         <!-- arrow hint -->
