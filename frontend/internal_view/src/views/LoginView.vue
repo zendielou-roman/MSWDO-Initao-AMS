@@ -24,11 +24,11 @@ const errorMsg = ref('') // shows a red message if login fails
 // LATER: replace auth.login(...) with a real Axios POST to the Laravel backend.
 function handleSignIn() {
   errorMsg.value = '' // clear any old error first
-  const ok = auth.login(email.value, password.value) // true if credentials match
-  if (ok) {
+  const result = auth.login(email.value, password.value) // returns { success: true } or { success: false, message }
+  if (result.success) {
     router.push('/dashboard') // 👈 send them into the internal view
   } else {
-    errorMsg.value = 'Invalid email or password. Try admin / admin123.' // show the error
+    errorMsg.value = result.message || 'Invalid email or password.' // show the error
   }
 }
 </script>

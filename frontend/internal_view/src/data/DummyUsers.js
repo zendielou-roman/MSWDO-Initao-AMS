@@ -5,30 +5,32 @@
 export const roles = ['Administrator', 'Social Worker', 'Encoder']
 export const statuses = ['Active', 'Inactive']
 
-export const authDummyUsers = [
-  {
-    id: 1,
-    name: 'Admin User',
-    email: 'admin',
-    password: 'admin123',
-    role: 'Administrator',
-  },
-]
+const ADMIN_ROLES = ['Administrator']
+
+  // Given a role, returns 'admin' or 'staff' — used by the auth store/router to decide
+  // which layout and default landing page a user gets after login.
+  export function getUserSide(role) {
+    return ADMIN_ROLES.includes(role) ? 'admin' : 'staff'
+  }
+  
+  const DUMMY_PASSWORD = 'password123'
 
 export const dummyUsers = [
-  {
-    id: 1,
-    name: 'Maria Santos',
-    email: 'maria.santos@mswdo.gov.ph',
-    role: 'Administrator',
-    status: 'Active',
-    dateCreated: '2025-01-14',
-    lastLogin: '2025-07-06T08:12:00',
-  },
+     {
+      id: 1,
+      name: 'Maria Santos',
+      email: 'maria.santos@mswdo.gov.ph',
+      password: DUMMY_PASSWORD,
+      role: 'Administrator',
+      status: 'Active',
+      dateCreated: '2025-01-14',
+      lastLogin: '2025-07-06T08:12:00',
+    },
   {
     id: 2,
     name: 'Juan Dela Cruz',
     email: 'juan.delacruz@mswdo.gov.ph',
+    password: DUMMY_PASSWORD,
     role: 'Social Worker',
     status: 'Active',
     dateCreated: '2025-02-02',
