@@ -31,9 +31,14 @@ export default {
   services: {
     filters: {
       all: 'ALL',
-      health: 'HEALTH',
-      livelihood: 'LIVELIHOOD',
-      pwd: 'PWD',
+      familyServices: 'FAMILY SERVICES',
+      childrenAndYouth: 'CHILDREN AND YOUTH',
+      personsWithDisabilities: 'PERSONS WITH DISABILITIES',
+      seniorCitizens: 'SENIOR CITIZENS',
+      womensServices: 'WOMEN\'S SERVICES',
+      livelihoodAssistance: 'LIVELIHOOD ASSISTANCE',
+      emergencyAssistance: 'EMERGENCY ASSISTANCE',
+      justiceAndRehabilitation: 'JUSTICE AND REHABILITATION',
     },
     section: {
       eyebrow: 'WHAT WE DO',

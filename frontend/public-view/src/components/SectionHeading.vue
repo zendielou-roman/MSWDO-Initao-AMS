@@ -20,10 +20,17 @@ defineProps({
     type: String,
     default: '',
   },
-  // Max-width of the subtitle paragraph (default matches ServicesSection)
+  // Max-width of the subtitle paragraph on small screens, where it's
+  // allowed to wrap onto two lines (default matches ServicesSection).
   subtitleMaxWidth: {
     type: String,
     default: '645px',
+  },
+  // Max-width on sm+ screens, wide enough that the subtitle fits on
+  // one line without overflowing/clipping.
+  subtitleMaxWidthDesktop: {
+    type: String,
+    default: '800px',
   },
 })
 </script>
@@ -40,7 +47,7 @@ defineProps({
     </h2>
     <p
       v-if="subtitle"
-      class="text-[#6b7790] mx-auto text-[0.9rem] leading-[1.6] text-center whitespace-normal break-words [hyphens:auto]"
+      class="mx-auto w-full text-[#6b7790] text-center leading-[1.6] break-words [hyphens:auto] text-[clamp(0.72rem,1.5vw,0.9rem)]"
       :style="{ maxWidth: subtitleMaxWidth }"
     >
       {{ subtitle }}

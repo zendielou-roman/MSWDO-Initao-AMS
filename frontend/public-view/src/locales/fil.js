@@ -31,19 +31,24 @@ export default {
   services: {
     filters: {
       all: 'LAHAT',
-      health: 'KALUSUGAN',
-      livelihood: 'KABUHAYAN',
-      pwd: 'PWD',
+      familyServices: 'SERBISYONG PANGPAMILYA',
+      childrenAndYouth: 'SERBISYONG PAGKABATAAN',
+      personsWithDisabilities: 'PARA SA MGA PWD',
+      seniorCitizens: 'PARA SA MGA NAKATATANDA',
+      womensServices: 'PARA SA KABABAIHAN',
+      livelihoodAssistance: 'PANGKABUHAYAN',
+      emergencyAssistance: 'AGARANG TULONG',
+      justiceAndRehabilitation: 'HUSTISYA AT REHABILITASYON',
     },
     section: {
       eyebrow: 'ANG AMING GINAGAWA',
-      title: 'Social Welfare Services',
+      title: 'Mga Serbisyong Panlipunan',
       subtitle: 'Mga programa at serbisyong naglalayong magbigay ng suporta at mapabuti ang kalagayan ng mga pinaka-nangangailangang sektor sa ating komunidad.',
     },
     items: {
       aics: {
         title: 'AICS – Assistance to Individuals in Crisis Situations',
-        desc: 'Agarang tulong para sa mga indibidwal at pamilya na nakararanas ng krisis tulad ng medikal, libing, pang-edukasyon, at emergency na pangangailangan.',
+        desc: 'Agarang tulong para sa mga indibidwal at pamilya na nakakaranas ng krisis tulad ng medikal, libing, pang-edukasyon, at iba pang emergency na pangangailangan.',
         whoCanAvail: ['Mga residente ng Initao na nakakaranas ng agarang krisis', 'Mga mahihirap na indibidwal at pamilya na nangangailangan ng agarang suporta'],
         benefits: ['Pinansyal at materyal na tulong', 'Referral sa iba pang serbisyong suporta', 'Pagsusuri at follow-up batay sa kaso'],
         requirements: ['Pangunahing ID na inilabas ng gobyerno', 'Sertipiko o referral mula sa barangay', 'Mga suportang dokumento batay sa kaso'],
@@ -57,7 +62,7 @@ export default {
         legalBasis: 'DSWD AICS Program Guidelines',
       },
       elderly: {
-        title: 'Mga Serbisyo para sa mga Nakatatanda',
+        title: 'Social Services for the Elderly',
         desc: 'Mga programang nagtataguyod ng kapakanan, proteksyon, at kagalingan ng mga senior citizen sa komunidad.',
         whoCanAvail: ['Mga senior citizen na naninirahan sa Initao', 'Mga nakatatandang nangangailangan ng social assistance o proteksyon'],
         benefits: ['Pag-access sa suporta para sa senior citizen', 'Referral sa mga programang pangkalusugan at pangkagalingan ng lipunan', 'Tulong sa pag-access sa mga benepisyo na nakalaan'],
@@ -71,7 +76,7 @@ export default {
         legalBasis: 'Republic Act No. 9994',
       },
       womenWelfare: {
-        title: 'Programa para sa Kagalingan ng Kababaihan',
+        title: 'Women Welfare Program',
         desc: 'Mga serbisyong suporta para sa mga kababaihan na nangangailangan, kabilang ang counseling, referral, at proteksyon.',
         whoCanAvail: ['Mga kababaihan na nangangailangan ng sosyal na suporta', 'Mga kababaihan at pamilya na apektado ng pang-aabuso o krisis'],
         benefits: ['Pagpapayo at pag-aasikaso sa kaso', 'Referral sa legal at medikal na suporta', 'Proteksyon at tulong sa follow-up'],
@@ -85,7 +90,7 @@ export default {
         legalBasis: 'Republic Act No. 9262',
       },
       juvenileJustice: {
-        title: 'Programa para sa Kagalingan ng Juvenile Justice',
+        title: 'Juvenile Justice Welfare Program',
         desc: 'Mga interbensyon at serbisyong pangkagalingan para sa mga bata at kabataan na kasangkot sa legal o panlipunang salungatan.',
         whoCanAvail: ['Mga bata at kabataan na may salungatan sa batas', 'Mga pamilya at guardian na nangangailangan ng suporta sa kagalingan'],
         benefits: ['Pag-aasikaso sa kaso', 'Referral sa legal at suporta sa rehabilitasyon', 'Koordinasyon sa mga partner na ahensya'],
@@ -99,7 +104,7 @@ export default {
         legalBasis: 'Republic Act No. 9344',
       },
       youthWelfare: {
-        title: 'Programa para sa Kagalingan at Pagpapaunlad ng Kabataan',
+        title: 'Youth Welfare Development Program',
         desc: 'Mga programang nakatuon sa kagalingan, pag-unlad, at empowerment ng kabataan sa komunidad.',
         whoCanAvail: ['Mga kabataang residente ng Initao', 'Mga kabataan na nangangailangan ng gabay o suporta sa pag-unlad'],
         benefits: ['Suporta sa pag-unlad', 'Referral sa mga programang pangkabataan', 'Gabay at tulong sa kagalingan'],
@@ -128,7 +133,7 @@ export default {
         legalBasis: 'DSWD Sustainable Livelihood Program Guidelines',
       },
       pwdServices: {
-        title: 'Mga Serbisyo para sa PWD',
+        title: 'PWD Services',
         desc: 'Mga serbisyo para sa mga may kapansanan kabilang ang pagpaparehistro, tulong, at pag-access sa benepisyo.',
         whoCanAvail: ['Mga residente ng Initao na may kapansanan', 'Mga first-time at renewing PWD applicants'],
         benefits: ['Pagkakaloob ng PWD ID', 'Pag-access sa benepisyo at pribilehiyo', 'Suporta sa transaksiyon at referral'],
@@ -142,7 +147,7 @@ export default {
         legalBasis: 'R.A. 10754',
       },
       childrenDisability: {
-        title: 'Mga Serbisyo para sa Bata na may Kapansanan',
+        title: 'Children with Disability Services',
         desc: 'Mga serbisyong suporta para sa mga bata na may kapansanan at sa kanilang pamilya.',
         whoCanAvail: ['Mga batang may kapansanan', 'Mga magulang at guardian na naghahanap ng suporta'],
         benefits: ['Suporta sa referral', 'Pag-access sa serbisyo na may kinalaman sa kapansanan', 'Gabay sa pamilya at follow-up'],
@@ -156,7 +161,7 @@ export default {
         legalBasis: 'PWD at child welfare laws',
       },
       eccdp: {
-        title: 'ECCDP – Programang Pang-Early Childhood Care and Development',
+        title: 'ECCDP – Early Childhood Care and Development Program',
         desc: 'Mga programang nakatuon sa maagang pangangalaga, pag-unlad, at kagalingan ng mga batang preschool.',
         whoCanAvail: ['Mga magulang at caregiver ng mga batang preschool', 'Mga pamilya na nangangailangan ng suporta sa maagang pag-unlad'],
         benefits: ['Suporta sa pag-unlad', 'Referral sa early childhood services', 'Suporta at edukasyon sa pamilya'],
@@ -170,7 +175,7 @@ export default {
         legalBasis: 'Mga polisiya sa early childhood development',
       },
       familyDevelopment: {
-        title: 'Serbisyo sa Pagpapaunlad ng Pamilya',
+        title: 'Family Development Service',
         desc: 'Mga serbisyong suporta na naglalayong palakasin ang pamilya at mapabuti ang kagalingan ng komunidad.',
         whoCanAvail: ['Mga pamilya na nangangailangan ng suporta', 'Mga magulang at miyembro ng sambahayan na naghahanap ng gabay'],
         benefits: ['Mga session sa pagpapalakas ng pamilya', 'Pagpapayo at gabay', 'Referral sa kaukulang serbisyong suporta'],
@@ -184,7 +189,7 @@ export default {
         legalBasis: 'Mga polisiya sa kagalingan at pag-unlad ng pamilya',
       },
       paroleProbation: {
-        title: 'Programa sa Parole at Probation',
+        title: 'Parole and Probation Program',
         desc: 'Mga serbisyong pangkagalingan at suporta para sa mga kliyente sa ilalim ng parole o probation.',
         whoCanAvail: ['Mga kliyente sa ilalim ng parole o probation', 'Mga pamilya ng mga kliyente na nangangailangan ng suporta'],
         benefits: ['Suporta sa pagmomonitor ng kaso', 'Referral sa mga serbisyong pampamayanan', 'Tulong sa reintegration'],
@@ -198,7 +203,7 @@ export default {
         legalBasis: 'Mga alituntunin sa parole at probation administration',
       },
       preMarriage: {
-        title: 'Pag-orient at Counseling bago ang Kasal',
+        title: 'Pre-marriage Orientation and Counseling',
         desc: 'Mga serbisyong gabay at counseling upang matulungan ang mag-asawa na maghanda para sa kasal at buhay pamilya.',
         whoCanAvail: ['Mga mag-asawang naghahanda para sa kasal', 'Mga indibidwal na naghahanap ng premarital guidance'],
         benefits: ['Pagpapayo bago ang kasal', 'Gabay sa paghahanda sa pamilya', 'Suporta sa pagbuo ng malusog na relasyon'],
@@ -212,7 +217,7 @@ export default {
         legalBasis: 'Mga serbisyo sa counseling sa pamilya at kasal',
       },
       soloParent: {
-        title: 'Programa para sa Kagalingan ng Solo Parent',
+        title: 'Solo-parent Welfare Program',
         desc: 'Mga serbisyong suporta at pribilehiyo para sa mga solo parent upang matulungan silang alagaan ang kanilang mga anak at pamilya.',
         whoCanAvail: ['Mga solo parent na naninirahan sa Initao', 'Mga magulang na nag-aalaga ng anak nang nag-iisa dahil sa sitwasyong panlipunan'],
         benefits: ['Pag-access sa suporta para sa solo parent', 'Referral sa kabuhayan at tulong sa edukasyon', 'Gabay at tulong sa pag-avail ng benepisyo'],
@@ -235,7 +240,7 @@ export default {
       legalBasis: 'Batayang Legal',
       applyInPerson: 'Mag-apply nang Personal',
       getDirections: 'Mga Detalye sa Pakikipag-ugnayan',
-      backToServices: 'Bumalik sa Mga Serbisyo',
+      backToServices: 'Bumalik sa mga Serbisyo',
       notFoundTitle: 'Hindi natagpuan ang serbisyo',
       notFoundDesc: 'Ang serbisyong hinahanap mo ay wala o maaaring inilipat na.',
     },

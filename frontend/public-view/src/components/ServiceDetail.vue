@@ -3,7 +3,7 @@ import { nextTick, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { getTranslatedServiceBySlug, iconTone } from '@/data/services.js'
-import { ArrowLeft, CheckCircle2, FileText, ListChecks, MapPin, Scale } from 'lucide-vue-next'
+import { ArrowLeft, CheckCircle2, Clock, FileText, ListChecks, MapPin, Scale } from 'lucide-vue-next'
 
 const route = useRoute()
 const router = useRouter()
@@ -22,6 +22,17 @@ async function backToServices() {
   await nextTick()
 
   const el = document.getElementById('services')
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+}
+
+async function goToContact() {
+  await router.push({ path: '/', hash: '#contact' })
+  await router.isReady()
+  await nextTick()
+
+  const el = document.getElementById('contact')
   if (el) {
     el.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
@@ -151,9 +162,12 @@ async function backToServices() {
           <aside class="w-full md:w-[280px] sticky top-6 self-start">
             <div class="flex flex-col gap-4">
               <div class="bg-white rounded-2xl border border-slate-200 p-6">
-                <p class="text-[#1f3a63] text-[0.75rem] font-bold uppercase tracking-wide mb-2">
-                  {{ service.processingTimeTitleKey ? t(service.processingTimeTitleKey) : 'Processing Time' }}
-                </p>
+                <div class="flex items-center gap-2 mb-2">
+                  <Clock class="w-4 h-4 text-[#1e3a6e]" />
+                  <p class="text-[#1f3a63] text-[0.75rem] font-bold uppercase tracking-wide">
+                    {{ service.processingTimeTitleKey ? t(service.processingTimeTitleKey) : 'Processing Time' }}
+                  </p>
+                </div>
                 <p class="text-slate-600 text-[0.88rem] leading-relaxed">
                   {{ service.processingTime }}
                 </p>
@@ -179,12 +193,13 @@ async function backToServices() {
                 <p class="text-white/80 text-[0.85rem] leading-relaxed mb-4">
                   MSWDO Office, Municipal Hall, Initao, Misamis Oriental
                 </p>
-                <router-link
-                  to="/contact"
+                <a
+                  href="#"
+                  @click.prevent="goToContact"
                   class="inline-flex items-center justify-center w-full rounded-lg bg-amber-400 hover:bg-amber-300 text-[#1f3a63] font-bold text-[0.85rem] py-2.5 transition"
                 >
                   {{ service.directionsTitleKey ? t(service.directionsTitleKey) : 'Get Directions & Contact Info' }}
-                </router-link>
+                </a>
               </div>
             </div>
           </aside>

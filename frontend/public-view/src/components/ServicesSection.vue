@@ -1,6 +1,6 @@
 <script setup>
 /* ===== SERVICES SECTION LOGIC ===== */
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import SectionHeader from '@/components/SectionHeading.vue'
 import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
@@ -12,15 +12,49 @@ const { t } = useI18n()
    `key` is matched against each service's `category`. */
 const filters = computed(() => [
   { key: 'all', label: t('services.filters.all') },
-  { key: 'health', label: t('services.filters.health') },
-  { key: 'livelihood', label: t('services.filters.livelihood') },
-  { key: 'pwd', label: t('services.filters.pwd') },
+  { key: 'family-services', label: t('services.filters.familyServices') },
+  { key: 'children-and-youth', label: t('services.filters.childrenAndYouth') },
+  { key: 'persons-with-disabilities', label: t('services.filters.personsWithDisabilities') },
+  { key: 'senior-citizens', label: t('services.filters.seniorCitizens') },
+  { key: 'womens-services', label: t('services.filters.womensServices') },
+  { key: 'livelihood-assistance', label: t('services.filters.livelihoodAssistance') },
+  { key: 'emergency-assistance', label: t('services.filters.emergencyAssistance') },
+  { key: 'justice-and-rehabilitation', label: t('services.filters.justiceAndRehabilitation') },
 ])
 
 const activeFilter = ref('all')
 const localizedServices = computed(() => getTranslatedServices(t))
 const currentPage = ref(0)
 const servicesPerPage = 8
+const filterTrack = ref(null)
+
+/* ---- scroll-edge tracking for the filter pill row ---- */
+const atFilterStart = ref(true)
+const atFilterEnd = ref(false)
+// whether the pill row actually overflows its container at all;
+// if it doesn't, there's nothing to scroll to, so arrows never show
+const filterOverflows = ref(false)
+// only reveal the arrows while the pointer is over the filter row
+const isFilterHovered = ref(false)
+
+function updateFilterEdges() {
+  const el = filterTrack.value
+  if (!el) return
+  const tolerance = 1
+  filterOverflows.value = el.scrollWidth > el.clientWidth + tolerance
+  atFilterStart.value = el.scrollLeft <= tolerance
+  atFilterEnd.value = el.scrollLeft + el.clientWidth >= el.scrollWidth - tolerance
+}
+
+onMounted(() => {
+  nextTick(updateFilterEdges)
+  // re-check on resize (e.g. rotating a tablet, resizing a window)
+  window.addEventListener('resize', updateFilterEdges)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', updateFilterEdges)
+})
 
 /* Show all cards on "ALL", otherwise only the matching category. */
 const visibleServices = computed(() =>
@@ -40,12 +74,43 @@ watch(visibleServices, () => {
   currentPage.value = 0
 })
 
+// filter labels change with locale, and the row's content width can change
+// with them (e.g. translated text is longer/shorter) — recheck overflow then
+watch(filters, () => {
+  nextTick(updateFilterEdges)
+})
+
 function goPrev() {
   if (currentPage.value > 0) currentPage.value -= 1
 }
 
 function goNext() {
   if (currentPage.value < totalPages.value - 1) currentPage.value += 1
+}
+
+function selectFilter(key, event) {
+  activeFilter.value = key
+  // Keep the chosen pill comfortably in view on the scrollable track.
+  event?.currentTarget?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })
+  // scrollIntoView is smooth/async, so check edges a bit after it settles
+  setTimeout(updateFilterEdges, 350)
+}
+
+function scrollFilters(direction) {
+  if (!filterTrack.value) return
+  const amount = 200
+  filterTrack.value.scrollBy({ left: direction === 'next' ? amount : -amount, behavior: 'smooth' })
+  setTimeout(updateFilterEdges, 350)
+}
+
+/* Desktop mice only send vertical wheel deltas; redirect that motion
+   into horizontal scroll so the pill row is scrollable without a trackpad. */
+function onFilterWheel(event) {
+  if (!filterTrack.value) return
+  if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return
+  event.preventDefault()
+  filterTrack.value.scrollLeft += event.deltaY
+  updateFilterEdges()
 }
 </script>
 
@@ -59,21 +124,55 @@ function goNext() {
       :title="t('services.section.title')"
       :subtitle="t('services.section.subtitle')"
     />
-
-    <!-- ===== FILTER TABS ===== -->
-    <div class="flex justify-center gap-6 sm:gap-10 my-8 flex-wrap">
+    <div
+      class="relative my-8 mx-auto flex max-w-[920px] items-center gap-1"
+      @mouseenter="isFilterHovered = true"
+      @mouseleave="isFilterHovered = false"
+    >
       <button
-        v-for="f in filters"
-        :key="f.key"
-        class="bg-none border-0 border-b-[3px] cursor-pointer font-bold text-[0.85rem] tracking-[1px] pb-1.5 transition-colors duration-150 ease-out"
-        :class="
-          activeFilter === f.key
-            ? 'text-[#1f3a63] border-b-[#2f72c4]'
-            : 'text-[#6b7790] border-b-transparent hover:text-[#1f3a63]'
-        "
-        @click="activeFilter = f.key"
+        v-if="filterOverflows && !atFilterStart"
+        type="button"
+        class="hidden sm:flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#dfe6f0] bg-white text-[#1f3a63] shadow-sm transition-all duration-200 hover:bg-[#f4f6fa]"
+        :class="isFilterHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'"
+        aria-label="Scroll filters left"
+        @click="scrollFilters('prev')"
       >
-        {{ f.label }}
+        <ChevronLeft :size="16" />
+      </button>
+
+      <div
+        ref="filterTrack"
+        class="flex min-w-0 flex-1 items-center justify-start gap-2 overflow-x-auto scroll-smooth px-6 py-1 [&::-webkit-scrollbar]:hidden"
+        style="scrollbar-width: none; mask-image: linear-gradient(to right, transparent 0, black 24px, black calc(100% - 24px), transparent 100%); -webkit-mask-image: linear-gradient(to right, transparent 0, black 24px, black calc(100% - 24px), transparent 100%)"
+        @wheel="onFilterWheel"
+        @scroll="updateFilterEdges"
+      >
+        <button
+          v-for="f in filters"
+          :key="f.key"
+          type="button"
+          class="shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-[0.78rem] font-semibold tracking-[0.2px] transition-colors duration-150 ease-out"
+          :class="
+            activeFilter === f.key
+              ? 'bg-[#1f3a63] text-white shadow-sm'
+              : 'bg-transparent text-[#6b7790] hover:bg-white hover:text-[#1f3a63]'
+          "
+          :aria-pressed="activeFilter === f.key"
+          @click="selectFilter(f.key, $event)"
+        >
+          {{ f.label }}
+        </button>
+      </div>
+
+      <button
+        v-if="filterOverflows && !atFilterEnd"
+        type="button"
+        class="hidden sm:flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#dfe6f0] bg-white text-[#1f3a63] shadow-sm transition-all duration-200 hover:bg-[#f4f6fa]"
+        :class="isFilterHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'"
+        aria-label="Scroll filters right"
+        @click="scrollFilters('next')"
+      >
+        <ChevronRight :size="16" />
       </button>
     </div>
 
