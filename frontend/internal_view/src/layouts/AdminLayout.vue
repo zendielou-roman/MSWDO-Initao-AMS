@@ -3,12 +3,18 @@ import { Home, Users, Box, Bell, ChevronLeft, ChevronDown, LogOut, Search } from
 import { useAuthStore } from '@/stores/auth'
 import { useRouter, useRoute } from 'vue-router'
 import { computed, ref } from 'vue'
+import { dummyNotifications } from '@/data/dummyNotifications'
 
 const auth = useAuthStore()
 const router = useRouter()
 const route = useRoute()
 
 const pageTitle = computed(() => route.meta.title || 'Dashboard')
+
+  // Live unread count for the header bell — reads the same dummy dataset the
+  // Notifications page uses, so the badge here always matches what's inside.
+  // Once a backend exists, swap this for a real unread-count API/store value.
+  const unreadCount = computed(() => dummyNotifications.filter((n) => n.unread).length)
 
 // Sidebar collapse state — expanded by default
 const isCollapsed = ref(false)
@@ -239,14 +245,22 @@ function getInitials(name) {
             />
           </div>
 
-          <button class="relative rounded-full p-2 hover:bg-slate-100">
-            <Bell class="h-5 w-5 text-slate-600" />
-            <span
-              class="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-amber-400 text-[10px] font-bold text-[#001d4c]"
+<router-link
+              to="/notifications"
+              class="relative rounded-full p-2 hover:bg-slate-100"
+              title="Notifications"
             >
-              4
-            </span>
-          </button>
+              <Bell
+                class="h-5 w-5"
+                :class="route.path === '/notifications' ? 'text-amber-500' : 'text-slate-600'"
+              />
+              <span
+                v-if="unreadCount > 0"
+                class="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-amber-400 text-[10px] font-bold text-[#001d4c]"
+              >
+                {{ unreadCount > 9 ? '9+' : unreadCount }}
+              </span>
+            </router-link>
 
           <div
             class="flex h-9 w-9 items-center justify-center rounded-full bg-[#001d4c] text-sm font-semibold text-white"

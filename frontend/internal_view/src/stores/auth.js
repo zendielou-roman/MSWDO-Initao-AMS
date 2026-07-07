@@ -1,46 +1,56 @@
-import { defineStore } from 'pinia'
-import { authDummyUsers } from '../data/DummyUsers'
-
-export const useAuthStore = defineStore('auth', {
-  state: () => ({
-    user:
-      typeof window !== 'undefined'
-        ? JSON.parse(localStorage.getItem('sagop_user') || 'null')
-        : null,
-  }),
-  getters: {
-    isLoggedIn: (state) => !!state.user,
-    isAdmin: (state) => state.user?.role === 'admin',
-  },
-  actions: {
-    login(email, password) {
-      const normalizedEmail = String(email || '')
-        .trim()
-        .toLowerCase()
-      const normalizedPassword = String(password || '').trim()
-
-      const found = authDummyUsers.find((u) => {
-        const availableLogins = [u.email]
-          .filter(Boolean)
-          .map((value) => String(value).trim().toLowerCase())
-
-        const fallbackEmail = normalizedEmail.replace(/@.*$/, '')
-
-        return (
-          availableLogins.some((value) => value === normalizedEmail || value === fallbackEmail) &&
-          String(u.password || '').trim() === normalizedPassword
-        )
-      })
-
-      if (!found) return false
-      const { password: _, ...safeUser } = found
-      this.user = safeUser
-      localStorage.setItem('sagop_user', JSON.stringify(safeUser))
-      return true
+  // src/stores/auth.js
+  // Pinia auth store — dummy-data login only (no backend yet).
+  // Matches email fuzzily (case-insensitive, trimmed) and password exactly against dummyUsers.js.
+  // Also resolves which "side" of the app (admin vs staff) a user belongs to, so the router
+  // can send them to the right layout and home page after login.
+  
+  import { defineStore } from 'pinia'
+  import { dummyUsers, getUserSide } from '@/data/DummyUsers'
+  
+  export const useAuthStore = defineStore('auth', {
+    state: () => ({
+      user: null, // { id, name, email, role, status, ... } — no password kept in state
+    }),
+  
+    getters: {
+      isLoggedIn: (state) => !!state.user,
+  
+      // 'admin' | 'staff' | null
+      side: (state) => (state.user ? getUserSide(state.user.role) : null),
+  
+      isAdmin: (state) => !!state.user && getUserSide(state.user.role) === 'admin',
+      isStaff: (state) => !!state.user && getUserSide(state.user.role) === 'staff',
+  
+      // Where a logged-in user should land — used by the router guard and the login redirect.
+      homePath: (state) => {
+        if (!state.user) return '/login'
+        return getUserSide(state.user.role) === 'admin' ? '/dashboard' : '/staff/dashboard'
+      },
     },
-    logout() {
-      this.user = null
-      localStorage.removeItem('sagop_user')
+  
+    actions: {
+      // Returns { success: true } or { success: false, message } — LoginView shows the message.
+      login(email, password) {
+        const normalizedEmail = (email || '').trim().toLowerCase()
+  
+        const match = dummyUsers.find((u) => u.email.toLowerCase() === normalizedEmail)
+  
+        if (!match || match.password !== password) {
+          return { success: false, message: 'Invalid email or password.' }
+        }
+        if (match.status === 'Inactive') {
+          return { success: false, message: 'This account has been deactivated.' }
+        }
+  
+        // Keep everything except the password in the logged-in user object.
+        const { password: _password, ...safeUser } = match
+        this.user = safeUser
+  
+        return { success: true }
+      },
+  
+      logout() {
+        this.user = null
+      },
     },
-  },
-})
+  })
