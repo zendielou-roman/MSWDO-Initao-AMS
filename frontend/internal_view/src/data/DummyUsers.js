@@ -18,8 +18,8 @@ const ADMIN_ROLES = ['Administrator']
 export const dummyUsers = [
      {
       id: 1,
-      name: 'Maria Santos',
-      email: 'maria.santos@mswdo.gov.ph',
+      name: 'Zendie Lou Roman',
+      email: 'admin',
       password: DUMMY_PASSWORD,
       role: 'Administrator',
       status: 'Active',
@@ -28,8 +28,8 @@ export const dummyUsers = [
     },
   {
     id: 2,
-    name: 'Juan Dela Cruz',
-    email: 'juan.delacruz@mswdo.gov.ph',
+    name: 'Adrian Ken Jalagat',
+    email: 'staff',
     password: DUMMY_PASSWORD,
     role: 'Social Worker',
     status: 'Active',
@@ -40,6 +40,7 @@ export const dummyUsers = [
     id: 3,
     name: 'Angela Reyes',
     email: 'angela.reyes@mswdo.gov.ph',
+    password: DUMMY_PASSWORD,
     role: 'Encoder',
     status: 'Active',
     dateCreated: '2025-02-20',

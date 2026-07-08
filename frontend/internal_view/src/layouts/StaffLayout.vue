@@ -48,15 +48,6 @@ function getInitials(name) {
     : (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
 }
 
-// Built pages get a real router-link (see the Dashboard + Clients & Beneficiaries
-// links below). Everything else is listed here so the sidebar still shows the full
-// staff navigation from the prototype, but renders as a disabled placeholder
-// (no route) until each page is built one at a time.
-const upcomingSections = [
-  { label: 'Assistance Management', icon: HeartHandshake },
-  { label: 'Relief Operations', icon: Truck },
-  { label: 'Donations Management', icon: Gift },
-]
 </script>
 
 <template>
@@ -130,17 +121,50 @@ const upcomingSections = [
           <span v-if="!isCollapsed">Clients &amp; Beneficiaries</span>
         </router-link>
 
-        <!-- Not built yet — visible for context per the prototype, disabled until wired -->
-        <p
-          v-for="section in upcomingSections"
-          :key="section.label"
-          class="flex cursor-not-allowed items-center gap-3 rounded-lg py-2.5 font-medium text-white/30"
-          :class="isCollapsed ? 'justify-center px-0' : 'px-3'"
-          :title="section.label + ' (coming soon)'"
+        <router-link
+          to="/staff/assistance-management"
+          class="flex items-center gap-3 rounded-lg py-2.5 font-medium transition"
+          :class="[
+            isCollapsed ? 'justify-center px-0' : 'px-3',
+            route.path === '/staff/assistance-management'
+              ? 'bg-white/10 font-semibold text-amber-400'
+              : 'text-white/70 hover:bg-white/5 hover:text-white',
+          ]"
+          title="Assistance Management"
         >
-          <component :is="section.icon" class="h-4 w-4 flex-shrink-0" />
-          <span v-if="!isCollapsed">{{ section.label }}</span>
-        </p>
+          <HeartHandshake class="h-4 w-4 flex-shrink-0" />
+          <span v-if="!isCollapsed">Assistance Management</span>
+        </router-link>
+
+        <router-link
+          to="/staff/relief-operations"
+          class="flex items-center gap-3 rounded-lg py-2.5 font-medium transition"
+          :class="[
+            isCollapsed ? 'justify-center px-0' : 'px-3',
+            route.path === '/staff/relief-operations'
+              ? 'bg-white/10 font-semibold text-amber-400'
+              : 'text-white/70 hover:bg-white/5 hover:text-white',
+          ]"
+          title="Relief Operations"
+        >
+          <Truck class="h-4 w-4 flex-shrink-0" />
+          <span v-if="!isCollapsed">Relief Operations</span>
+        </router-link>
+
+        <router-link
+          to="/staff/donations-management"
+          class="flex items-center gap-3 rounded-lg py-2.5 font-medium transition"
+          :class="[
+            isCollapsed ? 'justify-center px-0' : 'px-3',
+            route.path === '/staff/donations-management'
+              ? 'bg-white/10 font-semibold text-amber-400'
+              : 'text-white/70 hover:bg-white/5 hover:text-white',
+          ]"
+          title="Donations Management"
+        >
+          <Gift class="h-4 w-4 flex-shrink-0" />
+          <span v-if="!isCollapsed">Donations Management</span>
+        </router-link>
       </nav>
 
       <!-- USER FOOTER -->

@@ -63,15 +63,30 @@ const router = createRouter({
           component: () => import('@/views/staff/StaffDashboardView.vue'),
           meta: { title: 'Dashboard' },
         },
-{
-  path: 'clients-beneficiaries',
-  name: 'staff-clients-beneficiaries',
-  component: () => import('@/views/staff/ClientsBeneficiariesView.vue'),
-  meta: { title: 'Clients & Beneficiaries' },
-}
-        // Assistance Management, Relief Operations, and Donations Management pages
-        // are built one at a time — routes get added here as each page is finished.
-        // The sidebar links to them already exist but are visually disabled until then.
+        {
+          path: 'clients-beneficiaries',
+          name: 'staff-clients-beneficiaries',
+          component: () => import('@/views/staff/ClientsBeneficiariesView.vue'),
+          meta: { title: 'Clients & Beneficiaries' },
+        },
+        {
+          path: 'assistance-management',
+          name: 'staff-assistance-management',
+          component: () => import('@/views/staff/AssistanceManagementView.vue'),
+          meta: { title: 'Assistance Management' },
+        },
+        {
+          path: 'relief-operations',
+          name: 'staff-relief-operations',
+          component: () => import('@/views/staff/ReliefOperationsView.vue'),
+          meta: { title: 'Relief Operations' },
+        },
+        {
+          path: 'donations-management',
+          name: 'staff-donations-management',
+          component: () => import('@/views/staff/DonationsManagementView.vue'),
+          meta: { title: 'Donations Management' },
+        },
       ],
     },
 

@@ -126,6 +126,7 @@
                 <button
                   type="button"
                   class="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-[#001d4c]"
+                  @click="selectedClient = client"
                 >
                   <Eye :size="16" />
                 </button>
@@ -146,6 +147,13 @@
         {{ filteredClients.length }} record{{ filteredClients.length === 1 ? '' : 's' }}
       </div>
     </div>
+
+    <!-- Client Details Modal (eye icon) -->
+    <ClientDetailsModal
+      :client="selectedClient"
+      :is-open="selectedClient !== null"
+      @close="selectedClient = null"
+    />
   </div>
 </template>
 
@@ -154,11 +162,13 @@ import { computed, ref } from 'vue'
 import { Accessibility, CheckCircle2, Eye, Search, ShieldCheck, UserPlus, Users } from 'lucide-vue-next'
 import ClientCategoryBadge from '@/components/staff/ClientCategoryBadge.vue'
 import ClientStatusBadge from '@/components/staff/ClientStatusBadge.vue'
+import ClientDetailsModal from '@/components/staff/ClientDetailsModal.vue'
 import { dummyClients } from '@/data/dummyClients.js'
 
 const searchQuery = ref('')
 const categoryFilter = ref('All')
 const statusFilter = ref('All')
+const selectedClient = ref(null)
 
 const categoryOptions = ['Indigent', 'Senior Citizen', 'PWD', 'Solo Parent']
 

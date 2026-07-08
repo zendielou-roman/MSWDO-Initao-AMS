@@ -80,8 +80,8 @@
     },
     {
       clientId: 'C006',
-      name: 'Carlos Gonzales',
-      barangay: 'Manalo',
+      name: 'Eyrol Junio',
+      barangay: 'Tubigan',
       contact: '09671234567',
       category: 'PWD',
       dateRegistered: '2024-04-05',
@@ -141,8 +141,8 @@
     },
     {
       clientId: 'C010',
-      name: 'Eduardo Bautista',
-      barangay: 'Libertad',
+      name: 'Ben Calif Didato',
+      barangay: 'TagpacoG',
       contact: '09281112233',
       category: 'PWD',
       dateRegistered: '2024-05-30',
@@ -156,8 +156,8 @@
     },
     {
       clientId: 'C011',
-      name: 'Corazon Villareal',
-      barangay: 'Manalo',
+      name: 'Xarzha Bagares',
+      barangay: 'Tubigan',
       contact: '09391112233',
       category: 'Indigent',
       dateRegistered: '2024-06-11',
@@ -171,7 +171,7 @@
     },
     {
       clientId: 'C012',
-      name: 'Antonio Cruz',
+      name: 'Vince Codera',
       barangay: 'Gimangpang',
       contact: '09451112233',
       category: 'Solo Parent',
