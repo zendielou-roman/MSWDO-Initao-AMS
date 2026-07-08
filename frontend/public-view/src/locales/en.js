@@ -49,16 +49,16 @@ export default {
       aics: {
         title: 'AICS – Assistance to Individuals in Crisis Situations',
         desc: 'Immediate assistance for individuals and families experiencing crisis situations such as medical, burial, educational, and emergency needs.',
-        whoCanAvail: ['Residents of Initao facing urgent crisis situations', 'Indigent individuals and families needing immediate support'],
+        whoCanAvail: ['Residents facing urgent crisis situations', 'Indigent individuals and families needing immediate support'],
         benefits: ['Financial and material assistance', 'Referral to other support services', 'Case-based assessment and follow-up'],
         requirements: ['Valid government-issued ID', 'Barangay certification or referral', 'Supporting documents based on the case'],
         process: [
           { title: 'Assessment', body: 'A social worker evaluates the situation and the type of support needed.' },
           { title: 'Documentation', body: 'The applicant submits the required documents for verification.' },
-          { title: 'Approval', body: 'MSWDO reviews the case and determines the assistance to be released.' },
+          { title: 'Approval', body: 'An employee reviews the case and determines the assistance to be released.' },
           { title: 'Release', body: 'Approved support is released through the appropriate channel.' },
         ],
-        processingTime: 'Usually within a few working days depending on the case.',
+        processingTime: 'Immediate release or usually within a few working days depending on the case.',
         legalBasis: 'DSWD AICS Program Guidelines',
       },
       elderly: {
@@ -232,8 +232,8 @@ export default {
       },
     },
     detail: {
-      whoCanAvail: 'Who Can Avail',
-      whatYouGet: 'What You Get',
+      whoCanAvail: 'Who can avail',
+      whatYouGet: 'What you get',
       requirements: 'Requirements',
       howToApply: 'How to Apply',
       processingTime: 'Processing Time',
@@ -293,6 +293,7 @@ export default {
     },
   },
   footer: {
+    tagline: 'Serving the constituents of Initao, Misamis Oriental with compassion, integrity, and professionalism in social welfare service delivery.',
     contactTitle: 'Contact Information',
     hoursTitle: 'Office Hours',
     hoursValue: 'Monday – Friday, 8:00 AM – 5:00 PM',

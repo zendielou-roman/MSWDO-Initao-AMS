@@ -30,7 +30,7 @@ export const services = [
     slug: 'aics',
     icon: Heart,
     tone: 'rose',
-    category: 'health',
+    category: 'emergency-assistance',
     title: 'AICS – Assistance to Individuals in Crisis Situations',
     desc: 'Immediate assistance for individuals and families experiencing crisis situations such as medical, burial, educational, and emergency needs.',
     titleKey: 'services.items.aics.title',
@@ -63,7 +63,7 @@ export const services = [
     slug: 'social-services-elderly',
     icon: Star,
     tone: 'gold',
-    category: 'health',
+    category: 'senior-citizens',
     title: 'Social Services for the Elderly',
     desc: 'Programs that promote the welfare, protection, and well-being of senior citizens in the community.',
     titleKey: 'services.items.elderly.title',
@@ -95,7 +95,7 @@ export const services = [
     slug: 'women-welfare-program',
     icon: Users,
     tone: 'slate',
-    category: 'health',
+    category: 'womens-services',
     title: 'Women Welfare Program',
     desc: 'Support services for women in need, including counseling, referral, and protection services.',
     titleKey: 'services.items.womenWelfare.title',
@@ -127,7 +127,7 @@ export const services = [
     slug: 'juvenile-justice-welfare',
     icon: Smile,
     tone: 'blue',
-    category: 'health',
+    category: ['justice-and-rehabilitation', 'children-and-youth'],
     title: 'Juvenile Justice Welfare Program',
     desc: 'Intervention and welfare services for children and youth involved in legal or social conflict.',
     titleKey: 'services.items.juvenileJustice.title',
@@ -159,7 +159,7 @@ export const services = [
     slug: 'youth-welfare-development',
     icon: HandHeart,
     tone: 'rose',
-    category: 'health',
+    category: 'children-and-youth',
     title: 'Youth Welfare Development Program',
     desc: 'Programs focused on the welfare, development, and empowerment of young people in the community.',
     titleKey: 'services.items.youthWelfare.title',
@@ -191,7 +191,7 @@ export const services = [
     slug: 'sustainable-livelihood-program',
     icon: Briefcase,
     tone: 'blue',
-    category: 'livelihood',
+    category: 'livelihood-assistance',
     title: 'Sustainable Livelihood Program',
     desc: 'Skills training and livelihood support to help families create or improve income opportunities.',
     titleKey: 'services.items.sustainableLivelihood.title',
@@ -224,7 +224,7 @@ export const services = [
     slug: 'pwd-services',
     icon: Accessibility,
     tone: 'rose',
-    category: 'pwd',
+    category: 'persons-with-disabilities',
     title: 'PWD Services',
     desc: 'Services for persons with disability including registration, assistance, and access to benefits.',
     titleKey: 'services.items.pwdServices.title',
@@ -256,7 +256,7 @@ export const services = [
     slug: 'children-with-disability-services',
     icon: UserRound,
     tone: 'gold',
-    category: 'pwd',
+    category: ['persons-with-disabilities', 'children-and-youth'],
     title: 'Children with Disability Services',
     desc: 'Support services for children with disabilities and their families.',
     titleKey: 'services.items.childrenDisability.title',
@@ -288,7 +288,7 @@ export const services = [
     slug: 'eccdp',
     icon: Heart,
     tone: 'rose',
-    category: 'health',
+    category: ['children-and-youth', 'family-services'],
     title: 'ECCDP – Early Childhood Care and Development Program',
     desc: 'Programs focused on the early care, development, and well-being of young children.',
     titleKey: 'services.items.eccdp.title',
@@ -320,7 +320,7 @@ export const services = [
     slug: 'family-development-service',
     icon: Users,
     tone: 'slate',
-    category: 'health',
+    category: 'family-services',
     title: 'Family Development Service',
     desc: 'Support services aimed at strengthening families and improving community well-being.',
     titleKey: 'services.items.familyDevelopment.title',
@@ -352,7 +352,7 @@ export const services = [
     slug: 'parole-and-probation',
     icon: Smile,
     tone: 'blue',
-    category: 'health',
+    category: 'justice-and-rehabilitation',
     title: 'Parole and Probation Program',
     desc: 'Welfare and support services for clients under parole or probation supervision.',
     titleKey: 'services.items.paroleProbation.title',
@@ -384,7 +384,7 @@ export const services = [
     slug: 'pre-marriage-orientation',
     icon: Heart,
     tone: 'rose',
-    category: 'health',
+    category: 'family-services',
     title: 'Pre-marriage Orientation and Counseling',
     desc: 'Guidance and counseling services to help couples prepare for marriage and family life.',
     titleKey: 'services.items.preMarriage.title',
@@ -416,7 +416,7 @@ export const services = [
     slug: 'solo-parent-welfare-program',
     icon: HandHeart,
     tone: 'gold',
-    category: 'livelihood',
+    category: ['family-services', 'livelihood-assistance'],
     title: 'Solo-parent Welfare Program',
     desc: 'Support services and privileges for solo parents to help them provide for their children and family.',
     titleKey: 'services.items.soloParent.title',
@@ -456,33 +456,33 @@ function getTranslatedDetailValue(service, t, field, fallback) {
   return typeof value === 'string' ? value : fallback
 }
 
-function getTranslatedDetailArray(service, t, field, fallback) {
+function getTranslatedDetailArray(service, tm, field, fallback) {
   if (!service.detailKeyPrefix) return fallback
-  const value = t(`${service.detailKeyPrefix}.${field}`, { defaultValue: fallback })
-  return Array.isArray(value) ? value : fallback
+  const value = tm(`${service.detailKeyPrefix}.${field}`)
+  return Array.isArray(value) && value.length > 0 ? value : fallback
 }
 
-function getTranslatedProcess(service, t, fallback) {
+function getTranslatedProcess(service, tm, fallback) {
   if (!service.detailKeyPrefix) return fallback
-  const value = t(`${service.detailKeyPrefix}.process`, { defaultValue: fallback })
-  return Array.isArray(value) ? value : fallback
+  const value = tm(`${service.detailKeyPrefix}.process`)
+  return Array.isArray(value) && value.length > 0 ? value : fallback
 }
 
-export function getTranslatedServices(t) {
+export function getTranslatedServices(t, tm) {
   return services.map((service) => ({
     ...service,
     title: t(service.titleKey, { defaultValue: service.title }),
     desc: t(service.descKey, { defaultValue: service.desc }),
-    whoCanAvail: getTranslatedDetailArray(service, t, 'whoCanAvail', service.whoCanAvail),
-    benefits: getTranslatedDetailArray(service, t, 'benefits', service.benefits),
-    requirements: getTranslatedDetailArray(service, t, 'requirements', service.requirements),
-    process: getTranslatedProcess(service, t, service.process),
+    whoCanAvail: getTranslatedDetailArray(service, tm, 'whoCanAvail', service.whoCanAvail),
+    benefits: getTranslatedDetailArray(service, tm, 'benefits', service.benefits),
+    requirements: getTranslatedDetailArray(service, tm, 'requirements', service.requirements),
+    process: getTranslatedProcess(service, tm, service.process),
     processingTime: getTranslatedDetailValue(service, t, 'processingTime', service.processingTime),
     legalBasis: getTranslatedDetailValue(service, t, 'legalBasis', service.legalBasis),
   }))
 }
 
-export function getTranslatedServiceBySlug(slug, t) {
+export function getTranslatedServiceBySlug(slug, t, tm) {
   const service = services.find((s) => s.slug === slug)
   if (!service) return null
 
@@ -490,10 +490,10 @@ export function getTranslatedServiceBySlug(slug, t) {
     ...service,
     title: t(service.titleKey, { defaultValue: service.title }),
     desc: t(service.descKey, { defaultValue: service.desc }),
-    whoCanAvail: getTranslatedDetailArray(service, t, 'whoCanAvail', service.whoCanAvail),
-    benefits: getTranslatedDetailArray(service, t, 'benefits', service.benefits),
-    requirements: getTranslatedDetailArray(service, t, 'requirements', service.requirements),
-    process: getTranslatedProcess(service, t, service.process),
+    whoCanAvail: getTranslatedDetailArray(service, tm, 'whoCanAvail', service.whoCanAvail),
+    benefits: getTranslatedDetailArray(service, tm, 'benefits', service.benefits),
+    requirements: getTranslatedDetailArray(service, tm, 'requirements', service.requirements),
+    process: getTranslatedProcess(service, tm, service.process),
     processingTime: getTranslatedDetailValue(service, t, 'processingTime', service.processingTime),
     legalBasis: getTranslatedDetailValue(service, t, 'legalBasis', service.legalBasis),
   }

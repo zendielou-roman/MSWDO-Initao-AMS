@@ -134,7 +134,7 @@ onBeforeUnmount(() => {
 <template>
   <div class="sticky top-0 z-[100] bg-[#e9ebee] px-8 pt-[0.9rem] pb-[0.4rem]">
     <nav
-      class="flex flex-wrap items-center justify-between bg-white rounded-[16px] px-[1.6rem] py-[0.55rem] shadow-[0_6px_18px_rgba(0,0,0,0.1)]"
+      class="flex flex-wrap items-center justify-between bg-white rounded-[16px] px-[1.6rem] py-[0.55rem] shadow-[0_6px_18px_rgba(0,0,0,0.1)] max-md:flex-col max-md:gap-3 max-md:rounded-2xl max-md:mx-4"
     >
       <div class="flex items-center gap-[1.1rem]">
         <img :src="sealLogo" alt="MSWDO seal" class="w-[50px] h-[50px] object-contain shrink-0" />
@@ -162,10 +162,21 @@ onBeforeUnmount(() => {
               />
             </a>
 
+            <!-- SERVICES dropdown (scrollable) -->
             <div
               v-if="link.label === 'nav.services'"
-              class="dropdown-panel"
-              :class="{ show: openMenu === 'nav.services' }"
+              class="absolute top-full left-0 mt-3.5 w-[270px] bg-white rounded-xl shadow-xl p-2 z-30 transition-all duration-150 ease-out
+                     before:content-[''] before:absolute before:-top-[7px] before:left-[26px] before:w-3.5 before:h-3.5 before:bg-white before:rotate-45 before:shadow-[-2px_-2px_5px_rgba(31,58,99,0.05)]
+                     max-h-[420px] max-md:max-h-[60vh] max-md:w-[90vw] max-md:left-1/2 max-md:-translate-x-1/2 overflow-y-auto overscroll-contain
+                     [scrollbar-width:thin] [scrollbar-color:#c7d2e1_transparent]
+                     [&::-webkit-scrollbar]:w-1.5
+                     [&::-webkit-scrollbar-track]:bg-transparent
+                     [&::-webkit-scrollbar-thumb]:bg-[#c7d2e1]
+                     [&::-webkit-scrollbar-thumb]:rounded-full
+                     [&::-webkit-scrollbar-thumb]:hover:bg-[#9fb3cf]"
+              :class="openMenu === 'nav.services'
+                ? 'opacity-100 visible pointer-events-auto translate-y-0'
+                : 'opacity-0 invisible pointer-events-none translate-y-2'"
               @mouseenter="openDropdown('nav.services')"
               @mouseleave="scheduleClose()"
             >
@@ -173,7 +184,7 @@ onBeforeUnmount(() => {
                 v-for="s in services"
                 :key="s.slug"
                 :to="`/services/${s.slug}`"
-                class="dropdown-row"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg no-underline text-[#1f3a63] transition-colors hover:bg-gray-100 border-none"
                 @click="openMenu = null"
               >
                 <component :is="s.icon" :size="18" class="text-[#45506a] shrink-0" />
@@ -183,10 +194,15 @@ onBeforeUnmount(() => {
               </router-link>
             </div>
 
+            <!-- CHARTER dropdown (fixed, no scroll) -->
             <div
               v-if="link.hasDropdown && link.label !== 'nav.services' && link.label !== 'nav.about'"
-              class="dropdown-panel"
-              :class="{ show: openMenu === link.label }"
+              class="absolute top-full left-0 mt-3.5 w-[270px] bg-white rounded-xl shadow-xl p-2 z-30 transition-all duration-150 ease-out
+                     before:content-[''] before:absolute before:-top-[7px] before:left-[26px] before:w-3.5 before:h-3.5 before:bg-white before:rotate-45 before:shadow-[-2px_-2px_5px_rgba(31,58,99,0.05)]
+                     max-md:w-[90vw] max-md:left-1/2 max-md:-translate-x-1/2"
+              :class="openMenu === link.label
+                ? 'opacity-100 visible pointer-events-auto translate-y-0'
+                : 'opacity-0 invisible pointer-events-none translate-y-2'"
               @mouseenter="openDropdown(link.label)"
               @mouseleave="scheduleClose()"
             >
@@ -194,10 +210,9 @@ onBeforeUnmount(() => {
                 v-for="c in charterMenu"
                 :key="c.title"
                 href="#charter"
-                class="dropdown-row"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg no-underline text-[#1f3a63] transition-colors hover:bg-gray-100 border-none"
                 @click.prevent="goToSection('charter', link.label)"
               >
-              
                 <component
                   :is="c.icon"
                   :size="18"
@@ -282,34 +297,3 @@ onBeforeUnmount(() => {
     </nav>
   </div>
 </template>
-
-<style scoped>
-@reference "tailwindcss";
-
-.dropdown-panel {
-  @apply absolute top-full left-0 mt-3.5 w-[270px] bg-white rounded-xl shadow-xl p-2
-         opacity-0 invisible pointer-events-none translate-y-2
-         transition-all duration-150 ease-out z-30;
-}
-.dropdown-panel.show {
-  @apply opacity-100 visible pointer-events-auto translate-y-0;
-}
-.dropdown-panel::before {
-  content: '';
-  @apply absolute -top-[7px] left-[26px] w-3.5 h-3.5 bg-white rotate-45 shadow-[-2px_-2px_5px_rgba(31,58,99,0.05)];
-}
-.dropdown-row {
-  @apply flex items-center gap-3 px-3 py-2.5 rounded-lg no-underline text-[#1f3a63] transition-colors
-         hover:bg-gray-100;
-  border: none !important;
-}
-
-@media (max-width: 768px) {
-  nav {
-    @apply flex-col gap-3 rounded-2xl mx-4;
-  }
-  .dropdown-panel {
-    @apply w-[90vw] left-1/2 -translate-x-1/2;
-  }
-}
-</style>

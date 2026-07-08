@@ -6,7 +6,7 @@ import SectionHeader from '@/components/SectionHeading.vue'
 import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import { getTranslatedServices, iconTone } from '@/data/services.js'
 
-const { t } = useI18n()
+const { t, tm } = useI18n()
 
 /* The filter tabs shown above the cards.
    `key` is matched against each service's `category`. */
@@ -23,7 +23,7 @@ const filters = computed(() => [
 ])
 
 const activeFilter = ref('all')
-const localizedServices = computed(() => getTranslatedServices(t))
+const localizedServices = computed(() => getTranslatedServices(t, tm))
 const currentPage = ref(0)
 const servicesPerPage = 8
 const filterTrack = ref(null)
@@ -60,7 +60,7 @@ onBeforeUnmount(() => {
 const visibleServices = computed(() =>
   activeFilter.value === 'all'
     ? localizedServices.value
-    : localizedServices.value.filter((s) => s.category === activeFilter.value),
+    : localizedServices.value.filter((s) => s.category.includes(activeFilter.value)),
 )
 
 const totalPages = computed(() => Math.max(1, Math.ceil(visibleServices.value.length / servicesPerPage)))
