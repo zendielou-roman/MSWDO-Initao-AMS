@@ -19,12 +19,24 @@ import {
   ChevronUp,
   AwardIcon,
   Award,
+  X,
 } from 'lucide-vue-next'
 
 const showAll = ref(false) // false = collapsed (one row only)
 
 // show only the first 3 (one row) until "Show more" is clicked
 const visibleAwards = computed(() => (showAll.value ? awards : awards.slice(0, 3)))
+
+// ===== MODAL STATE =====
+const selectedAward = ref(null) // holds the award object currently shown in the modal
+
+function openModal(award) {
+  selectedAward.value = award
+}
+
+function closeModal() {
+  selectedAward.value = null
+}
 
 // "By the Numbers" — top stat strip
 const stats = [
@@ -174,6 +186,7 @@ const awards = [
 
               <!-- "Read more" pushed to the bottom of every card -->
               <button
+                @click="openModal(award)"
                 class="mt-auto pt-3 inline-flex items-center gap-1 text-amber-400 text-sm font-semibold opacity-0 group-hover:opacity-100 transition self-start"
               >
                 Read more
@@ -196,5 +209,67 @@ const awards = [
         </div>
       </div>
     </div>
+
+    <!-- ===== READ MORE MODAL ===== -->
+    <Teleport to="body">
+      <Transition
+        enter-active-class="transition duration-200 ease-out"
+        enter-from-class="opacity-0"
+        enter-to-class="opacity-100"
+        leave-active-class="transition duration-150 ease-in"
+        leave-from-class="opacity-100"
+        leave-to-class="opacity-0"
+      >
+        <div
+          v-if="selectedAward"
+          class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
+          @click.self="closeModal"
+        >
+          <div
+            class="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden text-left"
+          >
+            <!-- X close button, floats over the image -->
+            <button
+              @click="closeModal"
+              aria-label="Close"
+              class="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white/90 text-slate-700 hover:bg-white transition"
+            >
+              <X class="w-4 h-4" />
+            </button>
+
+            <!-- Photo banner with year badge -->
+            <div class="relative h-48 sm:h-56 overflow-hidden shrink-0">
+              <img
+                :src="selectedAward.img"
+                :alt="selectedAward.title"
+                class="w-full h-full object-cover"
+              />
+              <span
+                class="absolute top-3 left-3 bg-amber-400 text-[#16245a] text-xs font-bold rounded-full px-2.5 py-0.5"
+              >
+                {{ selectedAward.year }}
+              </span>
+            </div>
+
+            <!-- Text body -->
+            <div class="p-6">
+              <h3 class="text-lg font-bold text-slate-900 mb-3">{{ selectedAward.title }}</h3>
+              <p class="text-slate-600 text-sm leading-relaxed text-justify hyphens-auto">
+                {{ selectedAward.desc }}
+              </p>
+
+              <div class="mt-6 flex justify-end">
+                <button
+                  @click="closeModal"
+                  class="rounded-lg bg-[#16245a] text-white text-sm font-semibold px-5 py-2.5 hover:bg-[#1e3a6e] transition"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </section>
 </template>

@@ -3,58 +3,55 @@
      Two parts:
      1) charterItems  -> the small "service standards" cards (top row)
      2) services      -> the detailed service cards (navy header + Requirements/Process)
-                         this is the new block that replaces the old duplicated row. */
+     Now fully translated via i18n (charter.* keys in en.js / tl.js). */
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { ShieldCheck, Clock, FileText, Globe, BadgeCheck, CheckCircle2 } from 'lucide-vue-next'
 import SectionHeader from '@/components/SectionHeading.vue'
-/* ---- TOP STANDARDS CARDS ----
-     NOTE: the duplicates are gone — only the 4 unique cards remain. */
-const charterItems = [
+
+const { t, tm } = useI18n()
+
+/* ---- TOP STANDARDS CARDS ---- */
+const charterItems = computed(() => [
   {
     icon: ShieldCheck,
-    title: 'Service Commitment',
-    text: 'We commit to deliver services within the prescribed processing time and ensure that every client is treated with dignity and respect.',
+    title: t('charter.standards.commitment.title'),
+    text: t('charter.standards.commitment.text'),
     featured: false,
   },
   {
     icon: Clock,
-    title: 'Processing Time',
-    text: 'Simple transactions: 3 working days. Complex transactions: 7 working days. Highly technical: 20 working days.',
+    title: t('charter.standards.processingTime.title'),
+    text: t('charter.standards.processingTime.text'),
     featured: false,
   },
   {
     icon: FileText,
-    title: 'Documentary Requirements',
-    text: 'Only required documents per DILG and DSWD guidelines are requested. No additional documents beyond what is prescribed by law.',
+    title: t('charter.standards.documentary.title'),
+    text: t('charter.standards.documentary.text'),
     featured: true,
   },
   {
     icon: Globe,
-    title: 'Zero Contact Policy',
-    text: 'Our office strictly adheres to the Zero Contact Policy. Frontline staff are prohibited from soliciting gifts or other considerations.',
+    title: t('charter.standards.zeroContact.title'),
+    text: t('charter.standards.zeroContact.text'),
     featured: false,
   },
-]
+])
 
-const services = [
-  {
-    no: '01',
-    title: 'Issuance of PWD Identification Card',
-    time: '1 working day',
-    fee: 'Free of charge',
-    requirements: [
-      'Accomplished PWD application form',
-      'Medical certificate stating the type of disability',
-      '2 pcs. 1×1 ID picture',
-      'Barangay certificate of residency',
-    ],
-    process: [
-      'Submit complete requirements at the MSWDO PDAO desk',
-      'Validation and encoding by PDAO focal person',
-      'Approval and signature of the MSWDO head',
-      'Release of PWD ID and purchase booklet',
-    ],
-  },
-]
+/* ---- DETAILED SERVICE CARDS ---- */
+const serviceKeys = ['scsr', 'indigency', 'assistance', 'pmoc', 'counseling']
+
+const services = computed(() =>
+  serviceKeys.map((key, i) => ({
+    no: String(i + 1).padStart(2, '0'),
+    title: t(`charter.services.${key}.title`),
+    time: t(`charter.services.${key}.time`),
+    fee: t(`charter.services.${key}.fee`),
+    requirements: tm(`charter.services.${key}.requirements`) || [],
+    process: tm(`charter.services.${key}.process`) || [],
+  }))
+)
 
 function openCharter() {
   window.open('/citizens-charter.pdf', '_blank')
@@ -68,9 +65,9 @@ function openCharter() {
   >
     <div id="charter">
       <SectionHeader
-        eyebrow="SERVICE STANDARDS"
-        title="CITIZEN'S CHARTER"
-        subtitle="Our commitment to deliver quality, efficient, and responsive social welfare services to every Filipino in Initao."
+        :eyebrow="t('charter.section.eyebrow')"
+        :title="t('charter.section.title')"
+        :subtitle="t('charter.section.subtitle')"
       />
 
       <!-- ===== TOP STANDARDS GRID (4 cards) ===== -->
@@ -100,14 +97,13 @@ function openCharter() {
       </div>
     </div>
 
-    <!-- ===== DETAILED SERVICE CARDS (new block) ===== -->
+    <!-- ===== DETAILED SERVICE CARDS ===== -->
     <div class="max-w-[1180px] mx-auto mb-10 flex flex-col gap-6">
       <article
         v-for="(svc, i) in services"
         :key="i"
         class="bg-white rounded-[14px] overflow-hidden shadow-[0_10px_28px_rgba(31,58,99,0.08)] text-left"
       >
-        <!-- NAVY HEADER BAR -->
         <header
           class="flex items-center justify-between gap-4 bg-[#16284a] px-[1.6rem] py-[1.1rem] flex-wrap max-[600px]:flex-col max-[600px]:items-start"
         >
@@ -115,7 +111,6 @@ function openCharter() {
             <span class="text-[#e0b13a] font-extrabold">{{ svc.no }}</span>
             {{ svc.title }}
           </h3>
-          <!-- time + fee meta on the right -->
           <div class="flex items-center gap-6">
             <span
               class="inline-flex items-center gap-[0.4rem] text-white text-[0.9rem] [&_svg]:text-[#e0b13a]"
@@ -128,16 +123,14 @@ function openCharter() {
           </div>
         </header>
 
-        <!-- TWO-COLUMN BODY -->
         <div
           class="grid grid-cols-2 gap-0 px-[1.8rem] py-[1.6rem] max-[900px]:grid-cols-1 max-[900px]:gap-6"
         >
-          <!-- LEFT: REQUIREMENTS -->
           <div
             class="px-6 border-r border-[#e6ebf3] max-[900px]:border-r-0 max-[900px]:border-b max-[900px]:pb-6"
           >
             <p class="text-[#2a5caa] text-[0.8rem] font-extrabold tracking-[2px] mb-4">
-              REQUIREMENTS
+              {{ t('charter.detail.requirementsLabel') }}
             </p>
             <ul class="list-none m-0 p-0">
               <li
@@ -151,9 +144,8 @@ function openCharter() {
             </ul>
           </div>
 
-          <!-- RIGHT: PROCESS -->
           <div class="px-6">
-            <p class="text-[#2a5caa] text-[0.8rem] font-extrabold tracking-[2px] mb-4">PROCESS</p>
+           <p class="text-[#2a5caa] text-[0.8rem] font-extrabold tracking-[2px] mb-4">{{ t('charter.detail.processLabel') }}</p>
             <ol class="list-none m-0 p-0">
               <li
                 v-for="(step, s) in svc.process"
@@ -179,12 +171,10 @@ function openCharter() {
       <div>
         <p class="flex items-center gap-2 text-[#d4a526] font-bold text-[0.95rem] mb-[0.4rem]">
           <BadgeCheck :size="18" class="text-[#d4a526]" />
-          Anti-Red Tape Authority (ARTA) Compliance
+          {{ t('charter.arta.title') }}
         </p>
         <p class="text-[#d6ddea] text-[0.83rem] leading-[1.5] m-0 max-w-[760px]">
-          In compliance with R.A. 11032 (Ease of Doing Business and Efficient Government Service
-          Delivery Act), this office ensures that all frontline services are delivered promptly,
-          courteously, and without undue burden to our clients.
+          {{ t('charter.arta.description') }}
         </p>
       </div>
       <button
@@ -192,7 +182,7 @@ function openCharter() {
         @click="openCharter"
       >
         <FileText :size="16" />
-        View Full Charter
+        {{ t('charter.arta.viewFullCharter') }}
       </button>
     </div>
   </section>
