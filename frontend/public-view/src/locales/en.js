@@ -8,19 +8,22 @@ export default {
     about: 'ABOUT US',
     contact: 'CONTACT US',
   },
+
   search: {
     placeholder: 'Search',
     noResults: 'No results found for',
   },
+
   hero: {
     eyebrow: 'WELCOME TO MSWDO INITAO',
     heading: 'Empowering Communities Through Responsive Social Welfare Services',
-    description:
-      'The Municipal Social Welfare and Development Office (MSWDO) of Initao, Misamis Oriental is dedicated to enhancing the well-being of our community through comprehensive social services. Our office is committed to empowering individuals and families, promoting social justice, and fostering sustainable development. We strive to create a supportive environment where every member of our community can thrive and reach their full potential.',
+    description:'The Municipal Social Welfare and Development Office (MSWDO) of Initao, Misamis Oriental is dedicated to enhancing the well-being of our community through comprehensive social services. Our office is committed to empowering individuals and families, promoting social justice, and fostering sustainable development. We strive to create a supportive environment where every member of our community can thrive and reach their full potential.',
+    
     cta: {
       primary: 'Explore Services',
       secondary: 'Learn More',
     },
+
     stats: {
       beneficiaries: 'Beneficiaries Served',
       programs: 'Active Programs',
@@ -28,7 +31,9 @@ export default {
       years: 'Years of Service',
     },
   },
+
   services: {
+
     filters: {
       all: 'ALL',
       familyServices: 'FAMILY SERVICES',
@@ -40,27 +45,31 @@ export default {
       emergencyAssistance: 'EMERGENCY ASSISTANCE',
       justiceAndRehabilitation: 'JUSTICE AND REHABILITATION',
     },
+
     section: {
       eyebrow: 'WHAT WE DO',
       title: 'Social Welfare Services',
       subtitle: 'Programs and Services designed to support and uplift the most vulnerable sectors in our community.',
     },
+
     items: {
+
       aics: {
         title: 'AICS – Assistance to Individuals in Crisis Situations',
         desc: 'Immediate assistance for individuals and families experiencing crisis situations such as medical, burial, educational, and emergency needs.',
-        whoCanAvail: ['Residents of Initao facing urgent crisis situations', 'Indigent individuals and families needing immediate support'],
+        whoCanAvail: ['Residents facing urgent crisis situations', 'Indigent individuals and families needing immediate support'],
         benefits: ['Financial and material assistance', 'Referral to other support services', 'Case-based assessment and follow-up'],
         requirements: ['Valid government-issued ID', 'Barangay certification or referral', 'Supporting documents based on the case'],
         process: [
           { title: 'Assessment', body: 'A social worker evaluates the situation and the type of support needed.' },
           { title: 'Documentation', body: 'The applicant submits the required documents for verification.' },
-          { title: 'Approval', body: 'MSWDO reviews the case and determines the assistance to be released.' },
+          { title: 'Approval', body: 'An employee reviews the case and determines the assistance to be released.' },
           { title: 'Release', body: 'Approved support is released through the appropriate channel.' },
         ],
-        processingTime: 'Usually within a few working days depending on the case.',
+        processingTime: 'Immediate release or usually within a few working days depending on the case.',
         legalBasis: 'DSWD AICS Program Guidelines',
       },
+
       elderly: {
         title: 'Social Services for the Elderly',
         desc: 'Programs that promote the welfare, protection, and well-being of senior citizens in the community.',
@@ -69,15 +78,16 @@ export default {
         requirements: ['Valid ID or proof of age', 'Barangay certification or residency record', 'Supporting documents if needed for specific assistance'],
         process: [
           { title: 'Intake', body: 'The client submits a request for assistance at the office.' },
-          { title: 'Assessment', body: 'MSWDO reviews the client’s needs and eligibility.' },
+          { title: 'Assessment', body: 'An employee reviews the client’s needs and eligibility.' },
           { title: 'Referral', body: 'The client is referred to the appropriate service or program.' },
         ],
         processingTime: 'Processing time depends on the type of service requested.',
         legalBasis: 'Republic Act No. 9994',
       },
+
       womenWelfare: {
         title: 'Women Welfare Program',
-        desc: 'Support services for women in need, including counseling, referral, and protection services.',
+        desc: 'Support services for women in need, including counseling, referral, livelihood programs, and protection services.',
         whoCanAvail: ['Women in need of social support', 'Women and families affected by abuse or crisis'],
         benefits: ['Counseling and case management', 'Referral to legal and medical support', 'Protection and follow-up assistance'],
         requirements: ['Initial report or referral', 'Valid ID if available', 'Additional documents depending on the case'],
@@ -89,6 +99,7 @@ export default {
         processingTime: 'Immediate response for urgent cases.',
         legalBasis: 'Republic Act No. 9262',
       },
+
       juvenileJustice: {
         title: 'Juvenile Justice Welfare Program',
         desc: 'Intervention and welfare services for children and youth involved in legal or social conflict.',
@@ -103,6 +114,7 @@ export default {
         processingTime: 'Processed based on urgency and case requirements.',
         legalBasis: 'Republic Act No. 9344',
       },
+
       youthWelfare: {
         title: 'Youth Welfare Development Program',
         desc: 'Programs focused on the welfare, development, and empowerment of young people in the community.',
@@ -117,6 +129,7 @@ export default {
         processingTime: 'Depends on the available activity or program schedule.',
         legalBasis: 'Local youth welfare and development mandates',
       },
+
       sustainableLivelihood: {
         title: 'Sustainable Livelihood Program',
         desc: 'Skills training and livelihood support to help families create or improve income opportunities.',
@@ -132,6 +145,7 @@ export default {
         processingTime: 'Depends on the training schedule and project readiness.',
         legalBasis: 'DSWD Sustainable Livelihood Program Guidelines',
       },
+
       pwdServices: {
         title: 'PWD Services',
         desc: 'Services for persons with disability including registration, assistance, and access to benefits.',
@@ -146,6 +160,7 @@ export default {
         processingTime: 'Usually completed within a few working days.',
         legalBasis: 'R.A. 10754',
       },
+
       childrenDisability: {
         title: 'Children with Disability Services',
         desc: 'Support services for children with disabilities and their families.',
@@ -160,6 +175,7 @@ export default {
         processingTime: 'Depends on the availability of assessment and referrals.',
         legalBasis: 'PWD and child welfare laws',
       },
+
       eccdp: {
         title: 'ECCDP – Early Childhood Care and Development Program',
         desc: 'Programs focused on the early care, development, and well-being of young children.',
@@ -174,6 +190,7 @@ export default {
         processingTime: 'Depends on the available service schedule.',
         legalBasis: 'Early childhood development policies',
       },
+
       familyDevelopment: {
         title: 'Family Development Service',
         desc: 'Support services aimed at strengthening families and improving community well-being.',
@@ -188,6 +205,7 @@ export default {
         processingTime: 'Varies depending on the service requested.',
         legalBasis: 'Family welfare and development policies',
       },
+
       paroleProbation: {
         title: 'Parole and Probation Program',
         desc: 'Welfare and support services for clients under parole or probation supervision.',
@@ -202,6 +220,7 @@ export default {
         processingTime: 'Depends on the client’s case and available support services.',
         legalBasis: 'Parole and probation administration guidelines',
       },
+
       preMarriage: {
         title: 'Pre-marriage Orientation and Counseling',
         desc: 'Guidance and counseling services to help couples prepare for marriage and family life.',
@@ -216,6 +235,7 @@ export default {
         processingTime: 'Scheduled based on available counseling sessions.',
         legalBasis: 'Family and marriage counseling services',
       },
+
       soloParent: {
         title: 'Solo-parent Welfare Program',
         desc: 'Support services and privileges for solo parents to help them provide for their children and family.',
@@ -231,9 +251,10 @@ export default {
         legalBasis: 'R.A. 8972',
       },
     },
+
     detail: {
-      whoCanAvail: 'Who Can Avail',
-      whatYouGet: 'What You Get',
+      whoCanAvail: 'Who can avail',
+      whatYouGet: 'What you get',
       requirements: 'Requirements',
       howToApply: 'How to Apply',
       processingTime: 'Processing Time',
@@ -244,16 +265,140 @@ export default {
       notFoundTitle: 'Service not found',
       notFoundDesc: "The service you're looking for doesn't exist or may have been moved.",
     },
+
     card: {
       learnMore: 'Learn more',
     },
   },
+
+  charter: {
+    section: {
+      eyebrow: 'SERVICE STANDARDS',
+      title: "CITIZEN'S CHARTER",
+      subtitle: 'Our commitment to deliver quality, efficient, and responsive social welfare services to every Filipino in Initao.',
+    },
+    standards: {
+      commitment: {
+        title: 'Service Commitment',
+        text: 'We commit to deliver services within the prescribed processing time and ensure that every client is treated with dignity and respect.',
+      },
+      processingTime: {
+        title: 'Processing Time',
+        text: 'Simple transactions: 3 working days. Complex transactions: 7 working days. Highly technical: 20 working days.',
+      },
+      documentary: {
+        title: 'Documentary Requirements',
+        text: 'Only required documents per DILG and DSWD guidelines are requested. No additional documents beyond what is prescribed by law.',
+      },
+      zeroContact: {
+        title: 'Zero Contact Policy',
+        text: 'Our office strictly adheres to the Zero Contact Policy. Frontline staff are prohibited from soliciting gifts or other considerations.',
+      },
+    },
+    services: {
+      scsr: {
+        title: 'Issuance of Social Case Study Report',
+        time: '1 working day',
+        fee: 'Free of charge',
+        requirements: [
+          'Barangay Certification',
+          "Municipal Assessor's Certification",
+          'Community Tax Certificate (Cedula)',
+          'Intake Form',
+          'SCSR Request',
+          'Medical Abstract / Hospital Bill',
+        ],
+        process: [
+          'Registration, the client writes his/her name in a logbook.',
+          'Interview/Intake client, or nearest relative, who knows the client best, answers questions by the interviewer.',
+          'An employee conducts one-on-one interview with the client to get pertinent information. The result of the interview is written in an Intake Form.',
+          'Preparation of SCSR.',
+          'Client receives his/her copy of SCSR.',
+        ],
+      },
+      indigency: {
+        title: 'Issuance of Certificate of Indigency',
+        time: '1 working day',
+        fee: 'Free of charge',
+        requirements: [
+          'Barangay Certification',
+          "Municipal Assessor's Certification",
+          'Community Tax Certificate (Cedula)',
+        ],
+        process: [
+          'Registration, the client writes his/her name in a logbook.',
+          'Interview/Intake client, or nearest relative, who knows the client best, answers questions by the interviewer.',
+          'An employee conducts one-on-one interview with the client to get pertinent information. The result of the interview is written in an Intake Form.',
+          'Preparation of Certification.',
+          'Review and sign the certification.',
+          'Client receives his/her copy of certification.',
+        ],
+      },
+      assistance: {
+        title: 'Availment of Financial/Medical/Funeral Assistance',
+        time: '1 working day',
+        fee: 'Free of charge',
+        requirements: [
+          'Barangay Certification',
+          'Photocopy of Death Certificate',
+          'Identification Card',
+          'Proof of Assistance Needed',
+          'Intake Form',
+        ],
+        process: [
+          'Registration, the client writes his/her name in a logbook.',
+          'Interview/Intake client, or nearest relative, who knows the client best, answers questions by the interviewer.',
+          'An employee conducts one-on-one interview with the client to get pertinent information. The result of the interview is written in an Intake Form.',
+          'Preparation of assistance to be given with the approval of the Office Head',
+          'Client receives his/her assistance.',
+        ],
+      },
+      pmoc: {
+        title: 'Issuance of PMOC Certificate',
+        time: '1 working day',
+        fee: 'Minimal Fees',
+        requirements: [],
+        process: [
+          'Registration, the client writes his/her name in a logbook.',
+          'Fill-up Marriage Inventory Form',
+          'Report to scheduled date and time.',
+          'Conduct of PMOC.',
+          'Payment of PMOC Certificate',
+          'Preparation of Certificate',
+          'Couple receives the PMOC certificate.',
+        ],
+      },
+      counseling: {
+        title: 'Availment of Counseling/Consultation',
+        time: '1 working day',
+        fee: 'Free of charge',
+        requirements: ['Intake Form'],
+        process: [
+          'Registration, the client writes his/her name in a logbook.',
+          'Client is referred for counseling/consultation.',
+          'Conduct of counseling/consultation.',
+        ],
+      },
+    },
+    detail: {
+      requirementsLabel: 'REQUIREMENTS',
+      processLabel: 'PROCESS',
+    },
+    arta: {
+      title: 'Anti-Red Tape Authority (ARTA) Compliance',
+      description: 'In compliance with R.A. 11032 (Ease of Doing Business and Efficient Government Service Delivery Act), this office ensures that all frontline services are delivered promptly, courteously, and without undue burden to our clients.',
+      viewFullCharter: 'View Full Charter',
+    },
+  },
+
   about: {
+
     section: {
       eyebrow: 'WHO WE ARE',
       title: 'About the MSWDO',
       subtitle: 'The vision, mission, and legal mandates that guide our work in serving the people of Initao.',
     },
+
     vision: 'Empowered individuals, families and communities with improved quality of life, performing their expected roles and able to mobilize resources to meet their basic needs.',
     mission: 'To care, protect, rehabilitate, develop and integrate into mainstream the vulnerable and socially dysfunctional sectors of society.',
     visionLabel: 'Our Vision',
@@ -261,6 +406,7 @@ export default {
     mandatesLabel: 'Mandated By Law',
     mandatesTitle: 'Our Mandates',
   },
+
   contact: {
     section: {
       eyebrow: 'GET IN TOUCH',
@@ -292,7 +438,9 @@ export default {
       facebookText: 'facebook.com/mswdo.initao',
     },
   },
+
   footer: {
+    tagline: 'Serving the constituents of Initao, Misamis Oriental with compassion, integrity, and professionalism in social welfare service delivery.',
     contactTitle: 'Contact Information',
     hoursTitle: 'Office Hours',
     hoursValue: 'Monday – Friday, 8:00 AM – 5:00 PM',

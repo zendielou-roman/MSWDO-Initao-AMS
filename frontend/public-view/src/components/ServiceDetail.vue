@@ -7,11 +7,11 @@ import { ArrowLeft, CheckCircle2, Clock, FileText, ListChecks, MapPin, Scale } f
 
 const route = useRoute()
 const router = useRouter()
-const { t, locale } = useI18n()
+const { t, tm, locale } = useI18n()
 const service = ref(null)
 
 function loadService() {
-  service.value = getTranslatedServiceBySlug(route.params.slug, t)
+  service.value = getTranslatedServiceBySlug(route.params.slug, t, tm)
 }
 
 watch([() => route.params.slug, locale], loadService, { immediate: true })
@@ -191,7 +191,7 @@ async function goToContact() {
                   </p>
                 </div>
                 <p class="text-white/80 text-[0.85rem] leading-relaxed mb-4">
-                  MSWDO Office, Municipal Hall, Initao, Misamis Oriental
+                  MSWDO, Municipal Hall, Initao, Misamis Oriental
                 </p>
                 <a
                   href="#"
