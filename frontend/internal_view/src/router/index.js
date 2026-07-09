@@ -90,6 +90,36 @@ const router = createRouter({
       ],
     },
 
+    // ===================== OFFICER-IN-CHARGE SIDE =====================
+    {
+      path: '/oic',
+      component: () => import('@/layouts/OICLayout.vue'),
+      meta: { requiresAuth: true, allowedRoles: ['Officer-in-Charge'] },
+      children: [
+        {
+          path: '',
+          redirect: '/oic/dashboard',
+        },
+        {
+          path: 'dashboard',
+          name: 'oic-dashboard',
+          component: () => import('@/views/oic/OICDashboardView.vue'),
+          meta: { title: 'Dashboard' },
+        },
+        // NOTE: Clients & Beneficiaries / Assistance Management / Relief Operations /
+        // Donations Management / Reports are disabled in the OIC sidebar for now
+        // (their nav links have no href) until each page is built one at a time,
+        // same rollout pattern as the Staff side. Add their routes here when ready:
+        //
+        // {
+        //   path: 'clients-beneficiaries',
+        //   name: 'oic-clients-beneficiaries',
+        //   component: () => import('@/views/oic/ClientsBeneficiariesView.vue'),
+        //   meta: { title: 'Clients & Beneficiaries' },
+        // },
+      ],
+    },
+
     {
       path: '/:pathMatch(.*)*',
       redirect: '/login',
@@ -120,4 +150,4 @@ router.beforeEach((to) => {
   }
 })
 
-export default router 
+export default router
