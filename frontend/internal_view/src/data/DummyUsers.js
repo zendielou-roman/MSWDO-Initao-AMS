@@ -2,15 +2,19 @@
 // Dummy user records for the User Accounts page.
 // Roles reflect a typical MSWDO office structure — adjust freely once real roles are confirmed.
 
-export const roles = ['Administrator', 'Social Worker', 'Encoder']
-export const statuses = ['Active', 'Inactive']
-
-const ADMIN_ROLES = ['Administrator']
-
-  // Given a role, returns 'admin' or 'staff' — used by the auth store/router to decide
-  // which layout and default landing page a user gets after login.
+  export const roles = ['Administrator', 'Social Worker', 'Encoder', 'Officer-in-Charge']
+  export const statuses = ['Active', 'Inactive']
+  
+  export const ADMIN_ROLES = ['Administrator']
+  export const STAFF_ROLES = ['Social Worker', 'Encoder']
+  export const OIC_ROLES = ['Officer-in-Charge']
+  
+  // Given a role, returns 'admin', 'staff', or 'oic' — used by the auth store/router to
+  // decide which layout and default landing page a user gets after login.
   export function getUserSide(role) {
-    return ADMIN_ROLES.includes(role) ? 'admin' : 'staff'
+    if (ADMIN_ROLES.includes(role)) return 'admin'
+    if (OIC_ROLES.includes(role)) return 'oic'
+    return 'staff'
   }
   
   const DUMMY_PASSWORD = 'password123'
@@ -38,10 +42,10 @@ export const dummyUsers = [
   },
   {
     id: 3,
-    name: 'Angela Reyes',
-    email: 'angela.reyes@mswdo.gov.ph',
+    name: 'Amee Bagares',
+    email: 'oic',
     password: DUMMY_PASSWORD,
-    role: 'Encoder',
+    role: 'Officer-in-Charge',
     status: 'Active',
     dateCreated: '2025-02-20',
     lastLogin: '2025-07-06T09:30:00',

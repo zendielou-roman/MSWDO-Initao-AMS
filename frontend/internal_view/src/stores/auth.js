@@ -15,16 +15,20 @@
     getters: {
       isLoggedIn: (state) => !!state.user,
   
-      // 'admin' | 'staff' | null
+      // 'admin' | 'staff' | 'oic' | null
       side: (state) => (state.user ? getUserSide(state.user.role) : null),
   
       isAdmin: (state) => !!state.user && getUserSide(state.user.role) === 'admin',
       isStaff: (state) => !!state.user && getUserSide(state.user.role) === 'staff',
+      isOIC: (state) => !!state.user && getUserSide(state.user.role) === 'oic',
   
       // Where a logged-in user should land — used by the router guard and the login redirect.
       homePath: (state) => {
         if (!state.user) return '/login'
-        return getUserSide(state.user.role) === 'admin' ? '/dashboard' : '/staff/dashboard'
+        const side = getUserSide(state.user.role)
+        if (side === 'admin') return '/dashboard'
+        if (side === 'oic') return '/oic/dashboard'
+        return '/staff/dashboard'
       },
     },
   
