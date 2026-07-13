@@ -282,6 +282,7 @@ export default {
         title: 'Service Commitment',
         text: 'We commit to deliver services within the prescribed processing time and ensure that every client is treated with dignity and respect.',
       },
+      
       processingTime: {
         title: 'Processing Time',
         text: 'Simple transactions: 3 working days. Complex transactions: 7 working days. Highly technical: 20 working days.',
@@ -391,6 +392,129 @@ export default {
     },
   },
 
+  accomplishments: {
+    section: {
+      eyebrow: 'BY THE NUMBERS',
+      title: 'Accomplishments & Awards',
+      subtitle: 'Tangible results of our commitment to social welfare and community development in Initao, Misamis Oriental.',
+    },
+    stats: {
+      beneficiaries: 'Beneficiaries Served',
+      programs: 'Programs Completed',
+      barangays: 'Barangays Reached',
+      years: 'Years of Service',
+    },
+    milestonesLabel: 'Recent Milestones',
+    showMore: 'Show more accomplishments',
+    showLess: 'Show less',
+    readMore: 'Read more',
+    close: 'Close',
+    items: {
+      centenariansAct: {
+        title: 'Expanded Centenarians Act (RA 11982)',
+        desc: "Another batch of octogenarians and nonagenarians received their ₱10K cash gifts from the National Commission of Senior Citizens (NCSC). LGU Initao's LCE, Hon. Mayor Mercy Grace J. Acain, joined the event, expressing gratitude to the 51 beneficiaries reaching these milestone ages and to their families for their support.",
+      },
+      sfpAward: {
+        title: 'DSWD Certificate of Accomplishment — SFP',
+        desc: 'LGU Initao was recognized by DSWD Field Office X for its outstanding implementation of the 14th Cycle (2024) Supplementary Feeding Program, achieving 92.31% weight improvement and serving 100% of target beneficiaries — a strong commitment to child nutrition and welfare in Region X. Awarded June 17, 2025 at Pearlmont Hotel, Cagayan de Oro City.',
+      },
+      zeroHunger: {
+        title: 'Zero Hunger Assistance',
+        desc: 'Provided food packs to 1,200 indigent families during calamities and crisis situations.',
+      },
+      slpMicroenterprise: {
+        title: 'SLP Microenterprise Track',
+        desc: 'Supported 145 Pantawid Pamilya beneficiaries in launching small livelihood enterprises.',
+      },
+      childProtection: {
+        title: 'Child Protection Campaign',
+        desc: 'Conducted community awareness activities on child abuse prevention in all 18 barangays.',
+      },
+      pwdEmpowerment: {
+        title: 'PWD Empowerment Program',
+        desc: 'Provided assistive devices and skills training to 320 persons with disabilities.',
+      },
+      cashForWork: {
+        title: 'DSWD KC Cash-for-Work Payout',
+        desc: "Culmination and payout of the DSWD KALAHI-CIDSS (KC) Cash-for-Work Program for Initao college graduates and graduating students. On behalf of LGU Initao, headed by Hon. Mayor Gagay Acain, our sincere gratitude to the DSWD Team led by Engr. Abo Tocalo and Ma'am Arline Pacudan — and most especially to Sir Al Orerbil for facilitating this grant.",
+      },
+    },
+  },
+
+  news: {
+  section: {
+    eyebrow: 'LATEST',
+    title: 'News & Updates',
+    subtitle: 'Fresh announcements, advisories, and event recaps from the MSWDO Initao.',
+  },
+  readMore: 'Read more',
+  viewAll: 'View all news',
+  categories: {
+    relief: 'Relief',
+    health: 'Health',
+    pension: 'Pension',
+    youth: 'Youth',
+  },
+  items: {
+    foodRelief: {
+      title: 'Emergency Food Relief Distribution for Flood-Affected Families',
+      excerpt: 'MSWDO Initao successfully distributed food packs and relief goods to 248 families affected by the recent flooding in low-lying barangays, ensuring no household was left behind.',
+    },
+    medicalMission: {
+      title: 'Free Medical and Dental Mission in Barangay Jampason',
+      excerpt: 'In partnership with the Municipal Health Office, a medical and dental mission served over 300 residents.',
+    },
+    socialPension: {
+      title: 'Social Pension Payout for Indigent Senior Citizens — 2nd Quarter 2026',
+      excerpt: 'A total of 412 indigent senior citizens received their 2nd quarter social pension.',
+    },
+    cashForWork: {
+      title: 'DSWD KC Cash-for-Work Payout for Initao Graduates',
+      excerpt: 'College graduates and graduating students received their Cash-for-Work grants.',
+    },
+  },
+},
+
+operations: {
+  section: {
+    eyebrow: 'ON THE GROUND',
+    title: 'Active Operations',
+    subtitle: "Programs we're currently running and the initiatives coming soon to serve Initao.",
+  },
+  filters: {
+    all: 'All',
+    ongoing: 'Ongoing',
+    planned: 'Planned',
+  },
+  viewAll: 'View all programs',
+  items: {
+    slp: {
+      title: 'Sustainable Livelihood Program — Skills Training',
+      location: 'Municipal Hall, Initao',
+      beneficiaries: '120 participants',
+      desc: 'Hands-on vocational training in dressmaking, welding, and food processing to help families build sustainable income sources.',
+    },
+    feeding: {
+      title: 'Supplementary Feeding Program — 15th Cycle',
+      location: '24 Day Care Centers',
+      beneficiaries: '1,050 children',
+      desc: 'Daily nutritious meals for day care children to improve nutritional status and reduce malnutrition across all barangays.',
+    },
+    seniorCaravan: {
+      title: 'Senior Citizens Wellness & Mobility Caravan',
+      location: 'Barangay Rotation',
+      beneficiaries: '600+ seniors',
+      desc: 'An upcoming barangay-to-barangay caravan offering health checks, mobility aids, and pension assistance for the elderly.',
+    },
+    pwdDevices: {
+      title: 'PWD Assistive Devices Distribution',
+      location: 'MSWDO Office',
+      beneficiaries: '85 PWDs',
+      desc: 'Distribution of wheelchairs, crutches, and hearing aids to registered persons with disabilities in the municipality.',
+    },
+  },
+},
+
   about: {
 
     section: {
@@ -406,6 +530,36 @@ export default {
     mandatesLabel: 'Mandated By Law',
     mandatesTitle: 'Our Mandates',
   },
+
+  organization: {
+  section: {
+    eyebrow: 'OFFICE STRUCTURE',
+    title: 'Organizational Chart',
+    subtitle: 'The MSWDO Initao organizational hierarchy showing office leadership and functional divisions.',
+  },
+  tiers: {
+    leadership: 'Municipal Leadership',
+    divisions: 'Focal Persons & Divisions',
+    staff: 'Staff',
+  },
+  leadership: {
+    mayor: { role: 'Mayor' },
+    viceMayor: { role: 'Vice-Mayor' },
+  },
+  oic: { role: 'Officer-in-Charge' },
+  divisions: {
+    ebesa: { roles: ['ECCD Focal Person, LGU Link', 'IT Administrator, Property Custodian'] },
+    sabellano: { roles: ['Job Order, Intake / Client Info', 'IT Administrator'] },
+    telen: { roles: ['SWA, Senior Citizen Focal Person', 'PWD Focal Person'] },
+  },
+  staff: {
+    balabat: { roles: ['Solo Parent Focal', 'Job Order, Client Info Gathering'] },
+    galarita: { roles: ['Job Order, Client Info Gathering'] },
+    velasco: { roles: ['Job Order, OSCA Clerk'] },
+    sandoval: { roles: ['Job Order, KALAHI / MCT-CEF'] },
+    anoba: { roles: ['Job Order, Women Focal Person', 'KALAHI / MCT-CEF'] },
+  },
+},
 
   contact: {
     section: {
@@ -437,6 +591,147 @@ export default {
       hoursLine2: '8:00 AM – 12 NN · 1:00 – 5:00 PM',
       facebookText: 'facebook.com/mswdo.initao',
     },
+    form: {
+    whatsNext: 'What happens next',
+    whatsNextTitle: 'From your message to our response',
+    steps: {
+      submit: { title: 'You submit', body: 'Fill out the form with as much detail as you can. You\u2019ll get an on-screen confirmation right away.' },
+      review: { title: 'We review', body: 'Your message is routed to the right MSWDO staff member and logged for follow-up.' },
+      reply: { title: 'You hear back', body: 'Expect a reply by email or call within 1 working day, sooner for urgent concerns.' },
+    },
+    privacyNote: 'Your details are kept confidential and used only to process your request, in line with the Data Privacy Act and R.A. 11032.',
+    urgentCall: 'Urgent? Call the hotline directly',
+    heading: 'Send us a message',
+    subheading: 'For inquiries, requests, or feedback. Required fields are marked',
+    name: 'Name',
+    anonymousLabel: 'Submit anonymously',
+    anonymousPlaceholder: 'Anonymous',
+    namePlaceholder: 'e.g. Juan Dela Cruz',
+    nameError: 'Please enter your name, or check "Submit anonymously."',
+    barangay: 'Barangay',
+    barangaySelect: 'Select barangay',
+    barangayError: 'Barangay is required.',
+    email: 'Email',
+    optional: '(optional)',
+    mobile: 'Mobile Number',
+    mobilePlaceholder: 'e.g. 09171234567',
+    contactError: 'Provide at least an email or a mobile number so we can respond.',
+    mobileLengthError: 'Mobile number must be 11 digits long.',
+    contactHint: 'Provide at least one way to reach you — email or mobile number.',
+    subject: 'Subject',
+    subjectSelect: 'Select a topic',
+    subjectError: 'Please select a topic.',
+    subjectOptions: {
+      general: 'General inquiry',
+      service: 'Service request',
+      feedback: 'Feedback',
+      complaint: 'Complaint against an employee',
+      other: 'Other',
+    },
+    message: 'Message',
+    messagePlaceholder: 'How can we help?',
+    messageError: 'Please describe your concern.',
+    send: 'Send Message',
+    formError: 'Please complete the required fields above before submitting.',
+    successTitle: 'Message Sent!',
+    successBody: 'Thank you for reaching out. We will get back to you as soon as possible.',
+    sendAnother: 'Send another message',
+    needDetails: 'Need our office details instead?',
+    seeContactInfo: 'See contact information ↑',
+  },
+  form: {
+  whatsNext: 'Ano ang Susunod?',
+  whatsNextTitle: 'Mula sa iyong mensahe hanggang sa aming tugon',
+
+  steps: {
+    submit: {
+      title: 'Pagsusumite',
+      body: 'Punan ang form nang may kumpletong impormasyon hangga\'t maaari. Makakatanggap ka agad ng kumpirmasyon sa screen.'
+    },
+
+    review: {
+      title: 'Pagsusuri',
+      body: 'Ang iyong mensahe ay ipapadala sa kaukulang kawani ng MSWDO at itatala para sa kaukulang aksyon.'
+    },
+
+    reply: {
+      title: 'Pagtugon',
+      body: 'Maaari mong asahan ang tugon sa pamamagitan ng email o tawag sa loob ng 1 working day, o mas maaga kung agarang usapin.'
+    },
+  },
+
+  privacyNote: 'Ang iyong personal na impormasyon ay mananatiling kumpidensyal at gagamitin lamang para sa pagproseso ng iyong kahilingan, alinsunod sa Data Privacy Act at R.A. 11032.',
+
+  urgentCall: 'May agarang concern? Tumawag sa aming hotline.',
+
+  heading: 'Magpadala ng Mensahe',
+
+  subheading: 'Para sa mga katanungan, kahilingan, o feedback. Ang mga field na may (*) ay kinakailangang sagutan.',
+
+  name: 'Pangalan',
+
+  anonymousLabel: 'Magsumite nang hindi nagpapakilala',
+
+  anonymousPlaceholder: 'Anonymous',
+
+  namePlaceholder: 'hal. Juan Dela Cruz',
+
+  nameError: 'Mangyaring ilagay ang iyong pangalan o piliin ang "Magsumite nang hindi nagpapakilala."',
+
+  barangay: 'Barangay',
+
+  barangaySelect: 'Pumili ng Barangay',
+
+  barangayError: 'Kinakailangan ang Barangay.',
+
+  email: 'Email',
+
+  optional: '(opsyonal)',
+
+  mobile: 'Mobile Number',
+
+  mobilePlaceholder: 'hal. 09171234567',
+
+  contactError: 'Magbigay ng email o mobile number upang makapagpadala kami ng tugon.',
+
+  mobileLengthError: 'Ang mobile number ay dapat may 11 digit.',
+
+  contactHint: 'Magbigay ng kahit isang paraan ng pakikipag-ugnayan — email o mobile number.',
+
+  subject: 'Paksa',
+
+  subjectSelect: 'Pumili ng Paksa',
+
+  subjectError: 'Mangyaring pumili ng paksa.',
+
+  subjectOptions: {
+    general: 'Pangkalahatang Katanungan',
+    service: 'Kahilingan sa Serbisyo',
+    feedback: 'Feedback',
+    complaint: 'Reklamo laban sa Kawani',
+    other: 'Iba pa',
+  },
+
+  message: 'Mensahe',
+
+  messagePlaceholder: 'Paano kami makakatulong?',
+
+  messageError: 'Mangyaring ilarawan ang iyong concern.',
+
+  send: 'Ipadala ang Mensahe',
+
+  formError: 'Mangyaring kumpletuhin muna ang mga kinakailangang field bago isumite ang form.',
+
+  successTitle: 'Naipadala ang Mensahe!',
+
+  successBody: 'Maraming salamat sa pakikipag-ugnayan. Tutugunan namin ang iyong mensahe sa lalong madaling panahon.',
+
+  sendAnother: 'Magpadala ng Panibagong Mensahe',
+
+  needDetails: 'Kailangan mo ba ang impormasyon ng aming tanggapan?',
+
+  seeContactInfo: 'Tingnan ang Contact Information ↑',
+},
   },
 
   footer: {

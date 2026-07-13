@@ -316,28 +316,28 @@ soloParent: {
   section: {
     eyebrow: 'MGA PAMANTAYAN NG SERBISYO',
     title: 'CITIZEN\'S CHARTER',
-    subtitle: 'Ang aming pangako na maghatid ng de-kalidad, mahusay, at mabilis na serbisyong panlipunan para sa bawat mamamayan ng Initao.',
+    subtitle: 'De-kalidad, mahusay, at maagap na serbisyong panlipunan para sa bawat mamamayan ng Initao.',
   },
 
   standards: {
     commitment: {
       title: 'Pangako sa Serbisyo',
-      text: 'Nangangako kaming maghatid ng mga serbisyo sa loob ng itinakdang oras ng pagproseso at tiyaking ang bawat kliyente ay tratuhin nang may dignidad at paggalang.',
+      text: 'Nangangako kaming maghatid ng mga serbisyo sa loob ng itinakdang oras ng pagproseso at tiyaking ang bawat kliyente ay tatratuhin nang may dignidad at paggalang.',
     },
 
     processingTime: {
       title: 'Oras ng Pagproseso',
-      text: 'Mga simpleng transaksyon: 3 araw ng trabaho. Mga komplikadong transaksyon: 7 araw ng trabaho. Mga teknikal na transaksyon: 20 araw ng trabaho.',
+      text: 'Simpleng transaksyon: 3 working days \nKomplikadong transaksyon: 7 working days \nLubhang teknikal na transaksyon: 20 working days',
     },
 
     documentary: {
       title: 'Mga Kinakailangang Dokumento',
-      text: 'Tanging mga dokumentong kinakailangan ayon sa mga alituntunin ng DILG at DSWD ang hinihingi. Walang karagdagang dokumentong hihingin maliban sa itinakda ng batas.',
+      text: 'Ang mga dokumentong hinihingi ay batay lamang sa mga alituntunin ng DILG at DSWD. Walang karagdagang dokumentong kakailanganin maliban sa mga itinakda ng batas.',
     },
 
     zeroContact: {
-      title: 'Patakaran sa Zero Contact',
-      text: 'Mahigpit na ipinatutupad ng aming tanggapan ang Zero Contact Policy. Ipinagbabawal sa mga kawani ng frontline ang paghingi ng regalo o anumang uri ng pabor.',
+      title: 'Zero Contact Policy',
+      text: 'Mahigpit na ipinatutupad ng aming tanggapan ang Zero Contact Policy. Mahigpit na ipinagbabawal sa mga empleyado ang paghingi o pagtanggap ng regalo, pabor, o anumang kapalit ng serbisyo.',
     },
   },
 
@@ -357,11 +357,11 @@ soloParent: {
       ],
 
       process: [
-        'Pagpaparehistro. Isinusulat ng kliyente ang kanyang pangalan sa logbook.',
-        'Intake interview. Ang kliyente o pinakamalapit na kamag-anak na may sapat na kaalaman tungkol sa kalagayan ng kliyente ay sasagot sa mga tanong ng tagapanayam.',
-        'Isinasagawa ng kawani ang personal na panayam upang makuha ang mga kinakailangang impormasyon. Itinatala ang resulta ng panayam sa Intake Form.',
+        'Pagpaparehistro, isinusulat ng kliyente ang kanyang pangalan sa logbook.',
+        'Pag interview sa kliyente o sa pinakamalapit na kamag-anak na may sapat na kaalaman tungkol sa kalagayan ng kliyente at sasagot sa mga tanong ng tagapanayam.',
+        'Isinasagawa ng kawani ang personal na panayam upang makuha ang mga kinakailangang impormasyon. Itinatala ang resulta ng panayam sa isang Intake Form.',
         'Paghahanda ng Social Case Study Report (SCSR).',
-        'Matatanggap ng kliyente ang kanyang kopya ng SCSR.',
+        'Pagtanggap ng kliyente sa kanyang kopya ng SCSR.',
       ],
     },
 
@@ -377,12 +377,12 @@ soloParent: {
       ],
 
       process: [
-        'Pagpaparehistro. Isinusulat ng kliyente ang kanyang pangalan sa logbook.',
-        'Intake interview. Ang kliyente o pinakamalapit na kamag-anak na may sapat na kaalaman tungkol sa kalagayan ng kliyente ay sasagot sa mga tanong ng tagapanayam.',
+        'Pagpaparehistro, isinusulat ng kliyente ang kanyang pangalan sa logbook.',
+        'Pag interview sa kliyente o sa pinakamalapit na kamag-anak na may sapat na kaalaman tungkol sa kalagayan ng kliyente at sasagot sa mga tanong ng tagapanayam.',
         'Isinasagawa ng kawani ang personal na panayam upang makuha ang mga kinakailangang impormasyon. Itinatala ang resulta ng panayam sa Intake Form.',
         'Paghahanda ng sertipikasyon.',
         'Pagsusuri at paglagda sa sertipikasyon.',
-        'Matatanggap ng kliyente ang kanyang kopya ng sertipikasyon.',
+        'Pagtanggap ng kliyente sa kanyang kopya ng sertipikasyon.',
       ],
     },
 
@@ -394,17 +394,17 @@ soloParent: {
       requirements: [
         'Sertipikasyon mula sa Barangay',
         'Photocopy ng Death Certificate',
-        'Balidong ID',
+        'Valid ID',
         'Patunay ng Pangangailangan ng Tulong',
         'Intake Form',
       ],
 
       process: [
-        'Pagpaparehistro. Isinusulat ng kliyente ang kanyang pangalan sa logbook.',
-        'Intake interview. Ang kliyente o pinakamalapit na kamag-anak na may sapat na kaalaman tungkol sa kalagayan ng kliyente ay sasagot sa mga tanong ng tagapanayam.',
+        'Pagpaparehistro, isinusulat ng kliyente ang kanyang pangalan sa logbook.',
+        'Pag interview sa kliyente o sa pinakamalapit na kamag-anak na may sapat na kaalaman tungkol sa kalagayan ng kliyente at sasagot sa mga tanong ng tagapanayam.',
         'Isinasagawa ng kawani ang personal na panayam upang makuha ang mga kinakailangang impormasyon. Itinatala ang resulta ng panayam sa Intake Form.',
-        'Paghahanda ng tulong na ipagkakaloob matapos ang pag-apruba ng pinuno ng tanggapan.',
-        'Matatanggap ng kliyente ang inaprubahang tulong.',
+        'Paghahanda ng tulong na ipagkakaloob matapos ang pag-apruba ng officer in charge.',
+        'Pagtanggap ng kliyente sa kanyang inaprubahang tulong.',
       ],
     },
 
@@ -416,13 +416,13 @@ soloParent: {
       requirements: [],
 
       process: [
-        'Pagpaparehistro. Isinusulat ng kliyente ang kanyang pangalan sa logbook.',
+        'Pagpaparehistro, isinusulat ng kliyente ang kanyang pangalan sa logbook.',
         'Pagsagot sa Marriage Inventory Form.',
         'Pagdalo sa itinakdang petsa at oras.',
         'Pagsasagawa ng PMOC.',
-        'Pagbabayad para sa PMOC Certificate.',
+        'Pagbabayad ng additional fees para sa PMOC Certificate.',
         'Paghahanda ng sertipiko.',
-        'Matatanggap ng magkapareha ang PMOC Certificate.',
+        'Pagtanggap ng mga ikakasal sa kanilang PMOC Certificate.',
       ],
     },
 
@@ -436,7 +436,7 @@ soloParent: {
       ],
 
       process: [
-        'Pagpaparehistro. Isinusulat ng kliyente ang kanyang pangalan sa logbook.',
+        'Pagpaparehistro, isinusulat ng kliyente ang kanyang pangalan sa logbook.',
         'Inire-refer ang kliyente para sa counseling o konsultasyon.',
         'Isinasagawa ang counseling o konsultasyon.',
       ],
@@ -450,8 +450,151 @@ soloParent: {
 
   arta: {
     title: 'Pagsunod sa Anti-Red Tape Authority (ARTA)',
-    description: 'Alinsunod sa R.A. 11032 o Ease of Doing Business and Efficient Government Service Delivery Act, tinitiyak ng aming tanggapan na ang lahat ng frontline services ay naihahatid nang mabilis, magalang, at walang hindi kinakailangang abala sa aming mga kliyente.',
+    description: 'Alinsunod sa R.A. 11032 o Ease of Doing Business and Efficient Government Service Delivery Act, tinitiyak ng aming tanggapan na ang lahat ng frontline services ay naihahatid nang maagap, magalang, at walang hindi kinakailangang abala sa aming mga kliyente.',
     viewFullCharter: 'Tingnan ang Buong Citizen\'s Charter',
+  },
+},
+accomplishments: {
+  section: {
+    eyebrow: 'MGA NAGAWA',
+    title: 'Mga Nagawa at Pagkilala',
+    subtitle: 'Mga konkretong resulta ng aming patuloy na paglilingkod sa larangan ng kapakanang panlipunan at pagpapaunlad ng komunidad sa Initao, Misamis Oriental.',
+  },
+
+  stats: {
+    beneficiaries: 'Mga Benepisyaryong Naserbisyuhan',
+    programs: 'Mga Programang Natapos',
+    barangays: 'Mga Barangay na Naserbisyuhan',
+    years: 'Taon ng Paglilingkod',
+  },
+
+  milestonesLabel: 'Mga Kamakailang Tagumpay',
+  showMore: 'Ipakita ang iba pang mga nagawa',
+  showLess: 'Ipakita nang mas kaunti',
+  readMore: 'Magbasa pa',
+  close: 'Isara',
+
+  items: {
+    centenariansAct: {
+      title: 'Expanded Centenarians Act (RA 11982)',
+      desc: 'Isa pang pangkat ng mga octogenarian at nonagenarian ang tumanggap ng kanilang ₱10,000 cash gift mula sa National Commission of Senior Citizens (NCSC). Dumalo rin sa programa ang Punong Bayan ng LGU Initao, Hon. Mayor Mercy Grace J. Acain, upang ipahayag ang kanyang pagbati sa 51 benepisyaryong umabot sa mga natatanging edad na ito at pasalamatan ang kanilang mga pamilya sa patuloy na suporta.',
+    },
+
+    sfpAward: {
+      title: 'DSWD Certificate of Accomplishment — SFP',
+      desc: 'Kinilala ang LGU Initao ng DSWD Field Office X dahil sa matagumpay na pagpapatupad ng ika-14 na Cycle (2024) ng Supplementary Feeding Program. Nakamit nito ang 92.31% na pagtaas sa timbang ng mga benepisyaryo at 100% na pagseserbisyo sa target na mga bata bilang patunay ng matibay na adhikain para sa nutrisyon at kapakanan ng mga bata sa Region X. Iginawad noong Hunyo 17, 2025 sa Pearlmont Hotel, Cagayan de Oro City.',
+    },
+
+    zeroHunger: {
+      title: 'Zero Hunger Assistance',
+      desc: 'Nagkaloob ng mga food pack sa 1,200 pamilyang nangangailangan sa panahon ng kalamidad at iba pang sitwasyon ng krisis.',
+    },
+
+    slpMicroenterprise: {
+      title: 'SLP Microenterprise Track',
+      desc: 'Nasuportahan ang 145 benepisyaryo ng Pantawid Pamilyang Pilipino Program sa pagsisimula ng kanilang maliliit na kabuhayan.',
+    },
+
+    childProtection: {
+      title: 'Child Protection Campaign',
+      desc: 'Nagsagawa ng mga information campaign sa lahat ng 18 barangay upang palakasin ang kamalayan tungkol sa pag-iwas sa pang-aabuso sa mga bata.',
+    },
+
+    pwdEmpowerment: {
+      title: 'PWD Empowerment Program',
+      desc: 'Nagkaloob ng mga assistive device at pagsasanay sa kasanayan para sa 320 persons with disabilities (PWDs).',
+    },
+
+    cashForWork: {
+      title: 'DSWD KC Cash-for-Work Payout',
+      desc: 'Isinagawa ang pagtatapos at payout ng DSWD KALAHI-CIDSS (KC) Cash-for-Work Program para sa mga nagtapos at magsisipagtapos na mag-aaral sa kolehiyo mula sa Initao. Sa ngalan ng LGU Initao sa pangunguna ni Hon. Mayor Gagay Acain, taos-pusong pasasalamat sa DSWD Team sa pamumuno ni Engr. Abo Tocalo at Ma’am Arline Pacudan, at lalo na kay Sir Al Orerbil sa matagumpay na pagsasakatuparan ng programang ito.',
+    },
+  },
+},
+
+news: {
+  section: {
+    eyebrow: 'PINAKABAGO',
+    title: 'Balita at Mga Anunsyo',
+    subtitle: 'Mga pinakabagong anunsyo, abiso, at ulat ng mga aktibidad mula sa MSWDO Initao.',
+  },
+
+  readMore: 'Magbasa pa',
+  viewAll: 'Tingnan ang Lahat ng Balita',
+
+  categories: {
+    relief: 'Relief',
+    health: 'Kalusugan',
+    pension: 'Pensyon',
+    youth: 'Kabataan',
+  },
+
+  items: {
+    foodRelief: {
+      title: 'Pamamahagi ng Emergency Food Relief para sa mga Pamilyang Apektado ng Baha',
+      excerpt: 'Matagumpay na nakapamahagi ang MSWDO Initao ng mga food pack at relief goods sa 248 pamilyang naapektuhan ng kamakailang pagbaha sa mga mabababang lugar ng mga barangay, upang matiyak na walang pamilyang maiiwan.',
+    },
+
+    medicalMission: {
+      title: 'Libreng Medical at Dental Mission sa Barangay Jampason',
+      excerpt: 'Sa pakikipagtulungan ng Municipal Health Office, mahigit 300 residente ang nabigyan ng libreng serbisyong medikal at dental.',
+    },
+
+    socialPension: {
+      title: 'Social Pension Payout para sa mga Indigent Senior Citizen — Ikalawang Quarter ng 2026',
+      excerpt: 'May kabuuang 412 indigent senior citizen ang tumanggap ng kanilang Social Pension para sa ikalawang quarter.',
+    },
+
+    cashForWork: {
+      title: 'DSWD KC Cash-for-Work Payout para sa mga Nagtapos sa Initao',
+      excerpt: 'Natanggap ng mga nagtapos at magsisipagtapos sa kolehiyo ang kanilang Cash-for-Work grants.',
+    },
+  },
+},
+
+operations: {
+  section: {
+    eyebrow: 'MGA AKTIBIDAD',
+    title: 'Mga Kasalukuyang Programa',
+    subtitle: 'Mga programang kasalukuyang isinasagawa at mga inisyatibong nakatakdang ipatupad para sa mga mamamayan ng Initao.',
+  },
+
+  filters: {
+    all: 'Lahat',
+    ongoing: 'Kasalukuyan',
+    planned: 'Nakatakda',
+  },
+
+  viewAll: 'Tingnan ang Lahat ng Programa',
+
+  items: {
+    slp: {
+      title: 'Sustainable Livelihood Program — Pagsasanay sa Kasanayan',
+      location: 'Municipal Hall, Initao',
+      beneficiaries: '120 kalahok',
+      desc: 'Praktikal na pagsasanay sa pananahi, welding, at food processing upang matulungan ang mga pamilya na magkaroon ng matatag na pinagkakakitaan.',
+    },
+
+    feeding: {
+      title: 'Supplementary Feeding Program — Ika-15 Cycle',
+      location: '24 Day Care Center',
+      beneficiaries: '1,050 bata',
+      desc: 'Araw-araw na masustansyang pagkain para sa mga batang nasa Day Care Center upang mapabuti ang kanilang nutrisyon at mabawasan ang malnutrisyon sa lahat ng barangay.',
+    },
+
+    seniorCaravan: {
+      title: 'Senior Citizens Wellness & Mobility Caravan',
+      location: 'Iba’t ibang Barangay',
+      beneficiaries: '600+ nakatatanda',
+      desc: 'Isang nakatakdang caravan na iikot sa iba’t ibang barangay upang magbigay ng serbisyong pangkalusugan, assistive devices, at tulong kaugnay ng pensyon para sa mga nakatatanda.',
+    },
+
+    pwdDevices: {
+      title: 'Pamamahagi ng Assistive Devices para sa mga PWD',
+      location: 'Tanggapan ng MSWDO',
+      beneficiaries: '85 PWD',
+      desc: 'Pamamahagi ng wheelchair, saklay, at hearing aid para sa mga rehistradong person with disability (PWD) sa bayan.',
+    },
   },
 },
 
@@ -468,6 +611,37 @@ soloParent: {
     mandatesLabel: 'Mandato Batay sa Batas',
     mandatesTitle: 'Ang Aming Mga Mandato',
   },
+
+  organization: {
+  section: {
+    eyebrow: 'ISTRUKTURA NG TANGGAPAN',
+    title: 'Organizational Chart',
+    subtitle: 'Ang hierarchy ng MSWDO Initao na nagpapakita ng pamunuan ng tanggapan at mga functional division.',
+  },
+  tiers: {
+    leadership: 'Pamunuan ng Bayan',
+    divisions: 'Mga Focal Person at Dibisyon',
+    staff: 'Kawani',
+  },
+  leadership: {
+    mayor: { role: 'Punong Bayan' },
+    viceMayor: { role: 'Pangalawang Punong Bayan' },
+  },
+  oic: { role: 'Namamahalang Opisyal (OIC)' },
+  divisions: {
+    ebesa: { roles: ['ECCD Focal Person, Ugnayan sa LGU', 'IT Administrator, Tagapangalaga ng Ari-arian'] },
+    sabellano: { roles: ['Job Order, Intake / Impormasyon ng Kliyente', 'IT Administrator'] },
+    telen: { roles: ['SWA, Focal Person para sa Senior Citizen', 'Focal Person para sa PWD'] },
+  },
+  staff: {
+    balabat: { roles: ['Focal Person para sa Solo Parent', 'Job Order, Pangongolekta ng Impormasyon ng Kliyente'] },
+    galarita: { roles: ['Job Order, Pangongolekta ng Impormasyon ng Kliyente'] },
+    velasco: { roles: ['Job Order, Klerk ng OSCA'] },
+    sandoval: { roles: ['Job Order, KALAHI / MCT-CEF'] },
+    anoba: { roles: ['Job Order, Focal Person para sa Kababaihan', 'KALAHI / MCT-CEF'] },
+  },
+},
+
   contact: {
     section: {
       eyebrow: 'KUMUSTA KA',

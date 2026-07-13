@@ -2,11 +2,21 @@
 /* ===== CITIZEN'S CHARTER SECTION =====
      Two parts:
      1) charterItems  -> the small "service standards" cards (top row)
-     2) services      -> the detailed service cards (navy header + Requirements/Process)
+     2) services      -> the detailed service cards (navy header + Requirements/Process),
+                          now displayed as a carousel
      Now fully translated via i18n (charter.* keys in en.js / tl.js). */
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { ShieldCheck, Clock, FileText, Globe, BadgeCheck, CheckCircle2 } from 'lucide-vue-next'
+import {
+  ShieldCheck,
+  Clock,
+  FileText,
+  Globe,
+  BadgeCheck,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-vue-next'
 import SectionHeader from '@/components/SectionHeading.vue'
 
 const { t, tm } = useI18n()
@@ -53,6 +63,28 @@ const services = computed(() =>
   }))
 )
 
+/* ---- CAROUSEL LOGIC ---- */
+const carouselRef = ref(null)
+const activeIndex = ref(0)
+
+function scrollToIndex(i) {
+  const container = carouselRef.value
+  if (!container) return
+  const card = container.children[i]
+  if (card) {
+    card.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' })
+  }
+  activeIndex.value = i
+}
+
+function prevSlide() {
+  scrollToIndex(Math.max(0, activeIndex.value - 1))
+}
+
+function nextSlide() {
+  scrollToIndex(Math.min(services.value.length - 1, activeIndex.value + 1))
+}
+
 function openCharter() {
   window.open('/citizens-charter.pdf', '_blank')
 }
@@ -92,76 +124,119 @@ function openCharter() {
             </span>
           </div>
           <h3 class="text-[#1f3a63] text-base font-bold mb-2">{{ item.title }}</h3>
-          <p class="text-[#6b7688] text-[0.82rem] leading-[1.5] m-0">{{ item.text }}</p>
+          <p
+            class="text-[#6b7688] text-[0.82rem] leading-[1.5] m-0 whitespace-pre-line text-justify"
+          >
+            {{ item.text }}
+          </p>
         </article>
       </div>
     </div>
 
-    <!-- ===== DETAILED SERVICE CARDS ===== -->
-    <div class="max-w-[1180px] mx-auto mb-10 flex flex-col gap-6">
-      <article
-        v-for="(svc, i) in services"
-        :key="i"
-        class="bg-white rounded-[14px] overflow-hidden shadow-[0_10px_28px_rgba(31,58,99,0.08)] text-left"
+    <!-- ===== DETAILED SERVICE CARDS (CAROUSEL) ===== -->
+    <div class="relative max-w-[1180px] mx-auto mb-10">
+      <div
+        ref="carouselRef"
+        class="flex overflow-x-auto snap-x snap-mandatory scroll-smooth gap-6 pb-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
       >
-        <header
-          class="flex items-center justify-between gap-4 bg-[#16284a] px-[1.6rem] py-[1.1rem] flex-wrap max-[600px]:flex-col max-[600px]:items-start"
+        <article
+          v-for="(svc, i) in services"
+          :key="i"
+          class="snap-start shrink-0 w-full bg-white rounded-[14px] overflow-hidden shadow-[0_10px_28px_rgba(31,58,99,0.08)] text-left"
         >
-          <h3 class="flex items-center gap-[0.6rem] text-white text-[1.25rem] font-extrabold m-0">
-            <span class="text-[#e0b13a] font-extrabold">{{ svc.no }}</span>
-            {{ svc.title }}
-          </h3>
-          <div class="flex items-center gap-6">
-            <span
-              class="inline-flex items-center gap-[0.4rem] text-white text-[0.9rem] [&_svg]:text-[#e0b13a]"
-              ><Clock :size="16" /> {{ svc.time }}</span
-            >
-            <span
-              class="inline-flex items-center gap-[0.4rem] text-white text-[0.9rem] [&_svg]:text-[#e0b13a]"
-              ><FileText :size="16" /> {{ svc.fee }}</span
-            >
-          </div>
-        </header>
-
-        <div
-          class="grid grid-cols-2 gap-0 px-[1.8rem] py-[1.6rem] max-[900px]:grid-cols-1 max-[900px]:gap-6"
-        >
-          <div
-            class="px-6 border-r border-[#e6ebf3] max-[900px]:border-r-0 max-[900px]:border-b max-[900px]:pb-6"
+          <header
+            class="flex items-center justify-between gap-4 bg-[#16284a] px-[1.6rem] py-[1.1rem] flex-wrap max-[600px]:flex-col max-[600px]:items-start"
           >
-            <p class="text-[#2a5caa] text-[0.8rem] font-extrabold tracking-[2px] mb-4">
-              {{ t('charter.detail.requirementsLabel') }}
-            </p>
-            <ul class="list-none m-0 p-0">
-              <li
-                v-for="(req, r) in svc.requirements"
-                :key="r"
-                class="flex items-start gap-[0.6rem] text-[#344256] text-[0.95rem] leading-[1.4] mb-[0.85rem]"
+            <h3
+              class="flex items-center gap-[0.6rem] text-white text-[1.25rem] font-extrabold m-0"
+            >
+              <span class="text-[#e0b13a] font-extrabold">{{ svc.no }}</span>
+              {{ svc.title }}
+            </h3>
+            <div class="flex items-center gap-6">
+              <span
+                class="inline-flex items-center gap-[0.4rem] text-white text-[0.9rem] [&_svg]:text-[#e0b13a]"
+                ><Clock :size="16" /> {{ svc.time }}</span
               >
-                <CheckCircle2 :size="18" class="text-[#e0b13a] flex-shrink-0 mt-px" />
-                <span>{{ req }}</span>
-              </li>
-            </ul>
-          </div>
+              <span
+                class="inline-flex items-center gap-[0.4rem] text-white text-[0.9rem] [&_svg]:text-[#e0b13a]"
+                ><FileText :size="16" /> {{ svc.fee }}</span
+              >
+            </div>
+          </header>
 
-          <div class="px-6">
-           <p class="text-[#2a5caa] text-[0.8rem] font-extrabold tracking-[2px] mb-4">{{ t('charter.detail.processLabel') }}</p>
-            <ol class="list-none m-0 p-0">
-              <li
-                v-for="(step, s) in svc.process"
-                :key="s"
-                class="flex items-start gap-[0.7rem] text-[#344256] text-[0.95rem] leading-[1.4] mb-[0.85rem]"
-              >
-                <span
-                  class="inline-flex items-center justify-center w-[26px] h-[26px] flex-shrink-0 rounded-full bg-[#1f4fa3] text-white text-[0.8rem] font-bold"
-                  >{{ s + 1 }}</span
+          <div
+            class="grid grid-cols-2 gap-0 px-[1.8rem] py-[1.6rem] max-[900px]:grid-cols-1 max-[900px]:gap-6"
+          >
+            <div
+              class="px-6 border-r border-[#e6ebf3] max-[900px]:border-r-0 max-[900px]:border-b max-[900px]:pb-6"
+            >
+              <p class="text-[#2a5caa] text-[0.8rem] font-extrabold tracking-[2px] mb-4">
+                {{ t('charter.detail.requirementsLabel') }}
+              </p>
+              <ul class="list-none m-0 p-0">
+                <li
+                  v-for="(req, r) in svc.requirements"
+                  :key="r"
+                  class="flex items-start gap-[0.6rem] text-[#344256] text-[0.95rem] leading-[1.4] mb-[0.85rem]"
                 >
-                <span>{{ step }}</span>
-              </li>
-            </ol>
+                  <CheckCircle2 :size="18" class="text-[#e0b13a] flex-shrink-0 mt-px" />
+                  <span>{{ req }}</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="px-6">
+              <p class="text-[#2a5caa] text-[0.8rem] font-extrabold tracking-[2px] mb-4">
+                {{ t('charter.detail.processLabel') }}
+              </p>
+              <ol class="list-none m-0 p-0">
+                <li
+                  v-for="(step, s) in svc.process"
+                  :key="s"
+                  class="flex items-start gap-[0.7rem] text-[#344256] text-[0.95rem] leading-[1.4] mb-[0.85rem]"
+                >
+                  <span
+                    class="inline-flex items-center justify-center w-[26px] h-[26px] flex-shrink-0 rounded-full bg-[#1f4fa3] text-white text-[0.8rem] font-bold"
+                    >{{ s + 1 }}</span
+                  >
+                  <span>{{ step }}</span>
+                </li>
+              </ol>
+            </div>
           </div>
-        </div>
-      </article>
+        </article>
+      </div>
+
+      <!-- Prev / Next buttons -->
+      <button
+        @click="prevSlide"
+        class="absolute left-[-2.8rem] top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-[0_4px_14px_rgba(31,58,99,0.15)] flex items-center justify-center text-[#1f3a63] hover:bg-[#eef1f7] disabled:opacity-40 disabled:cursor-not-allowed max-[1050px]:left-[-1rem] max-[600px]:hidden"
+        :disabled="activeIndex === 0"
+        aria-label="Previous service"
+      >
+        <ChevronLeft :size="20" />
+      </button>
+      <button
+        @click="nextSlide"
+        class="absolute right-[-2.8rem] top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-[0_4px_14px_rgba(31,58,99,0.15)] flex items-center justify-center text-[#1f3a63] hover:bg-[#eef1f7] disabled:opacity-40 disabled:cursor-not-allowed max-[1050px]:right-[-1rem] max-[600px]:hidden"
+        :disabled="activeIndex === services.length - 1"
+        aria-label="Next service"
+      >
+        <ChevronRight :size="20" />
+      </button>
+
+      <!-- Dots -->
+      <div class="flex justify-center gap-2 mt-5">
+        <button
+          v-for="(svc, i) in services"
+          :key="i"
+          @click="scrollToIndex(i)"
+          class="w-2.5 h-2.5 rounded-full transition-colors duration-150"
+          :class="activeIndex === i ? 'bg-[#1f3a63]' : 'bg-[#c9d4e6]'"
+          :aria-label="`Go to slide ${i + 1}`"
+        ></button>
+      </div>
     </div>
 
     <!-- ===== ARTA COMPLIANCE BANNER ===== -->

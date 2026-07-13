@@ -1,55 +1,56 @@
 <script setup>
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Users, MapPin, ArrowUpRight } from 'lucide-vue-next'
 import SectionHeader from '@/components/SectionHeading.vue'
 
-// 🛠️ Current programs. status: 'Ongoing' | 'Planned'
-// Use DOUBLE quotes for any text with apostrophes!
-const programs = [
+const { t } = useI18n()
+
+// status stays a stable internal key ('ongoing' | 'planned') — only the
+// displayed label is translated, so filtering keeps working across locales
+const programsMeta = [
   {
-    status: 'Ongoing',
-    title: 'Sustainable Livelihood Program — Skills Training',
-    location: 'Municipal Hall, Initao',
-    beneficiaries: '120 participants',
-    desc: 'Hands-on vocational training in dressmaking, welding, and food processing to help families build sustainable income sources.',
+    key: 'slp',
+    status: 'ongoing',
     img: '/src/assets/operations/slp.jpg',
   },
   {
-    status: 'Ongoing',
-    title: 'Supplementary Feeding Program — 15th Cycle',
-    location: '24 Day Care Centers',
-    beneficiaries: '1,050 children',
-    desc: 'Daily nutritious meals for day care children to improve nutritional status and reduce malnutrition across all barangays.',
+    key: 'feeding',
+    status: 'ongoing',
     img: '/src/assets/operations/feeding.jpg',
   },
   {
-    status: 'Planned',
-    title: 'Senior Citizens Wellness & Mobility Caravan',
-    location: 'Barangay Rotation',
-    beneficiaries: '600+ seniors',
-    desc: 'An upcoming barangay-to-barangay caravan offering health checks, mobility aids, and pension assistance for the elderly.',
+    key: 'seniorCaravan',
+    status: 'planned',
     img: '/src/assets/operations/senior.jpg',
   },
   {
-    status: 'Planned',
-    title: 'PWD Assistive Devices Distribution',
-    location: 'MSWDO Office',
-    beneficiaries: '85 PWDs',
-    desc: 'Distribution of wheelchairs, crutches, and hearing aids to registered persons with disabilities in the municipality.',
+    key: 'pwdDevices',
+    status: 'planned',
     img: '/src/assets/operations/devices.jpg',
   },
 ]
 
-// 🔘 Filter tabs
-const filters = ['All', 'Ongoing', 'Planned']
-const active = ref('All')
-const filtered = computed(() =>
-  active.value === 'All' ? programs : programs.filter((p) => p.status === active.value),
+const programs = computed(() =>
+  programsMeta.map((p) => ({
+    ...p,
+    title: t(`operations.items.${p.key}.title`),
+    location: t(`operations.items.${p.key}.location`),
+    beneficiaries: t(`operations.items.${p.key}.beneficiaries`),
+    desc: t(`operations.items.${p.key}.desc`),
+  }))
 )
 
-// status pill colors
-const pill = (s) =>
-  s === 'Ongoing' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
+// filter tabs: keep 'all' | 'ongoing' | 'planned' as the internal value,
+// translate only for display
+const filterKeys = ['all', 'ongoing', 'planned']
+const active = ref('all')
+const filtered = computed(() =>
+  active.value === 'all' ? programs.value : programs.value.filter((p) => p.status === active.value)
+)
+
+// status pill colors (keyed off the stable status, not the translated label)
+const pill = (s) => (s === 'ongoing' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700')
 </script>
 
 <template>
@@ -59,16 +60,16 @@ const pill = (s) =>
     class="bg-[#dde3ef] px-6 sm:px-12 pt-0.1 pb-16 text-center border-t border-[#dfe6f0]"
   >
     <div class="max-w-6xl mx-auto">
-      <SectionHeader
-        eyebrow="ON THE GROUND"
-        title="Active Operations"
-        subtitle="Programs we're currently running and the initiatives coming soon to serve Initao."
-      />
+     <SectionHeader
+      :eyebrow="t('operations.section.eyebrow')"
+      :title="t('operations.section.title')"
+      :subtitle="t('operations.section.subtitle')"
+    />
 
-      <!-- 🔘 Filter tabs -->
+     <!-- Filter tabs -->
       <div class="flex justify-center gap-2 mb-10">
         <button
-          v-for="f in filters"
+          v-for="f in filterKeys"
           :key="f"
           @click="active = f"
           :class="
@@ -78,7 +79,7 @@ const pill = (s) =>
           "
           class="px-5 py-2 rounded-full text-sm font-semibold transition duration-200"
         >
-          {{ f }}
+          {{ t(`operations.filters.${f}`) }}
         </button>
       </div>
 
@@ -100,7 +101,7 @@ const pill = (s) =>
               :class="pill(p.status)"
               class="absolute top-4 left-4 text-xs font-bold rounded-full px-3 py-1 shadow"
             >
-              {{ p.status }}
+              {{ t(`operations.filters.${p.status}`) }}
             </span>
           </div>
 
@@ -126,12 +127,9 @@ const pill = (s) =>
 
       <!-- View all -> right-aligned, matches News + Accomplishments -->
       <div class="mt-8 flex justify-end">
-        <a
-          href="#"
-          class="inline-flex items-center gap-1.5 text-blue-700 font-semibold text-sm hover:gap-2.5 transition-all"
-        >
-          View all programs <ArrowUpRight class="w-4 h-4" />
-        </a>
+        <a href="#" class="inline-flex items-center gap-1.5 text-blue-700 font-semibold text-sm hover:gap-2.5 transition-all">
+  {{ t('operations.viewAll') }} <ArrowUpRight class="w-4 h-4" />
+</a>
       </div>
     </div>
   </section>

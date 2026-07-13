@@ -1,49 +1,54 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Calendar, ArrowRight, ArrowUpRight } from 'lucide-vue-next'
 import SectionHeader from '@/components/SectionHeading.vue'
 
-// 📰 News items — first one (featured) renders large; the rest fill the side list.
-// Use DOUBLE quotes for any text containing apostrophes!
-const news = [
+const { t } = useI18n()
+
+// icon/color/date/img stay hardcoded — only text goes through i18n
+const newsMeta = [
   {
-    category: 'Relief',
+    key: 'foodRelief',
+    categoryKey: 'relief',
     color: 'bg-red-100 text-red-600',
     date: 'June 15, 2026',
-    title: 'Emergency Food Relief Distribution for Flood-Affected Families',
-    excerpt:
-      'MSWDO Initao successfully distributed food packs and relief goods to 248 families affected by the recent flooding in low-lying barangays, ensuring no household was left behind.',
     img: '/src/assets/news/food-relief.jpg',
   },
   {
-    category: 'Health',
+    key: 'medicalMission',
+    categoryKey: 'health',
     color: 'bg-blue-100 text-blue-600',
     date: 'June 10, 2026',
-    title: 'Free Medical and Dental Mission in Barangay Jampason',
-    excerpt:
-      'In partnership with the Municipal Health Office, a medical and dental mission served over 300 residents.',
     img: '/src/assets/news/medical.jpg',
   },
   {
-    category: 'Pension',
+    key: 'socialPension',
+    categoryKey: 'pension',
     color: 'bg-green-100 text-green-600',
     date: 'June 3, 2026',
-    title: 'Social Pension Payout for Indigent Senior Citizens — 2nd Quarter 2026',
-    excerpt: 'A total of 412 indigent senior citizens received their 2nd quarter social pension.',
     img: '/src/assets/news/socialpension.jpg',
   },
   {
-    category: 'Youth',
+    key: 'cashForWork',
+    categoryKey: 'youth',
     color: 'bg-amber-100 text-amber-600',
     date: 'May 28, 2026',
-    title: 'DSWD KC Cash-for-Work Payout for Initao Graduates',
-    excerpt: 'College graduates and graduating students received their Cash-for-Work grants.',
     img: '/src/assets/news/culmination.jpg',
   },
 ]
 
-const featured = computed(() => news[0]) // the lead story (big card)
-const rest = computed(() => news.slice(1, 4)) // up to 3 items in the side list
+const news = computed(() =>
+  newsMeta.map((n) => ({
+    ...n,
+    category: t(`news.categories.${n.categoryKey}`),
+    title: t(`news.items.${n.key}.title`),
+    excerpt: t(`news.items.${n.key}.excerpt`),
+  }))
+)
+
+const featured = computed(() => news.value[0])
+const rest = computed(() => news.value.slice(1, 4))
 </script>
 
 <template>
@@ -54,10 +59,10 @@ const rest = computed(() => news.slice(1, 4)) // up to 3 items in the side list
   >
     <div class="max-w-6xl mx-auto">
       <SectionHeader
-        eyebrow="LATEST"
-        title="News & Updates"
-        subtitle="Fresh announcements, advisories, and event recaps from the MSWDO Initao."
-      />
+          :eyebrow="t('news.section.eyebrow')"
+          :title="t('news.section.title')"
+          :subtitle="t('news.section.subtitle')"
+        />
 
       <!-- 2-column layout: BIG featured story (left) + compact list (right) -->
       <div class="grid lg:grid-cols-2 gap-8">
@@ -86,11 +91,9 @@ const rest = computed(() => news.slice(1, 4)) // up to 3 items in the side list
             <p class="text-slate-500 text-sm leading-relaxed line-clamp-3">
               {{ featured.excerpt }}
             </p>
-            <span
-              class="mt-auto pt-4 inline-flex items-center gap-1 text-blue-700 font-semibold text-sm"
-            >
-              Read more <ArrowRight class="w-4 h-4 group-hover:translate-x-1 transition" />
-            </span>
+           <span class="mt-auto pt-4 inline-flex items-center gap-1 text-blue-700 font-semibold text-sm">
+            {{ t('news.readMore') }} <ArrowRight class="w-4 h-4 group-hover:translate-x-1 transition" />
+          </span>
           </div>
         </article>
 
@@ -128,12 +131,9 @@ const rest = computed(() => news.slice(1, 4)) // up to 3 items in the side list
           </article>
 
           <!-- View all -> right-aligned, matches your Accomplishments button vibe -->
-          <a
-            href="#"
-            class="mt-2 self-end inline-flex items-center gap-1.5 text-blue-700 font-semibold text-sm hover:gap-2.5 transition-all"
-          >
-            View all news <ArrowUpRight class="w-4 h-4" />
-          </a>
+          <a href="#" class="mt-2 self-end inline-flex items-center gap-1.5 text-blue-700 font-semibold text-sm hover:gap-2.5 transition-all">
+  {{ t('news.viewAll') }} <ArrowUpRight class="w-4 h-4" />
+</a>
         </div>
       </div>
     </div>
