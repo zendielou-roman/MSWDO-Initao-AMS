@@ -25,7 +25,7 @@ const stats = computed(() => [
 
 const awardsMeta = [
   { key: 'centenariansAct', year: '2025', icon: HandCoins, img: '/src/assets/accomplishments/elderly.jpg' },
-  { key: 'sfpAward', year: '2025', icon: Award, img: '/src/assets/accomplishments/award.jpg', featured: true },
+  { key: 'sfpAward', year: '2025', icon: Award, img: '/src/assets/accomplishments/award.jpg', featured: true, imgPosition: 'object-[50%_20%]' }, // ← added
   { key: 'zeroHunger', year: '2024', icon: HeartHandshake, img: '/src/assets/accomplishments/food-assistance.jpg' },
   { key: 'slpMicroenterprise', year: '2024', icon: Sprout, img: '/src/assets/accomplishments/livelihood.jpg' },
   { key: 'childProtection', year: '2023', icon: ShieldCheck, img: '/src/assets/accomplishments/child-protection.jpg' },
@@ -90,14 +90,15 @@ const visibleAwards = computed(() => (showAll.value ? awards.value : awards.valu
           <article
             v-for="award in visibleAwards"
             :key="award.title"
-            class="group flex flex-col rounded-2xl bg-white/5 border border-white/10 overflow-hidden transition duration-300 hover:bg-white/10 hover:-translate-y-1 hover:border-amber-400/50 hover:shadow-lg cursor-default"
+            @click="openModal(award)"
+            class="group flex flex-col rounded-2xl bg-white/5 border border-white/10 overflow-hidden transition duration-300 hover:bg-white/10 hover:-translate-y-1 hover:border-amber-400/50 hover:shadow-lg cursor-pointer"
           >
             <!-- PHOTO banner with floating year badge + category icon -->
             <div class="relative h-40 overflow-hidden shrink-0">
               <img
                 :src="award.img"
                 :alt="award.title"
-                class="w-full h-full object-cover transition duration-500 group-hover:scale-105"
+                :class="['w-full h-full object-cover transition duration-500 group-hover:scale-105', award.imgPosition || 'object-center']"
               />
               <!-- dark gradient so badges stay readable over any photo -->
               <div class="absolute inset-0 bg-gradient-to-t from-[#16245a]/80 to-transparent"></div>
@@ -163,11 +164,11 @@ const visibleAwards = computed(() => (showAll.value ? awards.value : awards.valu
       >
         <div
           v-if="selectedAward"
-          class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
+          class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4 py-95"
           @click.self="closeModal"
         >
           <div
-            class="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden text-left"
+            class="relative w-full max-w-5xl max-h-[85vh] overflow-y-auto bg-white rounded-2xl shadow-2xl overflow-hidden text-left"
           >
             <!-- X close button, floats over the image -->
             <button
@@ -175,16 +176,15 @@ const visibleAwards = computed(() => (showAll.value ? awards.value : awards.valu
               aria-label="Close"
               class="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white/90 text-slate-700 hover:bg-white transition"
             >
-            {{ t('accomplishments.close') }}
               <X class="w-4 h-4" />
             </button>
 
             <!-- Photo banner with year badge -->
-            <div class="relative h-48 sm:h-56 overflow-hidden shrink-0">
+            <div class="relative h-50 sm:h-70 overflow-hidden shrink-0">
               <img
                 :src="selectedAward.img"
                 :alt="selectedAward.title"
-                class="w-full h-full object-cover"
+                :class="['w-full h-full object-cover', selectedAward.imgPosition || 'object-center']"
               />
               <span
                 class="absolute top-3 left-3 bg-amber-400 text-[#16245a] text-xs font-bold rounded-full px-2.5 py-0.5"
