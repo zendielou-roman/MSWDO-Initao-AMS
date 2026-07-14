@@ -406,7 +406,7 @@ export default {
     },
     milestonesLabel: 'Recent Milestones',
     showMore: 'Show more accomplishments',
-    showLess: 'Show less',
+    showLess: 'Show Less',
     readMore: 'Read more',
     close: 'Close',
     items: {
@@ -442,11 +442,14 @@ export default {
   },
 
   news: {
+  placeholder: 'Select an announcement from the list to read the full bulletin. Stay informed about the latest social welfare programs, relief operations, and community events.',
+  readLatest: 'Read the latest update',
   section: {
     eyebrow: 'LATEST',
     title: 'News & Updates',
     subtitle: 'Fresh announcements, advisories, and event recaps from the MSWDO Initao.',
   },
+  
   readMore: 'Read more',
   viewAll: 'View all news',
   categories: {
@@ -458,7 +461,7 @@ export default {
   items: {
     foodRelief: {
       title: 'Emergency Food Relief Distribution for Flood-Affected Families',
-      excerpt: 'MSWDO Initao successfully distributed food packs and relief goods to 248 families affected by the recent flooding in low-lying barangays, ensuring no household was left behind.',
+      excerpt: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi faucibus nisi quis tempor blandit. Praesent feugiat est at leo accumsan venenatis at in ligula. Suspendisse potenti. Nullam venenatis ultrices porta. Proin convallis interdum ligula id dictum. Curabitur non aliquam nunc. Sed mattis, ipsum nec aliquet fermentum, diam ipsum varius tortor, sed blandit odio justo vitae risus. \nNulla sed convallis dolor, nec aliquet magna. Suspendisse cursus nec turpis vel feugiat. Sed accumsan lorem nulla, vel interdum dolor sodales sed. Duis felis lacus, commodo ac risus ac, lobortis blandit orci. Donec vitae sem blandit, placerat purus lacinia, lobortis ex. Pellentesque pharetra consectetur mattis. Nunc elementum neque nisi, a faucibus eros accumsan a. Donec ut odio facilisis, vehicula metus et, accumsan tortor. Donec consectetur nec nibh a facilisis. Vivamus eget augue leo. In hac habitasse platea dictumst. Ut aliquet, ligula in viverra luctus, enim lacus pulvinar ex, vel tristique enim eros vitae lacus. Curabitur accumsan tellus a eleifend hendrerit. Nulla pulvinar blandit metus, non dapibus orci commodo non. Maecenas laoreet in tellus at euismod.\nPellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Phasellus aliquam massa orci, eget semper tortor auctor et. Aliquam sed nulla eget elit auctor consectetur. Sed suscipit rhoncus imperdiet. Integer viverra rutrum nunc. Ut viverra, metus ac rutrum interdum, nisi mi malesuada enim, id pretium ante odio et mi. Praesent mollis leo in tincidunt suscipit. Pellentesque commodo laoreet arcu ut ultricies. Donec porttitor velit a placerat consequat. Integer ullamcorper gravida urna, faucibus efficitur enim congue vel. Vivamus non ex rhoncus nunc aliquet tempus nec quis felis.\nMaecenas auctor porta efficitur. Interdum et malesuada fames ac ante ipsum primis in faucibus. Etiam sodales sed sapien nec vulputate. Pellentesque scelerisque bibendum risus, sed efficitur quam elementum vitae. Duis iaculis sem id vulputate tristique. Ut rutrum enim et sapien pharetra sollicitudin. Pellentesque in ipsum est. Praesent semper diam mi, eu cursus augue sodales at. Sed id leo vitae mauris pulvinar aliquet in ut tortor.',
     },
     medicalMission: {
       title: 'Free Medical and Dental Mission in Barangay Jampason',

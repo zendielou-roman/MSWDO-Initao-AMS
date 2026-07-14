@@ -470,7 +470,7 @@ accomplishments: {
 
   milestonesLabel: 'Mga Kamakailang Tagumpay',
   showMore: 'Ipakita ang iba pang mga nagawa',
-  showLess: 'Ipakita nang mas kaunti',
+  showLess: 'Show Less',
   readMore: 'Magbasa pa',
   close: 'Isara',
 
@@ -513,8 +513,10 @@ accomplishments: {
 },
 
 news: {
+  placeholder: 'Pumili ng anunsyo mula sa listahan upang mabasa ang buong bulletin. Manatiling updated sa mga pinakabagong programang panlipunan, relief operations, at aktibidad sa komunidad.',
+  readLatest: 'Basahin ang Pinakabagong Update',
   section: {
-    eyebrow: 'PINAKABAGO',
+    eyebrow: 'LATEST',
     title: 'Balita at Mga Anunsyo',
     subtitle: 'Mga pinakabagong anunsyo, abiso, at ulat ng mga aktibidad mula sa MSWDO Initao.',
   },
