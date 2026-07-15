@@ -12,7 +12,6 @@ const quickLinks = computed(() => [
   { label: t('footer.links.home'), href: '#home' },
   { label: t('footer.links.news'), href: '#news' },
   { label: t('footer.links.about'), href: '#about' },
-  { label: t('footer.links.programs'), href: '#operations' },
   { label: t('footer.links.dswd'), href: 'https://www.dswd.gov.ph', external: true },
   { label: t('footer.links.municipal'), href: '#home' },
 ])

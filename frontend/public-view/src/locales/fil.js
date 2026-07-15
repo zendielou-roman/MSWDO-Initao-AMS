@@ -674,22 +674,117 @@ operations: {
       hoursLine2: '8:00 AM – 12 NN · 1:00 – 5:00 PM',
       facebookText: 'facebook.com/mswdo.initao',
     },
+    form: {
+  whatsNext: 'Ano ang Susunod?',
+  whatsNextTitle: 'Mula sa iyong mensahe hanggang sa aming tugon',
+
+  steps: {
+    submit: {
+      title: 'Pagsusumite',
+      body: 'Punan ang form nang may kumpletong impormasyon hangga\'t maaari. Makakatanggap ka agad ng kumpirmasyon sa screen.'
+    },
+
+    review: {
+      title: 'Pagsusuri',
+      body: 'Ang iyong mensahe ay ipapadala sa kaukulang kawani ng MSWDO at itatala para sa kaukulang aksyon.'
+    },
+
+    reply: {
+      title: 'Pagtugon',
+      body: 'Maaari mong asahan ang aming tugon sa loob ng ilang araw o mas maaga kung agarang usapin.'
+    },
+  },
+
+  privacyNote: 'Ang iyong personal na impormasyon ay mananatiling kumpidensyal at gagamitin lamang para sa pagproseso ng iyong kahilingan, alinsunod sa Data Privacy Act at R.A. 11032.',
+
+  urgentCall: 'May agarang concern? Tumawag sa aming hotline.',
+
+  heading: 'Magpadala ng Mensahe',
+
+  subheading: 'Ang mga patlang na may (*) ay kinakailangang sagutan.',
+
+  name: 'Pangalan',
+
+  anonymousLabel: 'Magsumite nang hindi nagpapakilala',
+
+  anonymousPlaceholder: 'Anonymous',
+
+  namePlaceholder: 'ex. Juan Dela Cruz',
+
+  nameError: 'Mangyaring ilagay ang iyong pangalan o piliin ang "Magsumite nang hindi nagpapakilala."',
+
+  barangay: 'Barangay',
+
+  barangaySelect: 'Pumili ng Barangay',
+
+  barangayError: 'Kinakailangan ang Barangay.',
+  barangayOther: "Other (not listed)",
+  barangayOtherLabel: "Other",
+  barangayOtherPlaceholder: "Enter your barangay or location",
+
+  email: 'Email',
+
+  optional: '(opsyonal)',
+
+  mobile: 'Mobile Number',
+
+  mobilePlaceholder: 'ex. 09171234567',
+
+  contactError: 'Magbigay ng email o mobile number upang makapagpadala kami ng tugon.',
+
+  mobileLengthError: 'Ang mobile number ay dapat may 11 digit.',
+
+  contactHint: 'Magbigay ng kahit isang paraan ng pakikipag-ugnayan — email o mobile number.',
+
+  subject: 'Paksa',
+
+  subjectSelect: 'Pumili ng Paksa',
+
+  subjectError: 'Mangyaring pumili ng paksa.',
+
+  subjectOptions: {
+    general: 'Pangkalahatang Katanungan',
+    service: 'Kahilingan sa Serbisyo',
+    feedback: 'Feedback',
+    complaint: 'Reklamo laban sa Kawani',
+    other: 'Iba pa',
+  },
+
+  message: 'Mensahe',
+
+  messagePlaceholder: 'Paano kami makakatulong?',
+
+  messageError: 'Mangyaring ilarawan ang iyong concern.',
+
+  send: 'Ipadala ang Mensahe',
+
+  formError: 'Mangyaring kumpletuhin muna ang mga kinakailangang field bago isumite ang form.',
+
+  successTitle: 'Naipadala ang Mensahe!',
+
+  successBody: 'Maraming salamat sa pakikipag-ugnayan. Tutugunan namin ang iyong mensahe sa lalong madaling panahon.',
+
+  sendAnother: 'Magpadala ng Panibagong Mensahe',
+
+  needDetails: 'Kailangan mo ba ang impormasyon ng aming tanggapan?',
+
+  seeContactInfo: 'Tingnan ang Contact Information ↑',
+},
   },
   footer: {
     tagline: 'Naglilingkod sa mga mamamayan ng Initao, Misamis Oriental nang may malasakit, integridad, at propesyonalismo sa paghahatid ng mga serbisyong panlipunan.',
-    contactTitle: 'Impormasyon sa Pakikipag-ugnayan',
+    contactTitle: 'CONTACT INFORMATION',
     hoursTitle: 'Oras ng Tanggapan',
     hoursValue: 'Lunes – Biyernes, 8:00 AM – 5:00 PM',
-    hoursNote: 'Sarado sa weekends at public holidays',
-    linksTitle: 'Mga Maikling Link',
+    hoursNote: 'Sarado sa Weekends at Public Holidays',
+    linksTitle: 'Quick Links',
     links: {
-      home: 'Bahay',
-      news: 'Balita at Anunsyo',
+      home: 'Home',
+      news: 'Mga Balita at Anunsyo',
       about: 'Tungkol sa Tanggapan',
-      programs: 'Mga Programa at Operasyon',
       dswd: 'Opisyal na Website ng DSWD',
       municipal: 'Munisipal na Pamahalaan ng Initao',
     },
-    copyright: '© {year} MSWDO Initao, Misamis Oriental. Lahat ng karapatan ay nakalaan.',
+    copyright: '© {year} MSWDO Initao, Misamis Oriental. All Rights Reserved.',
   },
 }

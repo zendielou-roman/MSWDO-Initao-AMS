@@ -598,14 +598,15 @@ operations: {
     whatsNext: 'What happens next',
     whatsNextTitle: 'From your message to our response',
     steps: {
-      submit: { title: 'You submit', body: 'Fill out the form with as much detail as you can. You\u2019ll get an on-screen confirmation right away.' },
-      review: { title: 'We review', body: 'Your message is routed to the right MSWDO staff member and logged for follow-up.' },
-      reply: { title: 'You hear back', body: 'Expect a reply by email or call within 1 working day, sooner for urgent concerns.' },
+      submit: { title: 'You submit', body: 'Fill out the form with as much detail as you can and get an on-screen confirmation right away.' },
+      review: { title: 'We review', body: 'Your message is received in the office and logged for follow-up.' },
+      reply: { title: 'You hear back', body: 'Expect a response within a few working days or sooner for urgent concerns.' },
     },
     privacyNote: 'Your details are kept confidential and used only to process your request, in line with the Data Privacy Act and R.A. 11032.',
     urgentCall: 'Urgent? Call the hotline directly',
-    heading: 'Send us a message',
-    subheading: 'For inquiries, requests, or feedback. Required fields are marked',
+    heading: 'Send us a Message',
+    subheading: 'Required fields are marked',
+    tagline: "For inquiries, complaints, requests, or feedback.",
     name: 'Name',
     anonymousLabel: 'Submit anonymously',
     anonymousPlaceholder: 'Anonymous',
@@ -614,6 +615,9 @@ operations: {
     barangay: 'Barangay',
     barangaySelect: 'Select barangay',
     barangayError: 'Barangay is required.',
+    barangayOther: "Other (not listed)",
+    barangayOtherLabel: "Other",
+    barangayOtherPlaceholder: "Enter your barangay or location",
     email: 'Email',
     optional: '(optional)',
     mobile: 'Mobile Number',
@@ -642,99 +646,7 @@ operations: {
     needDetails: 'Need our office details instead?',
     seeContactInfo: 'See contact information ↑',
   },
-  form: {
-  whatsNext: 'Ano ang Susunod?',
-  whatsNextTitle: 'Mula sa iyong mensahe hanggang sa aming tugon',
-
-  steps: {
-    submit: {
-      title: 'Pagsusumite',
-      body: 'Punan ang form nang may kumpletong impormasyon hangga\'t maaari. Makakatanggap ka agad ng kumpirmasyon sa screen.'
-    },
-
-    review: {
-      title: 'Pagsusuri',
-      body: 'Ang iyong mensahe ay ipapadala sa kaukulang kawani ng MSWDO at itatala para sa kaukulang aksyon.'
-    },
-
-    reply: {
-      title: 'Pagtugon',
-      body: 'Maaari mong asahan ang tugon sa pamamagitan ng email o tawag sa loob ng 1 working day, o mas maaga kung agarang usapin.'
-    },
-  },
-
-  privacyNote: 'Ang iyong personal na impormasyon ay mananatiling kumpidensyal at gagamitin lamang para sa pagproseso ng iyong kahilingan, alinsunod sa Data Privacy Act at R.A. 11032.',
-
-  urgentCall: 'May agarang concern? Tumawag sa aming hotline.',
-
-  heading: 'Magpadala ng Mensahe',
-
-  subheading: 'Para sa mga katanungan, kahilingan, o feedback. Ang mga field na may (*) ay kinakailangang sagutan.',
-
-  name: 'Pangalan',
-
-  anonymousLabel: 'Magsumite nang hindi nagpapakilala',
-
-  anonymousPlaceholder: 'Anonymous',
-
-  namePlaceholder: 'hal. Juan Dela Cruz',
-
-  nameError: 'Mangyaring ilagay ang iyong pangalan o piliin ang "Magsumite nang hindi nagpapakilala."',
-
-  barangay: 'Barangay',
-
-  barangaySelect: 'Pumili ng Barangay',
-
-  barangayError: 'Kinakailangan ang Barangay.',
-
-  email: 'Email',
-
-  optional: '(opsyonal)',
-
-  mobile: 'Mobile Number',
-
-  mobilePlaceholder: 'hal. 09171234567',
-
-  contactError: 'Magbigay ng email o mobile number upang makapagpadala kami ng tugon.',
-
-  mobileLengthError: 'Ang mobile number ay dapat may 11 digit.',
-
-  contactHint: 'Magbigay ng kahit isang paraan ng pakikipag-ugnayan — email o mobile number.',
-
-  subject: 'Paksa',
-
-  subjectSelect: 'Pumili ng Paksa',
-
-  subjectError: 'Mangyaring pumili ng paksa.',
-
-  subjectOptions: {
-    general: 'Pangkalahatang Katanungan',
-    service: 'Kahilingan sa Serbisyo',
-    feedback: 'Feedback',
-    complaint: 'Reklamo laban sa Kawani',
-    other: 'Iba pa',
-  },
-
-  message: 'Mensahe',
-
-  messagePlaceholder: 'Paano kami makakatulong?',
-
-  messageError: 'Mangyaring ilarawan ang iyong concern.',
-
-  send: 'Ipadala ang Mensahe',
-
-  formError: 'Mangyaring kumpletuhin muna ang mga kinakailangang field bago isumite ang form.',
-
-  successTitle: 'Naipadala ang Mensahe!',
-
-  successBody: 'Maraming salamat sa pakikipag-ugnayan. Tutugunan namin ang iyong mensahe sa lalong madaling panahon.',
-
-  sendAnother: 'Magpadala ng Panibagong Mensahe',
-
-  needDetails: 'Kailangan mo ba ang impormasyon ng aming tanggapan?',
-
-  seeContactInfo: 'Tingnan ang Contact Information ↑',
-},
+  
   },
 
   footer: {
@@ -742,13 +654,12 @@ operations: {
     contactTitle: 'Contact Information',
     hoursTitle: 'Office Hours',
     hoursValue: 'Monday – Friday, 8:00 AM – 5:00 PM',
-    hoursNote: 'Closed on weekends & public holidays',
+    hoursNote: 'Closed on Weekends & Public Holidays',
     linksTitle: 'Quick Links',
     links: {
       home: 'Home',
       news: 'News & Announcements',
       about: 'About the Office',
-      programs: 'Programs & Operations',
       dswd: 'DSWD Official Website',
       municipal: 'Municipal Government of Initao',
     },
