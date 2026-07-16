@@ -17,15 +17,13 @@ import SectionHeading from './SectionHeading.vue'
 // Fallback no-op keeps the component safe if it isn't provided.
 const goToContact = inject('goToContact', () => {})
 
-// ---- Google Maps embed (Initao, Misamis Oriental) ----
+// Text-search embed — resolves to a plain pin (no business rating attached)
 const mapEmbed =
-  'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31553.476374870576' +
-  '!2d124.29012895!3d8.4466145!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1' +
-  '!3m3!1m2!1s0x32ff8d1451f6c3d1%3A0x2d5b8b3e00e59bf5' +
-  '!2sInitao%2C%20Misamis%20Oriental!5e0!3m2!1sen!2sph!4v1702000000000!5m2!1sen!2sph'
+  'https://www.google.com/maps?q=' +
+  encodeURIComponent('New Municipal Hall of Initao, Jampason, Initao, Misamis Oriental') +
+  '&output=embed'
 
-// "Get Directions" deep link (opens native Google Maps).
-const gmaps = 'https://maps.google.com/?q=Initao,Misamis+Oriental'
+const gmaps = 'https://www.google.com/maps?q=New+Municipal+Hall+of+Initao&ll=8.508564090204711,124.30375781410106'
 
 // ---- Contact rows (data-driven → clean, DRY markup) ----
 // Each icon is a Lucide component rendered via <component :is>.
@@ -62,11 +60,10 @@ const details = [
       <!-- Uniform section heading (canonical SectionHeading) -->
       <SectionHeading
         class="mb-12"
-        eyebrow="GET IN TOUCH"
-        title="Contact Information"
-        subtitle="For inquiries, complaints, or assistance, reach the MSWDO Initao through any channel below."
+        :eyebrow="t('contact.section.eyebrow')"
+        :title="t('contact.section.title')"
+        :subtitle="t('contact.section.subtitle')"
       />
-
       <!-- ===== UNIFIED CONTACT CARD ===== -->
       <!-- One rounded, elevated card: info panel (left) + map (right).
            ring + shadow lift it cleanly off the slate background. -->
@@ -135,17 +132,17 @@ const details = [
           </a>
         </aside>
 
-        <!-- ───── RIGHT · GOOGLE MAP ───── -->
-        <div class="relative min-h-[380px] bg-slate-100 lg:min-h-[560px]">
-          <iframe
-            :src="mapEmbed"
-            title="Map of MSWDO Initao, Misamis Oriental"
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-            allowfullscreen
-            class="absolute inset-0 h-full w-full border-0"
-          ></iframe>
-        </div>
+       <!-- ───── RIGHT · GOOGLE MAP ───── -->
+    <div class="relative min-h-[380px] bg-slate-100 lg:min-h-[560px]">
+      <iframe
+        :src="mapEmbed"
+        title="Map of MSWDO Initao, Misamis Oriental"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        allowfullscreen
+        class="absolute inset-0 h-full w-full border-0"
+      ></iframe>
+    </div>
       </div>
 
       <!-- CLICKABLE COMPLAINT BANNER -->
@@ -165,7 +162,7 @@ const details = [
           </p>
         </div>
         <!-- arrow hint -->
-        <span class="ml-auto text-rose-400 text-lg self-center">›</span>
+        
       </button>
     </div>
   </section>

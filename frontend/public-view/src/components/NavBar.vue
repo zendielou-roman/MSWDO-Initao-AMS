@@ -40,6 +40,7 @@ const showLocaleMenu = ref(false)
 const localeOptions = [
   { value: 'en', label: 'English' },
   { value: 'fil', label: 'Filipino' },
+  { value: 'ceb', label: 'Cebuano' },
 ]
 
 let closeTimer = null

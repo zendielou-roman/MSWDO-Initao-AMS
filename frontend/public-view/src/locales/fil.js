@@ -5,7 +5,7 @@ export default {
     charter: "CITIZEN'S CHARTER",
     accomplishments: 'MGA NAGAWA',
     news: 'MGA BALITA AT ANUNSYO',
-    about: 'TUNGKOL SA AMIN',
+    about: 'TUNGKOL SA TANGGAPAN',
     contact: 'MAKIPAG-UGNAYAN',
   },
   search: {
@@ -19,7 +19,7 @@ export default {
       'Ang Municipal Social Welfare and Development Office (MSWDO) ng Initao, Misamis Oriental ay nakatuon sa pagpapabuti ng kalagayan ng bawat mamamayan sa pamamagitan ng mga serbisyong panlipunan. Layunin ng aming tanggapan na suportahan at tulungan ang mga indibidwal at pamilya, isulong ang pantay na oportunidad, at hikayatin ang patuloy na pag-unlad ng komunidad. Nagsisikap kaming magbigay ng de-kalidad at maaasahang serbisyo upang matiyak na ang bawat mamamayan ay may pagkakataong umunlad at mapabuti ang kanilang pamumuhay.',
     cta: {
       primary: 'Tingnan ang mga Serbisyo',
-      secondary: 'Alamin Pa',
+      secondary: 'Makipag-ugnayan',
     },
     stats: {
       beneficiaries: 'Mga Benepisyaryong Naserbisyuhan',
@@ -327,7 +327,7 @@ soloParent: {
 
     processingTime: {
       title: 'Oras ng Pagproseso',
-      text: 'Simpleng transaksyon: 3 working days \nKomplikadong transaksyon: 7 working days \nLubhang teknikal na transaksyon: 20 working days',
+      text: 'Mas mabilis na napoproseso ang mga simpleng transaksyon, habang ang mga komplikado at lubhang teknikal na transaksyon ay maaaring mangailangan ng mas mahabang panahon para sa wastong pagsusuri at pagproseso.',
     },
 
     documentary: {
@@ -646,9 +646,9 @@ operations: {
 
   contact: {
     section: {
-      eyebrow: 'KUMUSTA KA',
-      title: 'Impormasyon sa Pakikipag-ugnayan',
-      subtitle: 'Para sa mga katanungan, reklamo, o tulong, makipag-ugnayan sa MSWDO Initao sa alinmang channel sa ibaba.',
+      eyebrow: 'MAKIPAG-UGNAYAN',
+title: 'Contact Information',
+subtitle: 'Para sa mga katanungan, reklamo, o kahilingan ng tulong, maaari kaming makontak sa pamamagitan ng alinman sa mga sumusunod na paraan.',
     },
     getDirections: 'Kunin ang Direksyon',
     complaint: {

@@ -21,7 +21,7 @@ export default {
     
     cta: {
       primary: 'Explore Services',
-      secondary: 'Learn More',
+      secondary: 'Get in Touch',
     },
 
     stats: {
@@ -285,7 +285,7 @@ export default {
       
       processingTime: {
         title: 'Processing Time',
-        text: 'Simple transactions: 3 working days. Complex transactions: 7 working days. Highly technical: 20 working days.',
+        text: 'Simple transactions are generally completed more quickly, while complex and highly technical transactions may require additional time for proper review and processing.',
       },
       documentary: {
         title: 'Documentary Requirements',
