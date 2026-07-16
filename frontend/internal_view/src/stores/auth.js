@@ -1,60 +1,42 @@
-  // src/stores/auth.js
-  // Pinia auth store — dummy-data login only (no backend yet).
-  // Matches email fuzzily (case-insensitive, trimmed) and password exactly against dummyUsers.js.
-  // Also resolves which "side" of the app (admin vs staff) a user belongs to, so the router
-  // can send them to the right layout and home page after login.
-  
-  import { defineStore } from 'pinia'
-  import { dummyUsers, getUserSide } from '@/data/DummyUsers'
-  
-  export const useAuthStore = defineStore('auth', {
-    state: () => ({
-      user: null, // { id, name, email, role, status, ... } — no password kept in state
-    }),
-  
-    getters: {
-      isLoggedIn: (state) => !!state.user,
-  
-      // 'admin' | 'staff' | 'oic' | null
-      side: (state) => (state.user ? getUserSide(state.user.role) : null),
-  
-      isAdmin: (state) => !!state.user && getUserSide(state.user.role) === 'admin',
-      isStaff: (state) => !!state.user && getUserSide(state.user.role) === 'staff',
-      isOIC: (state) => !!state.user && getUserSide(state.user.role) === 'oic',
-  
-      // Where a logged-in user should land — used by the router guard and the login redirect.
-      homePath: (state) => {
-        if (!state.user) return '/login'
-        const side = getUserSide(state.user.role)
-        if (side === 'admin') return '/dashboard'
-        if (side === 'oic') return '/oic/dashboard'
-        return '/staff/dashboard'
-      },
+// src/stores/auth.js
+import { defineStore } from 'pinia'
+import { roleConfig } from '@/config/roleConfig'
+import { mockUsers } from '@/data/mockUsers'
+
+export const useAuthStore = defineStore('auth', {
+  state: () => ({
+    user: JSON.parse(localStorage.getItem('mswdo_user')) || null,
+  }),
+
+  getters: {
+    isAuthenticated: (state) => !!state.user,
+    canApprove: (state) => (state.user ? roleConfig[state.user.role].canApprove : false),
+    sidebarItems: (state) => (state.user ? roleConfig[state.user.role].sidebar : []),
+    roleLabel: (state) => (state.user ? roleConfig[state.user.role].label : ''),
+  },
+
+  actions: {
+    // Synchronous mock login — matches LoginView.vue's `const result = auth.login(...)` call.
+    // Swap the inside for a real Axios POST later; keep the same { success, message } shape
+    // so LoginView.vue doesn't need to change when the backend is ready.
+    login(email, password) {
+      const found = mockUsers.find(
+        (u) => u.email.toLowerCase() === email.trim().toLowerCase() && u.password === password,
+      )
+
+      if (!found) {
+        return { success: false, message: 'Invalid email or password.' }
+      }
+
+      const { password: _pw, ...safeUser } = found
+      this.user = safeUser
+      localStorage.setItem('mswdo_user', JSON.stringify(safeUser))
+      return { success: true }
     },
-  
-    actions: {
-      // Returns { success: true } or { success: false, message } — LoginView shows the message.
-      login(email, password) {
-        const normalizedEmail = (email || '').trim().toLowerCase()
-  
-        const match = dummyUsers.find((u) => u.email.toLowerCase() === normalizedEmail)
-  
-        if (!match || match.password !== password) {
-          return { success: false, message: 'Invalid email or password.' }
-        }
-        if (match.status === 'Inactive') {
-          return { success: false, message: 'This account has been deactivated.' }
-        }
-  
-        // Keep everything except the password in the logged-in user object.
-        const { password: _password, ...safeUser } = match
-        this.user = safeUser
-  
-        return { success: true }
-      },
-  
-      logout() {
-        this.user = null
-      },
+
+    logout() {
+      this.user = null
+      localStorage.removeItem('mswdo_user')
     },
-  })
+  },
+})

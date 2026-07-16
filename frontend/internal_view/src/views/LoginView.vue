@@ -1,251 +1,315 @@
 <script setup>
-// ===== IMPORTS =====
-// 'ref' makes variables Vue watches — change one and the screen updates automatically.
 import { ref } from 'vue'
-// Router lets us send the user to another page after a successful login.
 import { useRouter } from 'vue-router'
-// Our fake-login store (checks dummy accounts, remembers who's logged in).
 import { useAuthStore } from '@/stores/auth'
-// Icons we actually use on this page. (MapPin removed — the map is now a real image.)
-import { User, Lock, ShieldCheck, Headphones, Clock, ShieldQuestion } from 'lucide-vue-next'
+import {
+  ArrowRight,
+  Clock3,
+  Eye,
+  EyeOff,
+  Headphones,
+  LockKeyhole,
+  ShieldCheck,
+  UserRound,
+} from 'lucide-vue-next'
 
-// ===== HELPERS =====
-const router = useRouter() // lets us call router.push('/dashboard')
-const auth = useAuthStore() // gives us auth.login(), auth.user, etc.
+const router = useRouter()
+const auth = useAuthStore()
 
-// ===== REACTIVE VARIABLES (the form's memory) =====
-const email = ref('') // whatever the user types in the email box
-const password = ref('') // whatever the user types in the password box
-const keepSignedIn = ref(false) // is the "keep me signed in" box ticked?
-const errorMsg = ref('') // shows a red message if login fails
+const email = ref('')
+const password = ref('')
+const showPassword = ref(false)
+const keepSignedIn = ref(false)
+const errorMsg = ref('')
+const isSubmitting = ref(false)
 
-// ===== THE SIGN-IN FUNCTION =====
-// Runs on "Sign In" click. Checks the typed email/password against dummy accounts.
-// LATER: replace auth.login(...) with a real Axios POST to the Laravel backend.
 function handleSignIn() {
-  errorMsg.value = '' // clear any old error first
-  const result = auth.login(email.value, password.value) // returns { success: true } or { success: false, message }
-  if (result.success) {
-    router.push('/dashboard') // 👈 send them into the internal view
-  } else {
-    errorMsg.value = result.message || 'Invalid email or password.' // show the error
+  errorMsg.value = ''
+  isSubmitting.value = true
+
+  try {
+    const result = auth.login(email.value.trim(), password.value)
+
+    if (result.success) {
+      router.push('/dashboard')
+      return
+    }
+
+    errorMsg.value = result.message || 'We could not sign you in. Check your details and try again.'
+  } catch {
+    errorMsg.value = 'Something went wrong. Please try again or contact the system administrator.'
+  } finally {
+    isSubmitting.value = false
   }
 }
 </script>
 
 <template>
-  <!-- ROOT WRAPPER = the whole screen (the big navy box) -->
-  <div class="relative min-h-screen w-full overflow-hidden bg-[#001d4c]">
-    <!-- LAYER 1: GRADIENT (soft depth) -->
+  <main class="min-h-dvh overflow-x-hidden bg-[#062554] text-slate-900 lg:h-dvh lg:overflow-hidden">
+    <!-- Ambient background layers -->
+    <div class="pointer-events-none fixed inset-0" aria-hidden="true">
+      <div
+        class="absolute inset-0 bg-[radial-gradient(circle_at_16%_22%,#16457e_0%,#062554_42%,#031a3d_100%)]"
+      ></div>
+      <div
+        class="absolute -left-32 top-1/2 h-96 w-96 -translate-y-1/2 rounded-full bg-sky-400/10 blur-3xl"
+      ></div>
+      <div class="absolute -right-24 top-12 h-80 w-80 rounded-full bg-amber-300/10 blur-3xl"></div>
+      <div
+        class="absolute inset-0 opacity-[0.20] mix-blend-soft-light [background-image:url('/woven.jpg')] [background-repeat:repeat] [background-size:260px_auto]"
+      ></div>
+    </div>
+
     <div
-      class="absolute inset-0"
-      style="background: radial-gradient(circle at 30% 40%, #012a63 0%, #001d4c 60%, #001336 100%)"
-    ></div>
+      class="relative mx-auto flex min-h-dvh max-w-[1600px] flex-col lg:h-dvh lg:min-h-0 lg:grid lg:grid-cols-[minmax(0,1.08fr)_minmax(460px,0.92fr)]"
+    >
+      <!-- On small screens, sign-in comes first so staff can act immediately. -->
+      <section
+        class="order-2 flex items-center px-5 pb-10 pt-2 sm:px-8 lg:order-1 lg:min-h-0 lg:px-16 lg:py-8 xl:px-24"
+      >
+        <div class="relative mx-auto w-full max-w-2xl lg:mx-0">
+          <img
+            src="/initao-map.png"
+            alt=""
+            class="pointer-events-none absolute -right-50 top-1/2 hidden w-[31rem] -translate-y-1/2 select-none object-contain opacity-[0.12] grayscale lg:block"
+          />
 
-    <!-- LAYER 2: WOVEN TEXTURE (the fabric pattern) -->
-    <div
-      class="absolute inset-0 opacity-[0.30] mix-blend-soft-light"
-      style="
-        background-image: url('/woven.jpg');
-        background-repeat: repeat;
-        background-size: 300px auto;
-      "
-    ></div>
+          <div class="relative">
+            <div class="flex items-center gap-1 sm:gap-3">
+              <img
+                src="/mswdo-seal.png"
+                alt="Municipal Social Welfare and Development Office seal"
+                class="h-24 w-24 shrink-0 object-contain sm:h-28 sm:w-28"
+              />
 
-    <!-- ============================================================
-         CONTENT GRID = splits the screen into 2 columns on big screens
-         (1 column on phones).
-    ============================================================= -->
-    <div class="relative z-10 grid min-h-screen grid-cols-1 lg:grid-cols-2">
-      <!-- ========================= LEFT SIDE: BRANDING ========================= -->
-      <!-- 'relative' here is important: the map <img> below positions against THIS column. -->
-      <section class="relative flex flex-col px-10 py-12 sm:px-14 lg:px-16">
-        <!-- MAP IMAGE (clear — no box, no background, no ring)
-             POSITION knobs:
-               -right-40  -> distance from the right edge (negative = pushed off to the right)
-               top-[52%]  -> vertical spot (bigger % = lower)
-             SIZE knobs:
-               h-120 w-120 -> height & width (change together)
-             VISIBILITY:
-               hidden lg:block -> hidden on phones, shows on big screens
-             opacity-30 -> faded (raise/lower for more/less transparency)
-             pointer-events-none -> clicks pass through it (decorative only) -->
-        <img
-          src="/initao-map.png"
-          alt="Map of Initao"
-          class="pointer-events-none absolute -right-40 top-[52%] hidden h-120 w-120 -translate-y-1/2 object-contain opacity-30 lg:block"
-        />
+              <div class="min-w-0 -ml-0.5">
+                <!-- Top government label -->
+                <p
+                  class="font-display text-[0.62rem] -ml-4 tracking-[0.22em] text-white/65 sm:text-xs"
+                >
+                  REPUBLIC OF THE PHILIPPINES
+                </p>
 
-        <!-- MASTHEAD = logo + government text block, CENTERED -->
-        <div class="relative z-10 flex flex-col items-center gap-0 text-center">
-          <!-- THE LOGO (h-32 w-32 = size; object-contain keeps it from stretching) -->
-          <img src="/mswdo-logo.png" alt="MSWDO Logo" class="h-32 w-32 object-contain" />
+                <!-- Province and municipality -->
+                <p
+                  class="mt-1 -ml-4 font-display text-[0.69rem] leading-snug text-white/85 sm:text-xs"
+                >
+                  PROVINCE OF MISAMIS ORIENTAL
+                  <span class="px-1 text-amber-300">||</span>
+                  MUNICIPALITY OF INITAO
+                </p>
 
-          <!-- GOVERNMENT TEXT (each line sets its own font to match the prototype) -->
-          <div class="-mt-4 flex flex-col items-center gap-0.5">
-            <!-- Line 1: REPUBLIC OF THE PHILIPPINES (font-trajan = Cinzel lookalike) -->
-            <p class="font-trajan text-[0.7rem] tracking-[0.3em] text-white/55">
-              REPUBLIC OF THE PHILIPPINES
-            </p>
+                <!-- Office name -->
+                <!-- Change mt-1.5 to mt-1 if you also want the text lines closer vertically. -->
+                <p
+                  class="mt-1 -ml-4 text-lg font-display font-semibold uppercase tracking-[0.08em] text-white sm:text-sm"
+                >
+                  Municipal Social Welfare and Development Office
+                </p>
+              </div>
+            </div>
 
-            <!-- Line 2: province + gold divider + municipality -->
-            <p class="font-trajan mt-1 text-xs font-light leading-tight">
-              <span class="text-white/80">PROVINCE OF MISAMIS ORIENTAL</span>
-              <span class="text-white/40"> || </span>
-              <span class="text-white/80">MUNICIPALITY OF INITAO</span>
-            </p>
+            <!-- Main identity content: lower mt values move this entire area upward -->
+            <div class="mt-2 sm:mt-4">
+              <div class="mb-3 flex items-center gap-3">
+                <span class="text-xs font-bold uppercase tracking-[0.18em] text-amber-200">
+                  Welcome, MSWDO Team to
+                </span>
+              </div>
+            </div>
 
-            <!-- A thin horizontal divider line -->
-            <div class="mx-auto my-1 h-px w-full bg-white/20"></div>
+            <!-- Spacing between the welcome label and SAGOP title -->
+            <div class="mt-7 sm:mt-7">
+              <h1
+                class="font-anton text-6xl uppercase leading-[0.84] tracking-[0.04em] text-amber-400 sm:text-7xl lg:text-8xl"
+              >
+                SAGOP
+              </h1>
 
-            <!-- Line 3: office name (font-officeserif = Tinos, a Times lookalike) -->
-            <p class="font-officeserif text-base font-bold tracking-wide text-white sm:text-lg">
-              MUNICIPAL SOCIAL WELFARE AND DEVELOPMENT OFFICE
-            </p>
+              <p
+                class="mt-4 max-w-xl font-display text-lg font-semibold leading-snug text-white sm:text-xl"
+              >
+                System for Assistance Governance and Operations Processing
+              </p>
+
+              <p class="mt-4 max-w-xl text-sm leading-6 text-slate-100/70 sm:text-base">
+                A workspace for MSWDO Initao staff to manage diffrent social welfare programs,
+                applications, beneficiaries, and disbursements across the municipality.
+              </p>
+            </div>
+
+            <dl
+              class="mt-8 grid max-w-xl grid-cols-3 divide-x divide-white/15 border-y border-white/15 py-4 sm:mt-9 sm:py-5"
+            >
+              <div class="pr-3 sm:pr-5">
+                <dt class="font-display text-2xl text-amber-300 sm:text-3xl">450+</dt>
+                <dd class="mt-1 text-xs leading-4 text-white/65 sm:text-sm">
+                  Beneficiaries served
+                </dd>
+              </div>
+              <div class="px-3 sm:px-5">
+                <dt class="font-display text-2xl text-amber-300 sm:text-3xl">24</dt>
+                <dd class="mt-1 text-xs leading-4 text-white/65 sm:text-sm">Active programs</dd>
+              </div>
+              <div class="pl-3 sm:pl-5">
+                <dt class="font-display text-2xl text-amber-300 sm:text-3xl">16</dt>
+                <dd class="mt-1 text-xs leading-4 text-white/65 sm:text-sm">Barangays covered</dd>
+              </div>
+            </dl>
           </div>
-        </div>
-
-        <!-- BIG TITLE BLOCK (the giant gold SAGOP heading) -->
-        <div class="relative z-10 mt-4">
-          <!-- font-display = Anton; <br /> tags force the exact line breaks -->
-          <h1
-            class="font-display text-5xl uppercase leading-[1.1] tracking-[1px] text-amber-400 sm:text-[3.4rem]"
-          >
-            System for Assistance<br />
-            Governance and<br />
-            Operations Processing (SAGOP)
-          </h1>
-
-          <!-- The paragraph under the title -->
-          <p class="mt-2 max-w-lg text-sm font-light leading-relaxed text-white/50">
-            A unified workspace for MSWDO Initao staff to manage social welfare programs,
-            applications, beneficiaries, and disbursements across the 16 barangays of Initao,
-            Misamis Oriental.
-          </p>
         </div>
       </section>
 
-      <!-- ========================= RIGHT SIDE: LOGIN CARD ========================= -->
-      <section class="flex items-center justify-center px-6 py-12 sm:px-10">
-        <!-- THE WHITE CARD
-             max-w-[530px] = width cap | p-8 / sm:p-10 = inner padding | h-full = fills column height -->
+      <!-- Sign in panel -->
+      <section
+        class="order-1 flex items-center justify-center px-5 pb-8 pt-8 sm:px-8 sm:pt-10 lg:order-2 lg:min-h-0 lg:px-12 lg:py-6 xl:px-20"
+      >
         <div
-          class="h-full w-full max-w-[530px] rounded-2xl bg-white/90 p-8 shadow-2xl backdrop-blur sm:rounded-3xl sm:p-10"
+          class="w-full max-w-[480px] rounded-3xl border border-white/70 bg-white p-6 shadow-[0_24px_70px_rgba(0,12,36,0.32)] sm:p-7 lg:p-6"
         >
-          <!-- SHIELD ICON in a light grey circle (-mt-6 pulls the icon block UP) -->
-          <div class="-mt-6 mb-0 flex justify-center">
-            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100">
-              <ShieldCheck class="h-7 w-7 text-slate-700" />
-            </div>
+          <!-- mx-auto centers the shield icon horizontally -->
+          <div
+            class="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-[#0b4ea2]"
+          >
+            <ShieldCheck class="h-5 w-5" aria-hidden="true" />
           </div>
 
-          <!-- CARD TITLES (font-display = Anton; text-2xl = size) -->
-          <h2 class="text-center font-display text-2xl font-normal text-slate-800">
-            SIGN IN TO YOUR ACCOUNT
-          </h2>
-          <p class="mb-0 text-center text-xs uppercase tracking-widest text-[#001d4c]/60">
-            Authorized MSWDO personnel only
-          </p>
+          <div class="mt-4 text-center">
+            <p class="text-xs font-bold uppercase tracking-[0.16em] text-[#0b4ea2]">
+              Sign in to SAGOP
+            </p>
 
-          <!-- THE FORM (@submit.prevent runs handleSignIn without reloading the page) -->
-          <form class="mt-3 space-y-5" @submit.prevent="handleSignIn">
-            <!-- EMAIL FIELD -->
+            <p class="mt-1 text-sm leading-5 text-slate-600">
+              Use your assigned account to continue.
+            </p>
+          </div>
+
+          <form class="mt-5 space-y-4" @submit.prevent="handleSignIn">
             <div>
-              <label class="text-xs font-semibold tracking-wide text-slate-600"
-                >EMAIL / USERNAME</label
+              <label for="email" class="block text-sm font-semibold text-slate-700"
+                >Email or Username</label
               >
               <div
-                class="mt-1.5 flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 focus-within:border-slate-400"
+                class="mt-2 flex items-center gap-3 rounded-xl border border-slate-300 bg-white px-3.5 py-3 transition focus-within:border-[#0b4ea2] focus-within:ring-4 focus-within:ring-blue-100"
               >
-                <User class="h-4 w-4 text-slate-400" />
+                <UserRound class="h-5 w-5 shrink-0 text-slate-400" aria-hidden="true" />
                 <input
+                  id="email"
                   v-model="email"
                   type="text"
-                  placeholder="position@mswdo.initao.gov.ph"
-                  class="w-full bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400"
+                  required
+                  autocomplete="username"
+                  placeholder="name@mswdo.initao.gov.ph"
+                  class="min-w-0 w-full bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400"
                 />
               </div>
+              <p class="mt-1.5 text-xs leading-4 text-slate-500">
+                Use your assigned office email or username.
+              </p>
             </div>
 
-            <!-- PASSWORD FIELD -->
             <div>
-              <div class="flex items-center justify-between">
-                <label class="text-xs font-semibold tracking-wide text-slate-600">PASSWORD</label>
-                <a href="#" class="text-xs font-medium text-blue-600 hover:underline"
-                  >Forgot Password?</a
+              <div class="flex items-baseline justify-between gap-3">
+                <label for="password" class="block text-sm font-semibold text-slate-700"
+                  >Password</label
                 >
+                <a
+                  href="#support-info"
+                  class="text-xs font-semibold text-[#0b4ea2] underline-offset-4 hover:underline focus:outline-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-[#0b4ea2]"
+                >
+                  Forgot password?
+                </a>
               </div>
               <div
-                class="mt-1.5 flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 focus-within:border-slate-400"
+                class="mt-2 flex items-center gap-3 rounded-xl border border-slate-300 bg-white px-3.5 py-3 transition focus-within:border-[#0b4ea2] focus-within:ring-4 focus-within:ring-blue-100"
               >
-                <Lock class="h-4 w-4 text-slate-400" />
+                <LockKeyhole class="h-5 w-5 shrink-0 text-slate-400" aria-hidden="true" />
                 <input
+                  id="password"
                   v-model="password"
-                  type="password"
-                  placeholder="••••••••"
-                  class="w-full bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400"
+                  :type="showPassword ? 'text' : 'password'"
+                  required
+                  autocomplete="current-password"
+                  placeholder="Enter your password"
+                  class="min-w-0 w-full bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400"
                 />
+                <button
+                  type="button"
+                  class="rounded-md p-1 text-slate-500 transition hover:text-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0b4ea2]"
+                  :aria-label="showPassword ? 'Hide password' : 'Show password'"
+                  @click="showPassword = !showPassword"
+                >
+                  <EyeOff v-if="showPassword" class="h-5 w-5" aria-hidden="true" />
+                  <Eye v-else class="h-5 w-5" aria-hidden="true" />
+                </button>
               </div>
             </div>
 
-            <!-- ERROR MESSAGE (only shows when errorMsg has text) -->
-            <p v-if="errorMsg" class="text-sm font-medium text-red-600">{{ errorMsg }}</p>
+            <div
+              v-if="errorMsg"
+              role="alert"
+              aria-live="assertive"
+              class="rounded-xl border border-red-200 bg-red-50 px-3.5 py-3 text-sm font-medium leading-5 text-red-700"
+            >
+              {{ errorMsg }}
+            </div>
 
-            <!-- "KEEP ME SIGNED IN" CHECKBOX -->
-            <label class="flex items-center gap-2 text-sm text-slate-600">
+            <label class="flex cursor-pointer items-start gap-3 text-sm text-slate-600">
               <input
                 v-model="keepSignedIn"
                 type="checkbox"
-                class="h-4 w-4 rounded border-slate-300"
+                class="mt-0.5 h-4 w-4 rounded border-slate-300 text-[#0b4ea2] focus:ring-[#0b4ea2]"
               />
-              Keep me signed in on this device
+              <span>
+                Keep me signed in on this device
+                <span class="mt-0.5 block text-xs leading-4 text-slate-500"
+                  >Do not use this option on shared computers.</span
+                >
+              </span>
             </label>
 
-            <!-- SIGN IN BUTTON -->
             <button
               type="submit"
-              class="flex w-full items-center justify-center gap-2 rounded-lg bg-[#001d4c] py-3 text-sm font-semibold text-white transition hover:bg-[#001336]"
+              :disabled="isSubmitting"
+              class="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0b4ea2] px-4 py-3.5 text-sm font-bold text-white shadow-sm transition hover:bg-[#083f85] focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-200 disabled:cursor-not-allowed disabled:opacity-70"
             >
-              <Lock class="h-4 w-4" />
-              Sign In
+              <span>{{ isSubmitting ? 'Signing in…' : 'Sign In' }}</span>
+              <ArrowRight v-if="!isSubmitting" class="h-4 w-4" aria-hidden="true" />
             </button>
           </form>
 
-          <!-- "NEED HELP?" LINK -->
-          <div class="my-6 flex items-center justify-center">
-            <a href="#" class="text-xs font-bold tracking-wide text-blue-600 hover:underline"
-              >NEED HELP?</a
-            >
+          <div id="support-info" class="mt-5 border-t border-slate-200 pt-4">
+            <p class="text-xs font-bold uppercase tracking-[0.15em] text-center text-slate-500">
+              Need help?
+            </p>
+            <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-slate-600">
+              <p class="flex items-center gap-1.5">
+                <Headphones class="h-3.5 w-3.5 shrink-0 text-[#0b4ea2]" aria-hidden="true" />Contact
+                the System Administrator
+              </p>
+              <p class="flex items-center gap-1.5">
+                <Clock3 class="h-3.5 w-3.5 shrink-0 text-[#0b4ea2]" aria-hidden="true" />Mon–Fri,
+                8:00 AM–5:00 PM
+              </p>
+            </div>
           </div>
 
-          <!-- SUPPORT INFO LINES -->
-          <div class="space-y-2 text-sm text-slate-600">
-            <p class="flex items-center gap-2">
-              <Headphones class="h-4 w-4 text-slate-400" /> Contact System Administrator
-            </p>
-            <p class="flex items-center gap-2">
-              <Clock class="h-4 w-4 text-slate-400" /> Office Hours: Monday – Friday | 8:00 AM –
-              5:00 PM
-            </p>
-          </div>
-
-          <!-- SECURITY NOTE (with a top border separating it) -->
           <div
-            class="mt-6 flex items-start gap-2 border-t border-slate-100 pt-4 text-xs text-slate-500"
+            class="mt-4 flex gap-2 rounded-lg bg-emerald-50 px-3 py-2 text-xs leading-4 text-emerald-800"
           >
-            <ShieldQuestion class="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
+            <ShieldCheck class="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-700" aria-hidden="true" />
             <p>
-              <span class="font-semibold text-slate-700">Your data is secured and protected.</span>
-              By signing in, you agree to comply with the system policies.
+              <span class="font-bold">Your data is protected.</span> Please follow system policies.
             </p>
           </div>
         </div>
       </section>
-    </div>
 
-    <!-- FOOTER (copyright line at the very bottom; increase pb-* to lift it up) -->
-    <p class="relative z-10 pb-4 text-center text-xs text-white/20">
-      © 2026 MSWDO Initao, Misamis Oriental. All rights reserved.
-    </p>
-  </div>
+      <footer
+        class="order-3 px-6 pb-6 text-center text-xs text-white/50 lg:absolute lg:inset-x-0 lg:bottom-1 lg:px-8"
+      >
+        © 2026 MSWDO Initao, Misamis Oriental. All rights reserved.
+      </footer>
+    </div>
+  </main>
 </template>
