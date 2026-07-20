@@ -1,39 +1,52 @@
 <script setup>
-/* ===== LIVE CLOCK LOGIC (Philippine Standard Time) =====
-   This whole block makes the clock tick. You usually won't need to touch it. */
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { Clock, Accessibility } from 'lucide-vue-next'
 
-const phTime = ref('') // holds the time text (e.g. 03:36:00 AM)
-const phDate = ref('') // holds the date text (e.g. Thursday, June 25, 2026)
+const phTime = ref('')
+const phDate = ref('')
 let timer = null
+
+// NEW: refs for measuring
+const titleRef = ref(null)     // the hidden measuring clone
+const containerRef = ref(null) // the flex text column (constrains max width)
+const dividerWidth = ref(0)
+
+function measureDivider() {
+  if (!titleRef.value || !containerRef.value) return
+  const textWidth = titleRef.value.scrollWidth        // natural width of the text
+  const maxWidth = containerRef.value.clientWidth      // available space
+  dividerWidth.value = Math.min(textWidth, maxWidth)   // never exceed the column
+}
 
 function updateClock() {
   const now = new Date()
-  const opts = { timeZone: 'Asia/Manila' } // <-- timezone. Keep as Manila for PH time.
-  // Date format: weekday, month, day, year
+  const opts = { timeZone: 'Asia/Manila' }
   phDate.value = now.toLocaleDateString('en-US', {
-    ...opts,
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
+    ...opts, weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
   })
-  // Time format: 12-hour with AM/PM and seconds
   phTime.value = now.toLocaleTimeString('en-US', {
-    ...opts,
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: true,
+    ...opts, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true,
   })
 }
 
-onMounted(() => {
-  updateClock() // run once immediately
-  timer = setInterval(updateClock, 1000) // then update every 1000ms (1 second)
+let resizeObserver = null
+
+onMounted(async () => {
+  updateClock()
+  timer = setInterval(updateClock, 1000)
+
+  await nextTick()
+  measureDivider()
+
+  // Recalculate whenever the header resizes (clamp() font changes with viewport)
+  resizeObserver = new ResizeObserver(() => measureDivider())
+  if (containerRef.value) resizeObserver.observe(containerRef.value)
 })
-onUnmounted(() => clearInterval(timer)) // cleanup when leaving the page
+
+onUnmounted(() => {
+  clearInterval(timer)
+  resizeObserver?.disconnect()
+})
 </script>
 
 <template>
@@ -72,26 +85,37 @@ onUnmounted(() => clearInterval(timer)) // cleanup when leaving the page
           alt="Municipal Seal"
         />
 
-        <!-- TEXT BESIDE THE LOGO -->
-        <div class="text-white flex-1 min-w-0 -ml-[0.15rem] pl-0">
-          <!-- top small line -->
+        <div ref="containerRef" class="text-white flex-1 min-w-0 -ml-[0.15rem] pl-0">
           <p class="text-base tracking-[1.2px] m-0 [font-weight:480]">
             REPUBLIC OF THE PHILIPPINES
           </p>
 
-          <!-- thin horizontal rule -->
-          <div class="h-px w-[90%] mt-[0.2rem] mb-[0.3rem] bg-[rgba(182,227,3,0.55)]"></div>
+          <!-- divider sized to the measured text width, capped to the column width -->
+          <div
+            class="h-px mt-[0.2rem] mb-[0.3rem] bg-[rgba(182,227,3,0.55)]"
+            :style="{ width: dividerWidth + 'px' }"
+          ></div>
 
-          <!-- second small line -->
           <p class="text-[0.78rem] tracking-[0.5px] my-[0.15rem]">
             PROVINCE OF MISAMIS ORIENTAL || MUNICIPALITY OF INITAO
           </p>
 
-          <!-- big main title -->
+          <!-- VISIBLE title, wraps normally -->
           <h1
             class="font-serif [font-weight:550] m-0 leading-[1.15]
                   tracking-[0.5px] text-[clamp(0.8rem,1.4vw,1.55rem)]
                   whitespace-normal break-words"
+          >
+            MUNICIPAL SOCIAL WELFARE AND DEVELOPMENT OFFICE
+          </h1>
+
+          <!-- HIDDEN clone, same font styles, used only to measure natural text width -->
+          <h1
+            ref="titleRef"
+            aria-hidden="true"
+            class="font-serif [font-weight:550] m-0 leading-[1.15]
+                  tracking-[0.5px] text-[clamp(0.8rem,1.4vw,1.55rem)]
+                  whitespace-nowrap absolute invisible -z-10 top-0 left-0 pointer-events-none"
           >
             MUNICIPAL SOCIAL WELFARE AND DEVELOPMENT OFFICE
           </h1>
