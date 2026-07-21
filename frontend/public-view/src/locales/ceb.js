@@ -525,10 +525,10 @@ export default {
       subtitle: 'Ang bisyon, misyon, ug mga mandato sa balaod nga naggiya sa among trabaho sa pag-alagad sa katawhan sa Initao.',
     },
 
-    vision: 'Naghatag-gahom nga mga indibidwal, pamilya ug komunidad nga adunay pauswag nga kalidad sa kinabuhi, nga nagatuman sa ilang gipaabot nga tahas ug makahimo sa pag-mobilize og resources aron matagbaw ang ilang batakang panginahanglan.',
-    mission: 'Pag-atiman, pagproteksyon, pagrehabilitar, pagpalambo ug pag-integrate ngadto sa mainstream sa mga bulnerable ug sosyal nga dysfunctional nga sektor sa katilingban.',
-    visionLabel: 'Among Bisyon',
-    missionLabel: 'Among Misyon',
+    vision: 'Empowered individuals, families and communities with improved quality of life, performing their expected roles and able to mobilize resources to meet their basic needs.',
+    mission: 'To care, protect, rehabilitate, develop and integrate into mainstream the vulnerable and socially dysfunctional sectors of society.',
+    visionLabel: 'Our Vision',
+    missionLabel: 'Our Mission',
     mandatesLabel: 'Gimandato sa Balaod',
     mandatesTitle: 'Among mga Mandato',
   },
@@ -565,8 +565,8 @@ export default {
 
   contact: {
     section: {
-      eyebrow: 'PAKIGKITA KANAMO',
-      title: 'Impormasyon sa Kontak',
+      eyebrow: 'KONTAKA KAMI',
+      title: 'Impormasyon sa Pag-kontak',
       subtitle: 'Para sa mga pangutana, reklamo, o tabang, kontaka ang MSWDO Initao pinaagi sa bisan unsa sa mga channel sa ubos.',
     },
     getDirections: 'Kuhaa ang Direksyon',
@@ -654,14 +654,14 @@ export default {
     hoursTitle: 'Oras sa Opisina',
     hoursValue: 'Lunes – Biyernes, 8:00 AM – 5:00 PM',
     hoursNote: 'Sirado sa Weekend & Public Holiday',
-    linksTitle: 'Dali nga mga Link',
+    linksTitle: 'Quick Links',
     links: {
-      home: 'Panimalay',
+      home: 'Home',
       news: 'Balita ug mga Pahibalo',
       about: 'Mahitungod sa Opisina',
       dswd: 'Opisyal nga Website sa DSWD',
       municipal: 'Gobyerno sa Munisipyo sa Initao',
     },
-    copyright: '© {year} MSWDO Initao, Misamis Oriental. Tanang katungod gigahin.',
+    copyright: '© {year} MSWDO Initao, Misamis Oriental. All rights reserved.',
   },
 }
