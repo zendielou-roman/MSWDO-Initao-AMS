@@ -1,26 +1,25 @@
 export default {
-  nav: {
+ nav: {
     home: 'HOME',
-    services: 'MGA SERBISYO',
+    services: 'SERVICES',
     charter: "CITIZEN'S CHARTER",
-    accomplishments: 'MGA NAHIMO',
-    news: 'BALITA UG MGA UPDATE',
-    about: 'MAHITUNGOD KANAMO',
-    contact: 'KONTAKA KAMI',
+    accomplishments: 'ACCOMPLISHMENTS',
+    news: 'NEWS & UPDATES',
+    about: 'ABOUT US',
+    contact: 'CONTACT US',
   },
-
   search: {
     placeholder: 'Pangita',
-    noResults: 'Walay nakit-an nga resulta para sa',
+    noResults: 'Walay resulta para sa',
   },
 
   hero: {
     eyebrow: 'MAAYONG PAG-ABOT SA MSWDO INITAO',
-    heading: 'Naghatag og Gahom sa Komunidad Pinaagi sa Mapuslanong Serbisyo sa Kaayohan Panlipunan',
-    description: 'Ang Municipal Social Welfare and Development Office (MSWDO) sa Initao, Misamis Oriental nagpahinungod sa pagpauswag sa kaayohan sa atong komunidad pinaagi sa hingpit nga mga serbisyo sosyal. Ang among opisina determinado nga mohatag og gahom sa mga indibidwal ug pamilya, mopalambo sa hustisya sosyal, ug mopauswag sa malahutayong kalamboan. Naningkamot kami nga makahimo og suportadong palibot diin ang matag miyembro sa among komunidad makaabot sa ilang kinatas-ang potensyal.',
+    heading: 'Pag-atiman ug Pagtabang para sa Matag Initaonon',
+    description: 'Ang Municipal Social Welfare and Development Office (MSWDO) sa Initao, Misamis Oriental nagpahinungod sa pagpauswag sa kaayohan sa atong komunidad pinaagi sa hingpit nga mga serbisyong pangkatawhan. Tumong namo ang paghatag og patas, matinud-anon, ug angay nga serbisyo aron mapalambo ang kalidad sa kinabuhi sa matag Initaohon. Naningkamot kami nga makahimo og suportadong palibot diin ang matag miyembro sa atong komunidad makaabot sa ilang kinatas-ang potensyal.',
 
     cta: {
-      primary: 'Tan-awa ang mga Serbisyo',
+      primary: 'Mga Serbisyo',
       secondary: 'Kontaka Kami',
     },
 
@@ -47,34 +46,34 @@ export default {
     },
 
     section: {
-      eyebrow: 'UNSAY AMONG GIBUHAT',
-      title: 'Serbisyo sa Kaayohan Panlipunan',
+      eyebrow: 'MGA GINATUMAN',
+      title: 'Serbisyo sa Kaayuhang Panlipunan',
       subtitle: 'Mga Programa ug Serbisyo nga gidesinyo para sa pagsuporta ug pagpauswag sa labing bulnerable nga sektor sa atong komunidad.',
     },
 
     items: {
 
       aics: {
-        title: 'AICS – Tabang para sa mga Indibidwal nga Naa sa Krisis',
-        desc: 'Diha-diha nga tabang para sa mga indibidwal ug pamilya nga naeksperyensya og krisis sama sa medikal, lubong, edukasyon, ug emerhensya nga panginahanglan.',
-        whoCanAvail: ['Mga residente nga naa sa krisis nga sitwasyon', 'Mga pobre nga indibidwal ug pamilya nga nanginahanglan og diha-diha nga suporta'],
-        benefits: ['Pinansyal ug materyal nga tabang', 'Referral ngadto sa ubang serbisyo sa suporta', 'Pag-assess ug follow-up base sa kaso'],
-        requirements: ['Balido nga ID nga gikan sa gobyerno', 'Barangay certification o referral', 'Mga suporting dokumento base sa kaso'],
+        title: 'AICS – Assistance to Individuals in Crisis Situations',
+        desc: 'Tabang para sa mga indibidwal ug pamilya nga naeksperyensya og krisis sama sa medikal, lubong, edukasyon, ug emerhensya nga panginahanglan.',
+        whoCanAvail: ['Mga residente nga naa sa krisis nga sitwasyon', 'Mga pobre nga indibidwal ug pamilya nga nanginahanglan og agaran nga suporta'],
+        benefits: ['Pinansyal ug materyal nga tabang', 'Referral ngadto sa ubang serbisyong pangsuporta', 'Pag-assess ug follow-up base sa kaso'],
+        requirements: ['Balido nga ID nga gikan sa gobyerno', 'Barangay certification o referral', 'Uban pang mga dokumento base sa kaso'],
         process: [
           { title: 'Pag-assess', body: 'Susihon sa social worker ang sitwasyon ug ang klase sa tabang nga gikinahanglan.' },
           { title: 'Dokumentasyon', body: 'Isumite sa aplikante ang gikinahanglan nga mga dokumento para sa verification.' },
           { title: 'Pag-apruba', body: 'Susihon sa empleyado ang kaso ug determinahon ang tabang nga ipagawas.' },
           { title: 'Pagpagawas', body: 'Ipagawas ang naaprubahan nga tabang pinaagi sa haom nga paagi.' },
         ],
-        processingTime: 'Diha-diha nga pagpagawas o sagad sulod sa pipila ka adlaw depende sa kaso.',
+        processingTime: 'Agaran nga pagpagawas o sagad sulod sa pipila ka adlaw depende sa kaso.',
         legalBasis: 'DSWD AICS Program Guidelines',
       },
 
       elderly: {
-        title: 'Serbisyo Sosyal para sa mga Tigulang',
+        title: 'Social Services for the Elderly',
         desc: 'Mga programa nga nagpauswag sa kaayohan, proteksyon, ug kahimsog sa mga senior citizen sa komunidad.',
         whoCanAvail: ['Mga senior citizen nga nagpuyo sa Initao', 'Mga tigulang nga nanginahanglan og tabang sosyal o proteksyon'],
-        benefits: ['Access sa mga serbisyo sa suporta para sa senior citizen', 'Referral ngadto sa mga programa sa panglawas ug kaayohan sosyal', 'Tabang sa pag-access sa mga naa nga benepisyo'],
+        benefits: ['Access sa mga serbisyo sa suporta para sa senior citizen', 'Referral ngadto sa mga programa sa panglawas ug kaayuhan', 'Tabang sa pag-access sa mga naa nga benepisyo'],
         requirements: ['Balidong ID o pamatuod sa edad', 'Barangay certification o rekord sa residency', 'Suporting dokumento kung gikinahanglan para sa piho nga tabang'],
         process: [
           { title: 'Pagpaminaw', body: 'Ang kliyente mosumite og hangyo para sa tabang sa opisina.' },
@@ -86,9 +85,9 @@ export default {
       },
 
       womenWelfare: {
-        title: 'Programa sa Kaayohan sa Kababayen-an',
-        desc: 'Mga serbisyo sa suporta para sa mga babaye nga nanginahanglan, lakip ang counseling, referral, programa sa panginabuhi, ug serbisyo sa proteksyon.',
-        whoCanAvail: ['Mga babaye nga nanginahanglan og suporta sosyal', 'Mga babaye ug pamilya nga apektado sa abuso o krisis'],
+        title: 'Women Welfare Program',
+        desc: 'Mga serbisyong pansuporta para sa mga kababaihan nga nanginahanglan, lakip ang counseling, referral, programa sa panginabuhi, ug serbisyong pamproteksyon.',
+        whoCanAvail: ['Mga kababaihan', 'Mga babaye ug pamilya nga apektado sa abuso o krisis'],
         benefits: ['Counseling ug case management', 'Referral ngadto sa legal ug medikal nga suporta', 'Proteksyon ug follow-up nga tabang'],
         requirements: ['Inisyal nga report o referral', 'Balido nga ID kung naa', 'Dugang dokumento depende sa kaso'],
         process: [
@@ -96,14 +95,14 @@ export default {
           { title: 'Pag-assess', body: 'Susihon sa social worker ang kaso ug ang dinalian nga panginahanglan.' },
           { title: 'Interbensyon', body: 'Kordinahon sa MSWDO ang gikinahanglang tabang ug referral.' },
         ],
-        processingTime: 'Diha-diha nga tubag para sa dinaliang mga kaso.',
+        processingTime: 'Agaran nga tubag para sa dinaliang mga kaso.',
         legalBasis: 'Republic Act No. 9262',
       },
 
       juvenileJustice: {
-        title: 'Programa sa Juvenile Justice Welfare',
+        title: 'Juvenile Justice Welfare Program',
         desc: 'Interbensyon ug serbisyo sa kaayohan para sa mga bata ug pamatan-on nga nalambigit sa legal o sosyal nga panagbangi.',
-        whoCanAvail: ['Mga bata ug pamatan-on nga nasumpaki sa balaod', 'Mga pamilya ug ginikanan/tigbantay nga nanginahanglan og suporta sa kaayohan'],
+        whoCanAvail: ['Mga bata ug pamatan-on nga nasumpaki sa balaod', 'Mga pamilya ug ginikanan/tigbantay nga nanginahanglan og suportang pangkaayohan'],
         benefits: ['Case management', 'Referral ngadto sa legal ug rehabilitation nga suporta', 'Koordinasyon uban sa partner nga mga ahensya'],
         requirements: ['Referral o report', 'Birth certificate kung naa', 'Impormasyon sa ginikanan o tigbantay'],
         process: [
@@ -116,7 +115,7 @@ export default {
       },
 
       youthWelfare: {
-        title: 'Programa sa Kalamboan sa Kaayohan sa Kabatan-onan',
+        title: 'Youth Welfare Development Program',
         desc: 'Mga programa nga nagpokus sa kaayohan, kalamboan, ug paghatag og gahom sa mga batan-on sa komunidad.',
         whoCanAvail: ['Mga batan-on nga residente sa Initao', 'Mga batan-on nga nanginahanglan og giya o suporta sa kalamboan'],
         benefits: ['Suporta sa kalamboan', 'Referral ngadto sa mga programa para sa kabatan-onan', 'Giya ug tabang sa kaayohan'],
@@ -131,7 +130,7 @@ export default {
       },
 
       sustainableLivelihood: {
-        title: 'Programa sa Malahutayong Panginabuhi',
+        title: 'Sustainable Livelihood Program',
         desc: 'Skills training ug tabang sa panginabuhi para motabang sa mga pamilya nga makahimo o mapauswag ang oportunidad sa kita.',
         whoCanAvail: ['Mga pamilya nga ubos ang kita', 'Mga indibidwal o grupo nga interesado sa livelihood projects'],
         benefits: ['Skills training', 'Tabang sa panginabuhi', 'Monitoring ug mentoring nga tabang'],
@@ -147,8 +146,8 @@ export default {
       },
 
       pwdServices: {
-        title: 'Serbisyo para sa PWD',
-        desc: 'Serbisyo para sa mga persona nga adunay disabilidad lakip ang pagparehistro, tabang, ug access sa mga benepisyo.',
+        title: 'PWD Services',
+        desc: 'Serbisyo para sa mga adunay disabilidad lakip ang pagparehistro, tabang, ug access sa mga benepisyo.',
         whoCanAvail: ['Mga residente sa Initao nga adunay disabilidad', 'Bag-o ug nag-renew nga mga aplikante sa PWD'],
         benefits: ['Pag-isyu og PWD ID', 'Access sa mga benepisyo ug pribilehiyo', 'Suporta sa mga transaksyon ug referral'],
         requirements: ['Bag-o nga litrato', 'Barangay certificate', 'Medical certificate o assessment kung gikinahanglan'],
@@ -162,8 +161,8 @@ export default {
       },
 
       childrenDisability: {
-        title: 'Serbisyo para sa mga Bata nga Adunay Disabilidad',
-        desc: 'Serbisyo sa suporta para sa mga bata nga adunay disabilidad ug sa ilang mga pamilya.',
+        title: 'Children with Disability Services',
+        desc: 'Serbisyong pangsuporta para sa mga bata nga adunay disabilidad ug sa ilang mga pamilya.',
         whoCanAvail: ['Mga bata nga adunay disabilidad', 'Mga ginikanan ug tigbantay nga nangita og serbisyo sa suporta'],
         benefits: ['Tabang sa referral', 'Access sa mga serbisyo nga may kalabotan sa disabilidad', 'Giya sa pamilya ug follow-up'],
         requirements: ['Medical assessment o referral', 'Birth certificate o pamatuod sa edad', 'Identipikasyon sa ginikanan o tigbantay'],
@@ -177,7 +176,7 @@ export default {
       },
 
       eccdp: {
-        title: 'ECCDP – Programa sa Pag-atiman ug Kalamboan sa Bata sa Sayong Panuigon',
+        title: 'ECCDP – Early Childhood Care and Development Program',
         desc: 'Mga programa nga nagpokus sa sayo nga pag-atiman, kalamboan, ug kaayohan sa gagmayng bata.',
         whoCanAvail: ['Mga ginikanan ug tigbantay sa gagmayng bata', 'Mga pamilya nga nanginahanglan og suporta sa sayong pagkabata'],
         benefits: ['Suporta sa kalamboan', 'Referral ngadto sa mga serbisyo sa sayong pagkabata', 'Suporta ug edukasyon para sa pamilya'],
@@ -192,7 +191,7 @@ export default {
       },
 
       familyDevelopment: {
-        title: 'Serbisyo sa Kalamboan sa Pamilya',
+        title: 'Family Development Service',
         desc: 'Serbisyo sa suporta nga nagtumong sa pagpalig-on sa mga pamilya ug pagpauswag sa kaayohan sa komunidad.',
         whoCanAvail: ['Mga pamilya nga nanginahanglan og suporta', 'Mga ginikanan ug miyembro sa panimalay nga nangita og giya'],
         benefits: ['Family strengthening sessions', 'Counseling ug giya', 'Referral ngadto sa may kalabotan nga serbisyo sa suporta'],
@@ -207,7 +206,7 @@ export default {
       },
 
       paroleProbation: {
-        title: 'Programa sa Parole ug Probation',
+        title: 'Parole and Probation Program',
         desc: 'Serbisyo sa kaayohan ug suporta para sa mga kliyente nga naa sa ilalom sa parole o probation.',
         whoCanAvail: ['Mga kliyente nga naa sa ilalom sa parole o probation', 'Mga pamilya sa kliyente nga nanginahanglan og serbisyo sa suporta'],
         benefits: ['Suporta sa pag-monitor sa kaso', 'Referral ngadto sa mga serbisyo sa komunidad', 'Tabang sa reintegration'],
@@ -222,7 +221,7 @@ export default {
       },
 
       preMarriage: {
-        title: 'Pre-marriage Orientation ug Counseling',
+        title: 'Pre-marriage Orientation and Counseling',
         desc: 'Giya ug serbisyo sa counseling aron matabangan ang mga magtiayon nga mangandam para sa kaminyoon ug kinabuhi sa pamilya.',
         whoCanAvail: ['Mga magtiayon nga nangandam para sa kaminyoon', 'Mga indibidwal nga nangita og premarital nga giya'],
         benefits: ['Premarital counseling', 'Giya sa pagka-andam sa pamilya', 'Suporta sa pagtukod og himsog nga relasyon'],
@@ -237,7 +236,7 @@ export default {
       },
 
       soloParent: {
-        title: 'Programa sa Kaayohan sa Solo Parent',
+        title: 'Solo-parent Welfare Program',
         desc: 'Serbisyo sa suporta ug pribilehiyo para sa mga solo parent aron matabangan sila sa pag-atiman sa ilang mga anak ug pamilya.',
         whoCanAvail: ['Mga solo parent nga nagpuyo sa Initao', 'Mga ginikanan nga nag-atiman og bata nga nag-inusara tungod sa sirkumstansya sa pamilya'],
         benefits: ['Access sa serbisyo sa suporta para sa solo parent', 'Referral ngadto sa tabang sa panginabuhi ug edukasyon', 'Giya ug tabang sa pag-avail sa mga benepisyo'],
@@ -256,11 +255,11 @@ export default {
       whoCanAvail: 'Kinsa ang pwede mo-avail',
       whatYouGet: 'Unsay imong madawat',
       requirements: 'Mga Requirements',
-      howToApply: 'Giunsa pag-apply',
+      howToApply: 'Pag-apply',
       processingTime: 'Oras sa Pagproseso',
       legalBasis: 'Legal nga Basehanan',
       applyInPerson: 'Mag-apply Personal',
-      getDirections: 'Kuhaa ang Direksyon ug Impormasyon sa Kontak',
+      getDirections: 'Impormasyon sa Pag-kontak',
       backToServices: 'Balik sa mga Serbisyo',
       notFoundTitle: 'Wala makit-i ang serbisyo',
       notFoundDesc: "Ang serbisyo nga imong gipangita wala na o mahimong nabalhin.",
@@ -274,8 +273,8 @@ export default {
   charter: {
     section: {
       eyebrow: 'STANDARD SA SERBISYO',
-      title: "CHARTER SA KATAWHAN",
-      subtitle: 'Among gipasalig nga mohatag og kalidad, episyente, ug mapuslanong serbisyo sa kaayohan sosyal sa matag Pilipino sa Initao.',
+      title: "CITIZEN'S CHARTER",
+      subtitle: 'Among gipasalig nga mohatag og kalidad, episyente, ug mapuslanong serbisyo sa kaayohan sa matag Initaonon.',
     },
     standards: {
       commitment: {
@@ -388,7 +387,7 @@ export default {
     arta: {
       title: 'Pagsunod sa Anti-Red Tape Authority (ARTA)',
       description: 'Sumala sa R.A. 11032 (Ease of Doing Business and Efficient Government Service Delivery Act), gisiguro sa kining opisinaha nga ang tanang frontline nga serbisyo ihatag dayon, matinahoron, ug walay dili kinahanglan nga kabug-at sa among mga kliyente.',
-      viewFullCharter: 'Tan-awa ang Bug-os nga Charter',
+      viewFullCharter: 'Buo nga Charter',
     },
   },
 

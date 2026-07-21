@@ -1,12 +1,12 @@
 export default {
-  nav: {
+ nav: {
     home: 'HOME',
-    services: 'MGA SERBISYO',
+    services: 'SERVICES',
     charter: "CITIZEN'S CHARTER",
-    accomplishments: 'MGA NAGAWA',
-    news: 'MGA BALITA AT ANUNSYO',
-    about: 'TUNGKOL SA TANGGAPAN',
-    contact: 'MAKIPAG-UGNAYAN',
+    accomplishments: 'ACCOMPLISHMENTS',
+    news: 'NEWS & UPDATES',
+    about: 'ABOUT US',
+    contact: 'CONTACT US',
   },
   search: {
     placeholder: 'Maghanap',
