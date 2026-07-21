@@ -1,8 +1,8 @@
 export default {
   nav: {
-    home: 'PANIMALAY',
+    home: 'HOME',
     services: 'MGA SERBISYO',
-    charter: "CHARTER SA KATAWHAN",
+    charter: "CITIZEN'S CHARTER",
     accomplishments: 'MGA NAHIMO',
     news: 'BALITA UG MGA UPDATE',
     about: 'MAHITUNGOD KANAMO',
@@ -27,7 +27,7 @@ export default {
     stats: {
       beneficiaries: 'Mga Nabenepisyohan',
       programs: 'Aktibong mga Programa',
-      barangays: 'Gisakpan nga mga Barangay',
+      barangays: 'Gisakupan nga mga Barangay',
       years: 'Katuigan sa Serbisyo',
     },
   },

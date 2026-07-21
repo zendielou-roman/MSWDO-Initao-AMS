@@ -14,13 +14,13 @@ const goToHome = inject('goToHome')
 const { locale, t } = useI18n()
 
 const links = [
-  { label: 'nav.home', to: '/', sectionId: 'home' },
-  { label: 'nav.services', to: '/services', hasDropdown: true, sectionId: 'services' },
-  { label: 'nav.charter', to: '/charter', sectionId: 'charter' },
-  { label: 'nav.accomplishments', to: '/accomplishments', sectionId: 'accomplishments' },
-  { label: 'nav.news', to: '/news', sectionId: 'news' },
-  { label: 'nav.about', to: '/about', sectionId: 'about' },
-  { label: 'nav.contact', to: '/contact', sectionId: 'contact' },
+  { label: 'nav.home', to: '/', sectionId: 'home', underlineWidth: { en: '2.7rem', fil: '2.7rem', ceb: '2.7rem' } , spacing: { en: '2.7rem', fil: '3rem', ceb: '3rem' }},
+  { label: 'nav.services', to: '/services', hasDropdown: true, sectionId: 'services', underlineWidth: { en: '4.8rem', fil: '5.7rem', ceb: '6rem' }, spacing: { en: '2.2rem', fil: '3rem', ceb: '3rem' } },
+  { label: 'nav.charter', to: '/charter', sectionId: 'charter', underlineWidth: { en: '8.3rem', fil: '4.1rem', ceb: '4.1rem' }, spacing: { en: '2.6rem', fil: '0.5rem', ceb: '1rem' } },
+  { label: 'nav.accomplishments', to: '/accomplishments', sectionId: 'accomplishments', underlineWidth: { en: '8.6rem', fil: '4rem', ceb: '4rem' }, spacing: { en: '2.6rem', fil: '2.5rem', ceb: '2.5rem' } },
+  { label: 'nav.news', to: '/news', sectionId: 'news', underlineWidth: { en: '7.6rem', fil: '6.5rem', ceb: '6.8rem' }, spacing: { en: '2.3rem', fil: '-1rem', ceb: '1rem' } },
+  { label: 'nav.about', to: '/about', sectionId: 'about', underlineWidth: { en: '4.4rem', fil: '5.4rem', ceb: '6.1rem' }, spacing: { en: '2.5rem', fil: '-2rem', ceb: 'rem' } },
+  { label: 'nav.contact', to: '/contact', sectionId: 'contact', underlineWidth: { en: '5.4rem', fil: '4.4rem', ceb: '4.2rem' }},
 ]
 
 const charterMenu = [
@@ -134,26 +134,30 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="sticky top-0 z-[100] bg-[#e9ebee] px-8 pt-[0.9rem] pb-[0.4rem]">
-    <nav
-      class="flex flex-wrap items-center justify-between bg-white rounded-[16px] px-[1.6rem] py-[0.55rem] shadow-[0_6px_18px_rgba(0,0,0,0.1)] max-md:flex-col max-md:gap-3 max-md:rounded-2xl max-md:mx-4"
-    >
-      <div class="flex items-center gap-[1.1rem]">
+   <nav
+  class="flex flex-nowrap items-center justify-between bg-white rounded-[16px] px-[1.6rem] py-[0.55rem] shadow-[0_6px_18px_rgba(0,0,0,0.1)] max-md:flex-wrap max-md:flex-col max-md:gap-3 max-md:rounded-2xl max-md:mx-4"
+>
+      <div class="flex items-center gap-[1.1rem] min-w-0 self-center">
         <img :src="sealLogo" alt="MSWDO seal" class="w-[50px] h-[50px] object-contain shrink-0" />
 
-        <ul class="flex flex-wrap items-center gap-x-16 gap-y-2 list-none m-0 p-0">
-          <li
-            v-for="link in links"
-            :key="link.label"
-            class="relative flex"
-            @mouseenter="link.hasDropdown ? openDropdown(link.label) : null"
-            @mouseleave="link.hasDropdown ? scheduleClose() : null"
-          >
+<ul class="flex flex-nowrap items-center gap-y-2 list-none m-0 p-0 overflow-visible max-md:flex-wrap">
+  <li
+  v-for="link in links"
+  :key="link.label"
+  class="relative flex"
+  :style="link.spacing ? { marginRight: link.spacing[locale] } : {}"
+  @mouseenter="link.hasDropdown ? openDropdown(link.label) : null"
+  @mouseleave="link.hasDropdown ? scheduleClose() : null"
+>
             <a
               href="#"
-              class="inline-flex items-center gap-[3px] text-[0.82rem] font-bold tracking-[0.5px] leading-none text-[#1f3a63] no-underline pb-1 border-b-[3px] border-transparent transition-colors hover:text-[#d4a526]"
-              :class="{ '!border-[#1f3a63]': active === link.sectionId }"
-              @click.prevent="goToSection(link.sectionId, link.label)"
-            >
+  class="relative inline-flex items-center gap-[3px] text-[0.82rem] font-bold tracking-[0.5px] leading-none text-[#1f3a63] no-underline py-1 transition-colors hover:text-[#d4a526]"
+  :class="active === link.sectionId
+    ? 'after:content-[\'\'] after:absolute after:left-0 after:-bottom-1 after:h-[3px] after:bg-[#1f3a63]'
+    : ''"
+  :style="active === link.sectionId ? { '--underline-w': link.underlineWidth[locale] } : {}"
+  @click.prevent="goToSection(link.sectionId, link.label)"
+>
               {{ t(link.label) }}
               <ChevronDown
                 v-if="link.hasDropdown"
@@ -228,7 +232,7 @@ onBeforeUnmount(() => {
         </ul>
       </div>
 
-      <div class="flex flex-col gap-1.5 shrink-0">
+      <div class="flex flex-col gap-1.5 shrink-0 self-center">
         <div class="relative">
           <div class="flex items-center gap-1.5 border border-gray-300 rounded px-2 py-0.5 w-48">
             <input
@@ -298,3 +302,9 @@ onBeforeUnmount(() => {
     </nav>
   </div>
 </template>
+
+<style scoped>
+a[style*="--underline-w"]::after {
+  width: var(--underline-w);
+}
+</style>
