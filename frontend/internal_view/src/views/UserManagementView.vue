@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import {
   UserRound,
   UserCheck,
@@ -14,11 +14,29 @@ import {
 import KPICard from '@/components/shared/KPICard.vue'
 import PageIntro from '@/components/shared/PageIntro.vue'
 import CreateUserModal from '@/components/users/CreateUserModal.vue'
-import { mockUserAccounts, roleDisplayLabels, roleBadgeStyles } from '@/data/mockUsers'
+import { roleDisplayLabels, roleBadgeStyles } from '@/data/mockUsers'
+import api from '@/lib/api'
 import { ROLES } from '@/config/roleConfig'
 
-// NEW: local reactive copy so newly created users trigger re-renders
-const users = ref([...mockUserAccounts])
+const users = ref([])
+const isLoading = ref(true)
+
+async function fetchUsers() {
+  try {
+    const response = await api.get('/users')
+    users.value = response.data.map((u) => ({
+      ...u,
+      dateCreated: u.created_at?.split('T')[0] ?? '—',
+      lastLogin: u.last_login_at ? u.last_login_at : '—',
+    }))
+  } catch (error) {
+    console.error('Failed to fetch users:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(fetchUsers)
 
 // NEW: controls modal visibility
 const showCreateModal = ref(false)
@@ -65,26 +83,34 @@ function initials(name) {
 // add to script setup, near showCreateModal
 const toastMessage = ref('')
 
-function handleCreateUser(newUser) {
-  const today = new Date().toISOString().split('T')[0]
-  users.value.unshift({
-    id: Date.now(),
-    name: newUser.name,
-    email: newUser.email,
-    contactNumber: newUser.contactNumber,
-    position: newUser.position,
-    role: newUser.role,
-    status: 'Active',
-    dateCreated: today,
-    lastLogin: '—',
-  })
-  showCreateModal.value = false
-  currentPage.value = 1
+async function handleCreateUser(newUser) {
+  try {
+    const response = await api.post('/users', {
+      name: newUser.name,
+      email: newUser.email,
+      role: newUser.role,
+    })
 
-  toastMessage.value = `Account created for ${newUser.name}`
-  setTimeout(() => {
-    toastMessage.value = ''
-  }, 3000)
+    users.value.unshift({
+      ...response.data,
+      dateCreated: response.data.created_at?.split('T')[0] ?? '—',
+      lastLogin: '—',
+    })
+
+    showCreateModal.value = false
+    currentPage.value = 1
+
+    toastMessage.value = `Account created for ${newUser.name}`
+    setTimeout(() => {
+      toastMessage.value = ''
+    }, 3000)
+  } catch (error) {
+    console.error('Failed to create user:', error)
+    toastMessage.value = error.response?.data?.message || 'Failed to create user.'
+    setTimeout(() => {
+      toastMessage.value = ''
+    }, 3000)
+  }
 }
 </script>
 
