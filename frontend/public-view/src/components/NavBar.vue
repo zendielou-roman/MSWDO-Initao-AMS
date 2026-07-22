@@ -1,6 +1,6 @@
 <script setup>
-import { ref, inject, computed, onMounted, onBeforeUnmount } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, inject, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
 import { Search, Globe, ChevronDown, FileText } from 'lucide-vue-next'
@@ -10,6 +10,7 @@ import { services, iconTone } from '@/data/services.js'
 import { searchSite } from '@/data/SearchIndex.js'
 
 const router = useRouter()
+const route = useRoute()
 const goToHome = inject('goToHome')
 const { locale, t } = useI18n()
 
@@ -75,6 +76,80 @@ function goToServices() {
   goToSection('services', 'SERVICES')
 }
 
+// --- Sync `active` with the current route for non-home pages ---
+// (e.g. clicking a Services dropdown item just navigates via <router-link>,
+// bypassing goToSection entirely, so we derive `active` from the URL instead.)
+function applyActiveFromRoute(path) {
+  if (path.startsWith('/services')) {
+    active.value = 'services'
+  } else if (path === '/contact') {
+    active.value = 'contact'
+  } else if (path === '/charter') {
+    active.value = 'charter'
+  } else if (path === '/accomplishments') {
+    active.value = 'accomplishments'
+  } else if (path === '/news') {
+    active.value = 'news'
+  } else if (path === '/about') {
+    active.value = 'about'
+  }
+  // path === '/' is intentionally left alone — the scroll-spy owns `active` there.
+}
+
+watch(
+  () => route.path,
+  (newPath) => {
+    applyActiveFromRoute(newPath)
+  },
+  { immediate: true }
+)
+
+// --- Scroll Spy (underline follows scroll position on the home page) ---
+let sectionObserver = null
+
+function setupScrollSpy() {
+  if (sectionObserver) {
+    sectionObserver.disconnect()
+    sectionObserver = null
+  }
+
+  const sectionIds = links.map((l) => l.sectionId)
+  const elements = sectionIds
+    .map((id) => document.getElementById(id))
+    .filter(Boolean)
+
+  if (elements.length === 0) return
+
+  sectionObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          active.value = entry.target.id
+        }
+      })
+    },
+    {
+      root: null,
+      rootMargin: '-100px 0px -70% 0px',
+      threshold: 0,
+    }
+  )
+
+  elements.forEach((el) => sectionObserver.observe(el))
+}
+
+watch(
+  () => route.path,
+  (newPath) => {
+    if (newPath === '/') {
+      nextTick(() => setupScrollSpy())
+    } else if (sectionObserver) {
+      sectionObserver.disconnect()
+      sectionObserver = null
+    }
+  }
+)
+
 // --- Search ---
 const results = computed(() => searchSite(search.value).slice(0, 8))
 
@@ -125,10 +200,15 @@ function handleClickOutside(event) {
 
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
+  nextTick(() => setupScrollSpy())
 })
 
 onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside)
+  if (sectionObserver) {
+    sectionObserver.disconnect()
+    sectionObserver = null
+  }
 })
 </script>
 

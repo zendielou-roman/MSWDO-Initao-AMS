@@ -19,21 +19,16 @@ import ServiceDetail from './components/ServiceDetail.vue'
 const route = useRoute()
 const router = useRouter()
 
-// 'home' shows the normal page, 'contact' shows the standalone contact page
-const currentView = ref(route.path === '/contact' ? 'contact' : 'home')
-
-const isHomeView = computed(() => route.path === '/' && currentView.value === 'home')
-const isContactView = computed(() => route.path === '/contact' || currentView.value === 'contact')
+// Derive view state directly from the route — no separate ref to fall out of sync.
+const isHomeView = computed(() => route.path === '/')
+const isContactView = computed(() => route.path === '/contact')
 
 async function goToContact() {
-  currentView.value = 'contact'
   await router.push('/contact')
   window.scrollTo(0, 0)
 }
 
 async function goToHome(sectionId = null) {
-  currentView.value = 'home'
-
   if (route.path !== '/' || sectionId) {
     await router.push(sectionId ? { path: '/', hash: `#${sectionId}` } : '/')
   }
