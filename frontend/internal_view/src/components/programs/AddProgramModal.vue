@@ -5,15 +5,24 @@ import { PROGRAM_CATEGORIES } from '@/config/programConfig'
 import { mockUserAccounts } from '@/data/mockUsers'
 import ConfirmDialog from '@/components/shared/ConfirmDialog.vue'
 
-const emit = defineEmits(['close', 'create'])
+const props = defineProps({
+  program: {
+    type: Object,
+    default: null,
+  },
+})
 
-const name = ref('')
-const description = ref('')
-const category = ref('')
-const allocated = ref('')
+const emit = defineEmits(['close', 'create', 'update'])
+
+const isEditMode = computed(() => !!props.program)
+
+const name = ref(props.program?.name ?? '')
+const description = ref(props.program?.description ?? '')
+const category = ref(props.program?.category ?? '')
+const allocated = ref(props.program?.allocated ?? '')
 const focalPersonId = ref('')
-const focalPersonManual = ref('')
-const useManualFocal = ref(false)
+const focalPersonManual = ref(props.program?.focalPerson ?? '')
+const useManualFocal = ref(isEditMode.value ? true : false)
 const errors = ref({})
 const confirmMode = ref(null)
 
@@ -84,13 +93,20 @@ function handleConfirm() {
     emit('close')
   } else if (confirmMode.value === 'create') {
     confirmMode.value = null
-    emit('create', {
+
+    const payload = {
       name: name.value.trim(),
       description: description.value.trim(),
       category: category.value,
       allocated: Number(allocated.value),
       focalPerson: resolvedFocalName.value,
-    })
+    }
+
+    if (isEditMode.value) {
+      emit('update', { id: props.program.id, ...payload })
+    } else {
+      emit('create', payload)
+    }
   }
 }
 
@@ -104,7 +120,9 @@ function handleCancelConfirm() {
     <div class="flex max-h-[90vh] w-full max-w-2xl flex-col rounded-xl bg-white shadow-xl">
       <!-- Header -->
       <div class="flex items-center justify-between rounded-t-xl bg-[#001d4c] px-6 py-5">
-        <h2 class="text-base font-semibold text-white">Add New Program</h2>
+        <h2 class="text-base font-semibold text-white">
+  {{ isEditMode ? 'Edit Program' : 'Add New Program' }}
+</h2>
         <button aria-label="Close" class="text-white/80 hover:text-white" @click="requestClose">
           <X class="h-5 w-5" />
         </button>
@@ -254,12 +272,12 @@ function handleCancelConfirm() {
         >
           Cancel
         </button>
-        <button
-          class="rounded-lg bg-[#001d4c] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#012a63]"
-          @click="requestSubmit"
-        >
-          Create Program
-        </button>
+<button
+  class="rounded-lg bg-[#001d4c] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#012a63]"
+  @click="requestSubmit"
+>
+  {{ isEditMode ? 'Save Changes' : 'Create Program' }}
+</button>
       </div>
     </div>
   </div>
@@ -275,14 +293,16 @@ function handleCancelConfirm() {
     @cancel="handleCancelConfirm"
   />
 
-  <ConfirmDialog
-    v-if="confirmMode === 'create'"
-    title="Create this program?"
-    :message="`You're about to create '${name}' under ${category}, assigned to ${resolvedFocalName}. Make sure the details are correct before continuing.`"
-    confirm-label="Create Program"
-    cancel-label="Review Again"
-    variant="default"
-    @confirm="handleConfirm"
-    @cancel="handleCancelConfirm"
-  />
+<ConfirmDialog
+  v-if="confirmMode === 'create'"
+  :title="isEditMode ? 'Save these changes?' : 'Create this program?'"
+  :message="isEditMode
+    ? `You're about to update '${name}'.`
+    : `You're about to create '${name}' under ${category}, assigned to ${resolvedFocalName}. Make sure the details are correct before continuing.`"
+  :confirm-label="isEditMode ? 'Save Changes' : 'Create Program'"
+  cancel-label="Review Again"
+  variant="default"
+  @confirm="handleConfirm"
+  @cancel="handleCancelConfirm"
+/>
 </template>

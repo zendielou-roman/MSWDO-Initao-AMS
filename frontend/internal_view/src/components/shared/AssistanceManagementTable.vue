@@ -1,15 +1,33 @@
 <!-- src/components/shared/AssistanceManagementTable.vue -->
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { Search, Plus, FileText, CircleCheck, ClipboardList, CircleX } from 'lucide-vue-next'
 import KPICard from '@/components/shared/KPICard.vue'
 import StatusBadge from '@/components/shared/StatusBadge.vue'
-import { mockApplications, assistanceTypes } from '@/data/mockApplications'
+import { assistanceTypes } from '@/data/mockApplications'
+import { getDisplayName, getDisplayBarangay } from '@/data/mockClients'
 import CreateApplicationModal from '@/components/shared/CreateApplicationModal.vue'
+import api from '@/lib/api'
+
+const mockApplications = ref([])
+const isLoading = ref(true)
+
+async function fetchApplications() {
+  try {
+    const response = await api.get('/applications')
+    mockApplications.value = response.data
+  } catch (error) {
+    console.error('Failed to fetch applications:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(fetchApplications)
 
 const showCreateModal = ref(false)
 function handleApplicationSaved(record) {
-  mockApplications.unshift(record)
+  mockApplications.value.unshift(record)
 }
 
 const period = ref('monthly')
@@ -20,20 +38,21 @@ const typeFilter = ref('all')
 const tabs = ['all', 'pending', 'approved', 'rejected', 'released']
 
 const kpis = computed(() => {
-  const total = mockApplications.length
-  const approved = mockApplications.filter((a) => a.status === 'Approved').length
-  const pending = mockApplications.filter((a) => a.status === 'Pending').length
-  const rejected = mockApplications.filter((a) => a.status === 'Rejected').length
+  const total = mockApplications.value.length
+  const approved = mockApplications.value.filter((a) => a.status === 'Approved').length
+  const pending = mockApplications.value.filter((a) => a.status === 'Pending').length
+  const rejected = mockApplications.value.filter((a) => a.status === 'Rejected').length
   const approvalRate = total ? Math.round((approved / total) * 100) : 0
   return { total, approved, pending, rejected, approvalRate }
 })
 
 const filteredApplications = computed(() => {
-  return mockApplications.filter((a) => {
+  return mockApplications.value.filter((a) => {
+    const clientName = a.client ? getDisplayName(a.client) : ''
     const matchesTab = statusTab.value === 'all' || a.status.toLowerCase() === statusTab.value
     const matchesSearch =
-      a.clientName.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      a.id.toLowerCase().includes(searchQuery.value.toLowerCase())
+      clientName.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      a.application_code.toLowerCase().includes(searchQuery.value.toLowerCase())
     const matchesType = typeFilter.value === 'all' || a.type === typeFilter.value
     return matchesTab && matchesSearch && matchesType
   })
@@ -145,22 +164,22 @@ function formatCurrency(n) {
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="app in filteredApplications"
-            :key="app.id"
-            class="cursor-pointer border-b border-slate-50 hover:bg-slate-50"
-          >
-            <td class="px-5 py-3 text-slate-500">{{ app.id }}</td>
-            <td class="px-5 py-3">
-              <p class="font-medium text-slate-700">{{ app.clientName }}</p>
-              <p class="text-[10px] text-slate-400">assessed by {{ app.submittedBy }}</p>
-            </td>
-            <td class="px-5 py-3 text-blue-600">{{ app.type }}</td>
-            <td class="px-5 py-3 text-slate-700">{{ formatCurrency(app.amount) }}</td>
-            <td class="px-5 py-3 text-slate-600">{{ app.barangay }}</td>
-            <td class="px-5 py-3 text-slate-500">{{ app.dateSubmitted }}</td>
-            <td class="px-5 py-3"><StatusBadge :status="app.status" /></td>
-          </tr>
+<tr
+  v-for="app in filteredApplications"
+  :key="app.id"
+  class="cursor-pointer border-b border-slate-50 hover:bg-slate-50"
+>
+  <td class="px-5 py-3 text-slate-500">{{ app.application_code }}</td>
+  <td class="px-5 py-3">
+    <p class="font-medium text-slate-700">{{ app.client ? getDisplayName(app.client) : '—' }}</p>
+    <p class="text-[10px] text-slate-400">assessed by {{ app.submitted_by }}</p>
+  </td>
+  <td class="px-5 py-3 text-blue-600">{{ app.type }}</td>
+  <td class="px-5 py-3 text-slate-700">{{ formatCurrency(app.amount) }}</td>
+  <td class="px-5 py-3 text-slate-600">{{ app.barangay }}</td>
+  <td class="px-5 py-3 text-slate-500">{{ app.date_submitted }}</td>
+  <td class="px-5 py-3"><StatusBadge :status="app.status" /></td>
+</tr>
           <tr v-if="filteredApplications.length === 0">
             <td colspan="7" class="px-5 py-8 text-center text-sm text-slate-400">
               No applications match your filters.

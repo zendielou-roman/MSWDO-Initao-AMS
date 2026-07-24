@@ -1,19 +1,29 @@
+```vue
 <script setup>
 import { ref, computed } from 'vue'
 import { X, User, Mail, Phone, ShieldCheck, Lock, Eye, EyeOff, RefreshCw } from 'lucide-vue-next'
 import { roleConfig } from '@/config/roleConfig'
 import ConfirmDialog from '@/components/shared/ConfirmDialog.vue'
 
-const emit = defineEmits(['close', 'create'])
+const props = defineProps({
+  user: {
+    type: Object,
+    default: null,
+  },
+})
 
-const fullName = ref('')
-const email = ref('')
-const contactNumber = ref('')
-const position = ref('')
-const role = ref('')
+const emit = defineEmits(['close', 'create', 'update'])
+
+const isEditMode = computed(() => !!props.user)
+
+const fullName = ref(props.user?.name ?? '')
+const email = ref(props.user?.email ?? '')
+const contactNumber = ref(props.user?.contactNumber ?? '')
+const position = ref(props.user?.position ?? '')
+const role = ref(props.user?.role ?? '')
 const tempPassword = ref('')
-const showPassword = ref(false)
 const errors = ref({})
+const showPassword = ref(false)
 
 // NEW: confirmation dialog state
 const confirmMode = ref(null) // null | 'discard' | 'create'
@@ -26,7 +36,9 @@ function generatePassword() {
   }
   tempPassword.value = pwd
 }
-generatePassword()
+if (!isEditMode.value) {
+  generatePassword()
+}
 
 const roleOptions = computed(() =>
   Object.entries(roleConfig).map(([key, cfg]) => ({ value: key, label: cfg.label })),
@@ -84,14 +96,21 @@ function handleConfirm() {
     emit('close')
   } else if (confirmMode.value === 'create') {
     confirmMode.value = null
-    emit('create', {
+
+    const payload = {
       name: fullName.value.trim(),
       email: email.value.trim(),
       contactNumber: contactNumber.value.trim(),
       position: position.value.trim(),
       role: role.value,
       tempPassword: tempPassword.value,
-    })
+    }
+
+    if (isEditMode.value) {
+      emit('update', { id: props.user.id, ...payload })
+    } else {
+      emit('create', payload)
+    }
   }
 }
 
@@ -100,14 +119,17 @@ function handleCancelConfirm() {
 }
 
 const roleLabel = computed(() => roleConfig[role.value]?.label ?? '')
-</script>
+</script>here
+```
 
 <template>
   <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 px-4">
     <div class="flex max-h-[90vh] w-full max-w-2xl flex-col rounded-xl bg-white shadow-xl">
       <!-- Header -->
       <div class="flex items-center justify-between rounded-t-xl bg-[#001d4c] px-6 py-5">
-        <h2 class="text-base font-semibold text-white">Create New User Account</h2>
+        <h2 class="text-base font-semibold text-white">
+  {{ isEditMode ? 'Edit User Account' : 'Create New User Account' }}
+</h2>
         <button aria-label="Close" class="text-white/80 hover:text-white" @click="requestClose">
           <X class="h-5 w-5" />
         </button>
@@ -219,7 +241,7 @@ const roleLabel = computed(() => roleConfig[role.value]?.label ?? '')
         </div>
 
         <!-- Section divider -->
-        <div class="border-t border-slate-100 pt-5">
+        <div v-if="!isEditMode" class="border-t border-slate-100 pt-5">
           <h3 class="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
             Login Credentials
           </h3>
@@ -264,12 +286,12 @@ const roleLabel = computed(() => roleConfig[role.value]?.label ?? '')
         >
           Cancel
         </button>
-        <button
-          class="rounded-lg bg-[#001d4c] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#012a63]"
-          @click="requestSubmit"
-        >
-          Create User Account
-        </button>
+<button
+  class="rounded-lg bg-[#001d4c] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#012a63]"
+  @click="requestSubmit"
+>
+  {{ isEditMode ? 'Save Changes' : 'Create User Account' }}
+</button>
       </div>
     </div>
   </div>
@@ -287,14 +309,16 @@ const roleLabel = computed(() => roleConfig[role.value]?.label ?? '')
   />
 
   <!-- NEW: Create confirmation -->
-  <ConfirmDialog
-    v-if="confirmMode === 'create'"
-    title="Create this account?"
-    :message="`You're about to create a ${roleLabel} account for ${fullName}. Make sure the details are correct before continuing.`"
-    confirm-label="Create Account"
-    cancel-label="Review Again"
-    variant="default"
-    @confirm="handleConfirm"
-    @cancel="handleCancelConfirm"
-  />
+<ConfirmDialog
+  v-if="confirmMode === 'create'"
+  :title="isEditMode ? 'Save these changes?' : 'Create this account?'"
+  :message="isEditMode
+    ? `You're about to update ${fullName}'s account details.`
+    : `You're about to create a ${roleLabel} account for ${fullName}. Make sure the details are correct before continuing.`"
+  :confirm-label="isEditMode ? 'Save Changes' : 'Create Account'"
+  cancel-label="Review Again"
+  variant="default"
+  @confirm="handleConfirm"
+  @cancel="handleCancelConfirm"
+/>
 </template>

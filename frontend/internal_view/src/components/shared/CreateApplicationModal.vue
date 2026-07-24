@@ -3,7 +3,8 @@
 import { ref, computed } from 'vue'
 import { X, ChevronLeft, ChevronRight, Check, Search } from 'lucide-vue-next'
 import { useAuthStore } from '@/stores/auth'
-import { mockClients, getDisplayName, getDisplayBarangay } from '@/data/mockClients'
+import { getDisplayName, getDisplayBarangay } from '@/data/mockClients'
+import api from '@/lib/api'
 import {
   incomeExpenditureOptions,
   economicConditionOptions,
@@ -24,10 +25,24 @@ const stepLabels = ['Select Client', 'Assessment', 'Evaluation & Recommendation'
 // ===== STEP 1: CLIENT SELECTION =====
 const clientSearch = ref('')
 const selectedClient = ref(null)
+const clients = ref([])
+
+async function fetchClientsForSelection() {
+  try {
+    const response = await api.get('/clients')
+    clients.value = response.data
+  } catch (error) {
+    console.error('Failed to fetch clients:', error)
+  }
+}
+fetchClientsForSelection()
+
 const filteredClients = computed(() => {
   const q = clientSearch.value.toLowerCase()
-  return mockClients.filter(
-    (c) => getDisplayName(c).toLowerCase().includes(q) || c.id.toLowerCase().includes(q),
+  return clients.value.filter(
+    (c) =>
+      getDisplayName(c).toLowerCase().includes(q) ||
+      c.client_code.toLowerCase().includes(q),
   )
 })
 
@@ -87,39 +102,41 @@ const primaryAssistanceType = computed(() => {
   return first ? problemToAssistanceType[first] : 'AICS - Others'
 })
 
-function handleSave() {
+async function handleSave() {
   if (!step3Valid.value) {
     attemptedNext.value = true
     return
   }
-  const record = {
-    id: `APP-2025${Math.floor(100 + Math.random() * 900)}`,
-    clientName: getDisplayName(selectedClient.value),
-    clientId: selectedClient.value.id,
-    submittedBy: auth.user?.name || 'Staff',
+
+  const payload = {
+    client_id: selectedClient.value.id,
+    submitted_by: auth.user?.name || 'Staff',
     type: primaryAssistanceType.value,
     amount: Number(requestedAmount.value),
     barangay: getDisplayBarangay(selectedClient.value),
-    dateSubmitted: new Date().toISOString().slice(0, 10),
     status: eligibility.value === 'Eligible' ? 'Pending' : 'Rejected',
-    assessment: {
-      incomeExpenditure: incomeExpenditure.value,
-      economicCondition: economicCondition.value,
-      problemsPresented: problemsPresented.value,
-      otherProblem: otherProblem.value,
-      clientCategories: clientCategories.value,
-      specificFindings: specificFindings.value,
-    },
-    evaluation: {
-      factors: evaluation.value,
-      eligibility: eligibility.value,
-      recommendation: recommendation.value,
-      informantName: informantName.value,
-      interviewedBy: auth.user?.name || 'Staff',
-    },
+
+    income_expenditure: incomeExpenditure.value,
+    economic_condition: economicCondition.value,
+    problems_presented: problemsPresented.value,
+    other_problem: otherProblem.value,
+    client_categories: clientCategories.value,
+    specific_findings: specificFindings.value,
+
+    evaluation_factors: evaluation.value,
+    eligibility: eligibility.value,
+    recommendation: recommendation.value,
+    informant_name: informantName.value,
+    interviewed_by: auth.user?.name || 'Staff',
   }
-  emit('saved', record)
-  emit('close')
+
+  try {
+    const response = await api.post('/applications', payload)
+    emit('saved', response.data)
+    emit('close')
+  } catch (error) {
+    console.error('Failed to save application:', error)
+  }
 }
 
 function inputClass(hasError) {
@@ -221,8 +238,8 @@ function confirmSave() {
               @click="selectedClient = c"
             >
               <div>
-                <p class="text-sm font-medium text-slate-700">{{ getDisplayName(c) }}</p>
-                <p class="text-xs text-slate-400">{{ c.id }} · {{ getDisplayBarangay(c) }}</p>
+              <p class="text-sm font-medium text-slate-700">{{ getDisplayName(c) }}</p>
+<p class="text-xs text-slate-400">{{ c.client_code }} · {{ getDisplayBarangay(c) }}</p>
               </div>
               <Check v-if="selectedClient?.id === c.id" class="h-4 w-4 text-[#001d4c]" />
             </button>

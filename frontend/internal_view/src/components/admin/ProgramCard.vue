@@ -22,7 +22,7 @@ const statusStyles = {
   <div class="rounded-xl border border-slate-100 bg-white p-5 shadow-sm">
     <div class="flex items-start justify-between">
       <div>
-        <p class="text-[11px] font-medium text-slate-400">{{ program.id }}</p>
+        <p class="text-[11px] font-medium text-slate-400">{{ program.program_code }}</p>
         <p class="font-anton text-lg text-slate-800">{{ program.name }}</p>
       </div>
       <span

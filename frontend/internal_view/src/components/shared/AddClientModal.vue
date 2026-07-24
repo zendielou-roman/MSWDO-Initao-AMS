@@ -1,4 +1,3 @@
-<!-- src/components/shared/AddClientModal.vue -->
 <script setup>
 import { ref, computed } from 'vue'
 import { X, ChevronLeft, ChevronRight, Check, Plus, Trash2 } from 'lucide-vue-next'
@@ -6,72 +5,108 @@ import {
   barangaysOfInitao,
   civilStatusOptions,
   householdConditionOptions,
+  clientCategories,
 } from '@/data/mockClients'
 
 import PersonIdentifyingFields from '@/components/shared/PersonIdentifyingFields.vue'
 import ConfirmDialog from '@/components/shared/ConfirmDialog.vue'
 
-const step2Errors = computed(() => {
-  if (sameAsClient.value) return {}
-  const errors = {}
-  if (!beneficiary.value.surname.trim()) errors.surname = true
-  if (!beneficiary.value.firstName.trim()) errors.firstName = true
-  if (!beneficiary.value.age) errors.age = true
-  if (!beneficiary.value.sex) errors.sex = true
-  if (!beneficiary.value.barangay) errors.barangay = true
-  return errors
+const props = defineProps({
+  client: {
+    type: Object,
+    default: null,
+  },
 })
-const step2Valid = computed(() => sameAsClient.value || Object.keys(step2Errors.value).length === 0)
 
-const emit = defineEmits(['close', 'saved'])
+const isEditMode = computed(() => !!props.client)
+
+const emit = defineEmits(['close', 'saved', 'updated'])
 
 const step = ref(1)
 const totalSteps = 4
 const stepLabels = ['Client Data', 'Beneficiary Data', 'Family Composition', 'Household & Expenses']
 
-const sameAsClient = ref(true)
+const sameAsClient = ref(props.client?.same_as_client ?? true)
 
-const client = ref({
-  surname: '',
-  firstName: '',
-  middleName: '',
-  ext: '',
-  age: '',
-  sex: '',
-  purok: '',
-  barangay: '',
-  religion: '',
-  civilStatus: '',
-  highestEducation: '',
-  dateOfBirth: '',
-  placeOfBirth: '',
-  occupation: '',
-  monthlyIncome: '',
-  relationshipToBeneficiary: '',
-  pantawid: false,
-  philhealth: false,
-  contact: '',
-})
+function blankPerson() {
+  return {
+    surname: '',
+    firstName: '',
+    middleName: '',
+    ext: '',
+    age: '',
+    sex: '',
+    purok: '',
+    barangay: '',
+    religion: '',
+    civilStatus: '',
+    highestEducation: '',
+    dateOfBirth: '',
+    placeOfBirth: '',
+    occupation: '',
+    monthlyIncome: '',
+  }
+}
 
-const beneficiary = ref({
-  surname: '',
-  firstName: '',
-  middleName: '',
-  ext: '',
-  age: '',
-  sex: '',
-  purok: '',
-  barangay: '',
-  civilStatus: '',
-  dateOfBirth: '',
-  placeOfBirth: '',
-  religion: '',
-  highestEducation: '',
-  occupation: '',
-  monthlyIncome: '',
-})
+const client = ref(
+  props.client
+    ? {
+        surname: props.client.surname ?? '',
+        firstName: props.client.first_name ?? '',
+        middleName: props.client.middle_name ?? '',
+        ext: props.client.ext ?? '',
+        age: props.client.age ?? '',
+        sex: props.client.sex ?? '',
+        purok: props.client.purok ?? '',
+        barangay: props.client.barangay ?? '',
+        religion: props.client.religion ?? '',
+        civilStatus: props.client.civil_status ?? '',
+        highestEducation: props.client.highest_education ?? '',
+        dateOfBirth: props.client.date_of_birth ?? '',
+        placeOfBirth: props.client.place_of_birth ?? '',
+        occupation: props.client.occupation ?? '',
+        monthlyIncome: props.client.monthly_income ?? '',
+        relationshipToBeneficiary: props.client.relationship_to_beneficiary ?? '',
+        pantawid: props.client.pantawid ?? false,
+        philhealth: props.client.philhealth ?? false,
+        contact: props.client.contact ?? '',
+      }
+    : { ...blankPerson(), relationshipToBeneficiary: '', pantawid: false, philhealth: false, contact: '' },
+)
 
-const familyMembers = ref([])
+const beneficiary = ref(
+  props.client && !props.client.same_as_client
+    ? {
+        surname: props.client.beneficiary_surname ?? '',
+        firstName: props.client.beneficiary_first_name ?? '',
+        middleName: props.client.beneficiary_middle_name ?? '',
+        ext: props.client.beneficiary_ext ?? '',
+        age: props.client.beneficiary_age ?? '',
+        sex: props.client.beneficiary_sex ?? '',
+        purok: props.client.beneficiary_purok ?? '',
+        barangay: props.client.beneficiary_barangay ?? '',
+        religion: props.client.beneficiary_religion ?? '',
+        civilStatus: props.client.beneficiary_civil_status ?? '',
+        highestEducation: props.client.beneficiary_highest_education ?? '',
+        dateOfBirth: props.client.beneficiary_date_of_birth ?? '',
+        placeOfBirth: props.client.beneficiary_place_of_birth ?? '',
+        occupation: props.client.beneficiary_occupation ?? '',
+        monthlyIncome: props.client.beneficiary_monthly_income ?? '',
+      }
+    : blankPerson(),
+)
+
+const familyMembers = ref(
+  props.client?.family_members?.map((m) => ({
+    name: m.name ?? '',
+    age: m.age ?? '',
+    civilStatus: m.civil_status ?? '',
+    relationship: m.relationship ?? '',
+    education: m.education ?? '',
+    occupation: m.occupation ?? '',
+    income: m.income ?? 0,
+  })) ?? [],
+)
 function addFamilyMember() {
   familyMembers.value.push({
     name: '',
@@ -87,17 +122,25 @@ function removeFamilyMember(index) {
   familyMembers.value.splice(index, 1)
 }
 
-const otherIncomeSource = ref('')
-const otherIncomeAmount = ref(0)
-const householdCondition = ref([])
+const otherIncomeSource = ref(props.client?.other_income_source ?? '')
+const otherIncomeAmount = ref(props.client?.other_income_amount ?? 0)
+const householdCondition = ref(props.client?.household_condition ?? [])
+const categories = ref(props.client?.categories ?? [])
+
+function toggleCategory(cat) {
+  const i = categories.value.indexOf(cat)
+  if (i === -1) categories.value.push(cat)
+  else categories.value.splice(i, 1)
+}
+
 const expenditures = ref({
-  food: 0,
-  education: 0,
-  rent: 0,
-  transportation: 0,
-  recreation: 0,
-  medical: 0,
-  others: 0,
+  food: props.client?.food ?? 0,
+  education: props.client?.education_exp ?? 0,
+  rent: props.client?.rent ?? 0,
+  transportation: props.client?.transportation ?? 0,
+  recreation: props.client?.recreation ?? 0,
+  medical: props.client?.medical ?? 0,
+  others: props.client?.others_exp ?? 0,
 })
 
 const familyIncomeTotal = computed(() =>
@@ -119,7 +162,7 @@ function toggleHouseholdCondition(option) {
   else householdCondition.value.splice(i, 1)
 }
 
-const attemptedNext = ref(false) // tracks whether user tried to proceed, to show validation only after a real attempt
+const attemptedNext = ref(false)
 
 const step1Errors = computed(() => {
   const errors = {}
@@ -132,6 +175,18 @@ const step1Errors = computed(() => {
   return errors
 })
 const step1Valid = computed(() => Object.keys(step1Errors.value).length === 0)
+
+const step2Errors = computed(() => {
+  if (sameAsClient.value) return {}
+  const errors = {}
+  if (!beneficiary.value.surname.trim()) errors.surname = true
+  if (!beneficiary.value.firstName.trim()) errors.firstName = true
+  if (!beneficiary.value.age) errors.age = true
+  if (!beneficiary.value.sex) errors.sex = true
+  if (!beneficiary.value.barangay) errors.barangay = true
+  return errors
+})
+const step2Valid = computed(() => sameAsClient.value || Object.keys(step2Errors.value).length === 0)
 
 function nextStep() {
   attemptedNext.value = true
@@ -151,23 +206,80 @@ function prevStep() {
   if (step.value > 1) step.value--
 }
 
-function handleSave() {
-  const record = {
-    id: `CB-${Math.floor(1000 + Math.random() * 9000)}`,
-    dateRegistered: new Date().toISOString().slice(0, 10),
-    sameAsClient: sameAsClient.value,
-    client: client.value,
-    beneficiary: sameAsClient.value ? null : beneficiary.value,
-    familyComposition: familyMembers.value,
-    otherIncomeSource: otherIncomeSource.value,
-    otherIncomeAmount: otherIncomeAmount.value,
-    totalMonthlyIncome: totalMonthlyIncome.value,
-    householdCondition: householdCondition.value,
-    expenditures: expenditures.value,
-    categories: [],
-    status: 'Active',
+function buildPayload() {
+  return {
+    surname: client.value.surname,
+    first_name: client.value.firstName,
+    middle_name: client.value.middleName,
+    ext: client.value.ext,
+    age: Number(client.value.age),
+    sex: client.value.sex,
+    purok: client.value.purok,
+    barangay: client.value.barangay,
+    religion: client.value.religion,
+    civil_status: client.value.civilStatus,
+    highest_education: client.value.highestEducation,
+    date_of_birth: client.value.dateOfBirth || null,
+    place_of_birth: client.value.placeOfBirth,
+    occupation: client.value.occupation,
+    monthly_income: Number(client.value.monthlyIncome) || 0,
+    relationship_to_beneficiary: client.value.relationshipToBeneficiary,
+    pantawid: client.value.pantawid,
+    philhealth: client.value.philhealth,
+    contact: client.value.contact,
+    same_as_client: sameAsClient.value,
+
+    beneficiary_surname: sameAsClient.value ? null : beneficiary.value.surname,
+    beneficiary_first_name: sameAsClient.value ? null : beneficiary.value.firstName,
+    beneficiary_middle_name: sameAsClient.value ? null : beneficiary.value.middleName,
+    beneficiary_ext: sameAsClient.value ? null : beneficiary.value.ext,
+    beneficiary_age: sameAsClient.value ? null : Number(beneficiary.value.age) || null,
+    beneficiary_sex: sameAsClient.value ? null : beneficiary.value.sex,
+    beneficiary_purok: sameAsClient.value ? null : beneficiary.value.purok,
+    beneficiary_barangay: sameAsClient.value ? null : beneficiary.value.barangay,
+    beneficiary_religion: sameAsClient.value ? null : beneficiary.value.religion,
+    beneficiary_civil_status: sameAsClient.value ? null : beneficiary.value.civilStatus,
+    beneficiary_highest_education: sameAsClient.value ? null : beneficiary.value.highestEducation,
+    beneficiary_date_of_birth: sameAsClient.value ? null : beneficiary.value.dateOfBirth || null,
+    beneficiary_place_of_birth: sameAsClient.value ? null : beneficiary.value.placeOfBirth,
+    beneficiary_occupation: sameAsClient.value ? null : beneficiary.value.occupation,
+    beneficiary_monthly_income: sameAsClient.value
+      ? null
+      : Number(beneficiary.value.monthlyIncome) || null,
+
+    other_income_source: otherIncomeSource.value,
+    other_income_amount: Number(otherIncomeAmount.value) || 0,
+    total_monthly_income: totalMonthlyIncome.value,
+    household_condition: householdCondition.value,
+    food: Number(expenditures.value.food) || 0,
+    education_exp: Number(expenditures.value.education) || 0,
+    rent: Number(expenditures.value.rent) || 0,
+    transportation: Number(expenditures.value.transportation) || 0,
+    recreation: Number(expenditures.value.recreation) || 0,
+    medical: Number(expenditures.value.medical) || 0,
+    others_exp: Number(expenditures.value.others) || 0,
+
+    categories: categories.value,
+
+    family_members: familyMembers.value.map((m) => ({
+      name: m.name,
+      age: Number(m.age) || null,
+      civil_status: m.civilStatus,
+      relationship: m.relationship,
+      education: m.education,
+      occupation: m.occupation,
+      income: Number(m.income) || 0,
+    })),
   }
-  emit('saved', record)
+}
+
+function handleSave() {
+  const payload = buildPayload()
+  if (isEditMode.value) {
+    emit('updated', { id: props.client.id, payload })
+  } else {
+    emit('saved', payload)
+  }
   emit('close')
 }
 
@@ -183,6 +295,10 @@ const hasUnsavedData = computed(() => {
 })
 
 function handleCloseAttempt() {
+  if (isEditMode.value) {
+    emit('close')
+    return
+  }
   if (hasUnsavedData.value) {
     showCloseConfirm.value = true
   } else {
@@ -256,14 +372,26 @@ function confirmSave() {
             class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-slate-400"
           />
 
-          <div class="flex gap-4 text-sm text-slate-600">
-            <label class="flex items-center gap-2">
-              <input v-model="client.pantawid" type="checkbox" /> Pantawid (4Ps) member
-            </label>
-            <label class="flex items-center gap-2">
-              <input v-model="client.philhealth" type="checkbox" /> PhilHealth member
-            </label>
-          </div>
+<div>
+  <p class="text-xs font-bold uppercase tracking-wide text-slate-600">Assistance Category</p>
+  <p class="mt-1 text-[11px] text-slate-400">Check all that apply</p>
+  <div class="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
+    <label
+      v-for="cat in clientCategories"
+      :key="cat"
+      class="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-600 transition hover:bg-slate-50"
+      :class="categories.includes(cat) ? 'border-[#001d4c] bg-slate-50' : ''"
+    >
+      <input
+        type="checkbox"
+        :checked="categories.includes(cat)"
+        class="h-4 w-4 rounded border-slate-300"
+        @change="toggleCategory(cat)"
+      />
+      {{ cat }}
+    </label>
+  </div>
+</div>
 
           <p
             v-if="attemptedNext && !step1Valid"

@@ -1,9 +1,8 @@
 <!-- src/components/shared/ClientsBeneficiariesTable.vue -->
 <script setup>
-import { ref, computed } from 'vue'
-import { Search, Plus } from 'lucide-vue-next'
+import { ref, computed, onMounted } from 'vue'
+import { Search, Plus, Pencil, Eye } from 'lucide-vue-next'
 import {
-  mockClients,
   barangaysOfInitao,
   clientCategories,
   categoryTagStyles,
@@ -14,10 +13,57 @@ import {
   getDisplayContact,
 } from '@/data/mockClients'
 import AddClientModal from '@/components/shared/AddClientModal.vue'
+import api from '@/lib/api'
+import ClientDetailsModal from '@/components/shared/ClientDetailsModal.vue'
+
+const mockClients = ref([])
+const isLoading = ref(true)
+
+async function fetchClients() {
+  try {
+    const response = await api.get('/clients')
+    mockClients.value = response.data
+  } catch (error) {
+    console.error('Failed to fetch clients:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(fetchClients)
 
 const showAddModal = ref(false)
-function handleClientSaved(record) {
-  mockClients.unshift(record) // prepend so it shows at top of the list
+const editingClient = ref(null)
+
+function openEditModal(client) {
+  editingClient.value = client
+  showAddModal.value = true
+}
+
+function closeModal() {
+  showAddModal.value = false
+  editingClient.value = null
+}
+
+async function handleClientSaved(payload) {
+  try {
+    const response = await api.post('/clients', payload)
+    mockClients.value.unshift(response.data)
+  } catch (error) {
+    console.error('Failed to save client:', error)
+  }
+}
+
+async function handleClientUpdated({ id, payload }) {
+  try {
+    const response = await api.put(`/clients/${id}`, payload)
+    const index = mockClients.value.findIndex((c) => c.id === id)
+    if (index !== -1) {
+      mockClients.value[index] = response.data
+    }
+  } catch (error) {
+    console.error('Failed to update client:', error)
+  }
 }
 
 const searchQuery = ref('')
@@ -26,7 +72,7 @@ const categoryFilter = ref('all')
 const statusFilter = ref('all')
 
 const filteredClients = computed(() => {
-  return mockClients.filter((c) => {
+  return mockClients.value.filter((c) => {
     const q = searchQuery.value.toLowerCase()
     const matchesSearch =
       getDisplayName(c).toLowerCase().includes(q) ||
@@ -40,6 +86,8 @@ const filteredClients = computed(() => {
     return matchesSearch && matchesBarangay && matchesCategory && matchesStatus
   })
 })
+
+const viewingClient = ref(null)
 </script>
 
 <template>
@@ -50,7 +98,7 @@ const filteredClients = computed(() => {
       </p>
       <button
         class="flex items-center gap-2 rounded-lg bg-[#001d4c] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#012a63]"
-        @click="showAddModal = true"
+       @click="editingClient = null; showAddModal = true"
       >
         <Plus class="h-4 w-4" />
         Add Client/Beneficiary
@@ -111,6 +159,7 @@ const filteredClients = computed(() => {
             <th class="px-5 py-3 font-medium">Category</th>
             <th class="px-5 py-3 font-medium">Registered</th>
             <th class="px-5 py-3 font-medium">Status</th>
+<th class="px-5 py-3 text-right font-medium">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -119,7 +168,7 @@ const filteredClients = computed(() => {
             :key="c.id"
             class="cursor-pointer border-b border-slate-50 hover:bg-slate-50"
           >
-            <td class="px-5 py-3 text-slate-500">{{ c.id }}</td>
+            <td class="px-5 py-3 text-slate-500">{{ c.client_code }}</td>
             <td class="px-5 py-3">
               <p class="font-medium text-slate-700">{{ getDisplayName(c) }}</p>
               <p class="text-xs text-slate-400">
@@ -140,7 +189,7 @@ const filteredClients = computed(() => {
                 </span>
               </div>
             </td>
-            <td class="px-5 py-3 text-slate-500">{{ c.dateRegistered }}</td>
+            <td class="px-5 py-3 text-slate-500">{{ c.date_registered }}</td>
             <td class="px-5 py-3">
               <span
                 class="flex items-center gap-1.5 text-xs font-medium"
@@ -150,6 +199,22 @@ const filteredClients = computed(() => {
                 {{ c.status }}
               </span>
             </td>
+<td class="px-5 py-3 text-right">
+  <button
+    aria-label="View client"
+    class="mr-2 text-slate-400 hover:text-slate-700"
+    @click.stop="viewingClient = c"
+  >
+    <Eye class="h-4 w-4" />
+  </button>
+  <button
+    aria-label="Edit client"
+    class="text-slate-400 hover:text-slate-700"
+    @click.stop="openEditModal(c)"
+  >
+    <Pencil class="h-4 w-4" />
+  </button>
+</td>
           </tr>
           <tr v-if="filteredClients.length === 0">
             <td colspan="7" class="px-5 py-8 text-center text-sm text-slate-400">
@@ -160,6 +225,18 @@ const filteredClients = computed(() => {
       </table>
     </div>
 
-    <AddClientModal v-if="showAddModal" @close="showAddModal = false" @saved="handleClientSaved" />
+    <AddClientModal
+  v-if="showAddModal"
+  :client="editingClient"
+  @close="closeModal"
+  @saved="handleClientSaved"
+  @updated="handleClientUpdated"
+/>
+
+    <ClientDetailsModal
+      v-if="viewingClient"
+      :client="viewingClient"
+      @close="viewingClient = null"
+    />  
   </div>
 </template>

@@ -99,18 +99,17 @@ export const mockClients = [
 
 // ===== Helpers so the table can display the nested client/beneficiary shape =====
 export function getDisplayName(record) {
-  const c = record.client
-  return `${c.firstName} ${c.surname}`.trim()
+  return `${record.first_name} ${record.surname}`.trim()
 }
 export function getDisplaySex(record) {
-  return record.client.sex
+  return record.sex
 }
 export function getDisplayAge(record) {
-  return record.client.age
+  return record.age
 }
 export function getDisplayBarangay(record) {
-  return record.client.barangay
+  return record.barangay
 }
 export function getDisplayContact(record) {
-  return record.client.contact
+  return record.contact
 }

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import {
   Layers,
   CircleCheck,
@@ -13,15 +13,43 @@ import KPICard from '@/components/shared/KPICard.vue'
 import PageIntro from '@/components/shared/PageIntro.vue'
 import ProgramCard from '@/components/admin/ProgramCard.vue'
 import AddProgramModal from '@/components/programs/AddProgramModal.vue'
-import { mockPrograms } from '@/data/mockPrograms'
+import api from '@/lib/api'
 
-const programs = ref([...mockPrograms])
+const programs = ref([])
+const isLoading = ref(true)
+
+async function fetchPrograms() {
+  try {
+    const response = await api.get('/programs')
+    programs.value = response.data.map((p) => ({
+      ...p,
+      focalPerson: p.focal_person,
+    }))
+  } catch (error) {
+    console.error('Failed to fetch programs:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(fetchPrograms)
 const currentPage = ref(1)
 const perPage = 6
 
-// NEW: modal + toast state
+// modal + toast state
 const showAddModal = ref(false)
+const editingProgram = ref(null)
 const toastMessage = ref('')
+
+function openEditModal(program) {
+  editingProgram.value = program
+  showAddModal.value = true
+}
+
+function closeModal() {
+  showAddModal.value = false
+  editingProgram.value = null
+}
 
 const totalPrograms = computed(() => programs.value.length)
 const activePrograms = computed(() => programs.value.filter((p) => p.status === 'Active').length)
@@ -31,9 +59,13 @@ const percentUtilized = computed(() =>
   Math.round((totalReleased.value / totalAllocation.value) * 100),
 )
 
+const sortedPrograms = computed(() => {
+  return [...programs.value].sort((a, b) => a.id - b.id)
+})
+
 const paginatedPrograms = computed(() => {
   const start = (currentPage.value - 1) * perPage
-  return programs.value.slice(start, start + perPage)
+  return sortedPrograms.value.slice(start, start + perPage)
 })
 const totalPages = computed(() => Math.ceil(programs.value.length / perPage))
 
@@ -41,39 +73,90 @@ function formatCurrency(n) {
   return `₱${n.toLocaleString()}`
 }
 
-function handleToggleStatus(program) {
-  program.status = program.status === 'Active' ? 'On Hold' : 'Active'
+async function handleToggleStatus(program) {
+  const newStatus = program.status === 'Active' ? 'On Hold' : 'Active'
+
+  try {
+    const response = await api.put(`/programs/${program.id}`, {
+      status: newStatus,
+    })
+    program.status = response.data.status
+
+    toastMessage.value = `"${program.name}" is now ${response.data.status}`
+    setTimeout(() => {
+      toastMessage.value = ''
+    }, 3000)
+  } catch (error) {
+    console.error('Failed to update program status:', error)
+    toastMessage.value = 'Failed to update program status.'
+    setTimeout(() => {
+      toastMessage.value = ''
+    }, 3000)
+  }
 }
 
-// NEW: generates the next PRG-### id based on existing ids
-function nextProgramId() {
-  const nums = programs.value
-    .map((p) => parseInt(p.id.replace('PRG-', ''), 10))
-    .filter((n) => !isNaN(n))
-  const max = nums.length ? Math.max(...nums) : 0
-  return `PRG-${String(max + 1).padStart(3, '0')}`
+async function handleCreateProgram(newProgram) {
+  try {
+    const response = await api.post('/programs', {
+      name: newProgram.name,
+      description: newProgram.description,
+      category: newProgram.category,
+      allocated: newProgram.allocated,
+      focal_person: newProgram.focalPerson,
+    })
+
+    programs.value.unshift({
+      ...response.data,
+      focalPerson: response.data.focal_person,
+    })
+
+    showAddModal.value = false
+    currentPage.value = 1
+
+    toastMessage.value = `Program "${newProgram.name}" created successfully`
+    setTimeout(() => {
+      toastMessage.value = ''
+    }, 3000)
+  } catch (error) {
+    console.error('Failed to create program:', error)
+    toastMessage.value = error.response?.data?.message || 'Failed to create program.'
+    setTimeout(() => {
+      toastMessage.value = ''
+    }, 3000)
+  }
 }
 
-// NEW: handles 'create' event from AddProgramModal
-function handleCreateProgram(newProgram) {
-  programs.value.unshift({
-    id: nextProgramId(),
-    name: newProgram.name,
-    description: newProgram.description,
-    category: newProgram.category,
-    status: 'Active',
-    allocated: newProgram.allocated,
-    released: 0,
-    beneficiaries: 0,
-    focalPerson: newProgram.focalPerson,
-  })
-  showAddModal.value = false
-  currentPage.value = 1
+async function handleUpdateProgram(updatedProgram) {
+  try {
+    const response = await api.put(`/programs/${updatedProgram.id}`, {
+      name: updatedProgram.name,
+      description: updatedProgram.description,
+      category: updatedProgram.category,
+      allocated: updatedProgram.allocated,
+      focal_person: updatedProgram.focalPerson,
+    })
 
-  toastMessage.value = `Program "${newProgram.name}" created successfully`
-  setTimeout(() => {
-    toastMessage.value = ''
-  }, 3000)
+    const index = programs.value.findIndex((p) => p.id === updatedProgram.id)
+    if (index !== -1) {
+      programs.value[index] = {
+        ...response.data,
+        focalPerson: response.data.focal_person,
+      }
+    }
+
+    closeModal()
+
+    toastMessage.value = `Program "${updatedProgram.name}" updated successfully`
+    setTimeout(() => {
+      toastMessage.value = ''
+    }, 3000)
+  } catch (error) {
+    console.error('Failed to update program:', error)
+    toastMessage.value = error.response?.data?.message || 'Failed to update program.'
+    setTimeout(() => {
+      toastMessage.value = ''
+    }, 3000)
+  }
 }
 </script>
 
@@ -81,10 +164,10 @@ function handleCreateProgram(newProgram) {
   <div>
     <div class="flex items-start justify-between">
       <PageIntro />
-      <button
-        class="flex items-center gap-2 rounded-lg bg-[#001d4c] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#012a63]"
-        @click="showAddModal = true"
-      >
+<button
+  class="flex items-center gap-2 rounded-lg bg-[#001d4c] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#012a63]"
+  @click="editingProgram = null; showAddModal = true"
+>
         <Plus class="h-4 w-4" />
         Add New Program
       </button>
@@ -105,12 +188,13 @@ function handleCreateProgram(newProgram) {
 
     <!-- PROGRAM CARDS GRID -->
     <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-      <ProgramCard
-        v-for="program in paginatedPrograms"
-        :key="program.id"
-        :program="program"
-        @toggle-status="handleToggleStatus"
-      />
+<ProgramCard
+  v-for="program in paginatedPrograms"
+  :key="program.id"
+  :program="program"
+  @toggle-status="handleToggleStatus"
+  @edit="openEditModal"
+/>
     </div>
 
     <!-- PAGINATION -->
@@ -132,11 +216,13 @@ function handleCreateProgram(newProgram) {
     </div>
 
     <!-- NEW: Add Program Modal -->
-    <AddProgramModal
-      v-if="showAddModal"
-      @close="showAddModal = false"
-      @create="handleCreateProgram"
-    />
+<AddProgramModal
+  v-if="showAddModal"
+  :program="editingProgram"
+  @close="closeModal"
+  @create="handleCreateProgram"
+  @update="handleUpdateProgram"
+/>
 
     <!-- NEW: Success toast -->
     <Transition

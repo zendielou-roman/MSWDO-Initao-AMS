@@ -40,4 +40,30 @@ class UserController extends Controller
 
         return response()->json($user, 201);
     }
+    /**
+     * Update an existing user.
+     */
+    public function update(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'name' => 'sometimes|required|string|max:255',
+            'email' => 'sometimes|required|email|unique:users,email,' . $user->id,
+            'role' => 'sometimes|required|string',
+            'status' => 'sometimes|required|string',
+        ]);
+
+        $user->update($validated);
+
+        return response()->json($user);
+    }
+
+    /**
+     * Delete a user.
+     */
+    public function destroy(User $user)
+    {
+        $user->delete();
+
+        return response()->json(['message' => 'User deleted successfully.']);
+    }
 }

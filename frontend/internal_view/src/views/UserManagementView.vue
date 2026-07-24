@@ -39,7 +39,19 @@ async function fetchUsers() {
 onMounted(fetchUsers)
 
 // NEW: controls modal visibility
+// controls modal visibility
 const showCreateModal = ref(false)
+const editingUser = ref(null)
+
+function openEditModal(user) {
+  editingUser.value = user
+  showCreateModal.value = true
+}
+
+function closeModal() {
+  showCreateModal.value = false
+  editingUser.value = null
+}
 
 const searchQuery = ref('')
 const roleFilter = ref('all')
@@ -112,16 +124,69 @@ async function handleCreateUser(newUser) {
     }, 3000)
   }
 }
+
+async function handleDeleteUser(user) {
+  const confirmed = confirm(`Delete ${user.name}'s account? This cannot be undone.`)
+  if (!confirmed) return
+
+  try {
+    await api.delete(`/users/${user.id}`)
+    users.value = users.value.filter((u) => u.id !== user.id)
+
+    toastMessage.value = `${user.name}'s account was deleted.`
+    setTimeout(() => {
+      toastMessage.value = ''
+    }, 3000)
+  } catch (error) {
+    console.error('Failed to delete user:', error)
+    toastMessage.value = 'Failed to delete user.'
+    setTimeout(() => {
+      toastMessage.value = ''
+    }, 3000)
+  }
+}
+
+async function handleUpdateUser(updatedUser) {
+  try {
+    const response = await api.put(`/users/${updatedUser.id}`, {
+      name: updatedUser.name,
+      email: updatedUser.email,
+      role: updatedUser.role,
+    })
+
+    const index = users.value.findIndex((u) => u.id === updatedUser.id)
+    if (index !== -1) {
+      users.value[index] = {
+        ...users.value[index],
+        ...response.data,
+        dateCreated: response.data.created_at?.split('T')[0] ?? users.value[index].dateCreated,
+      }
+    }
+
+    closeModal()
+
+    toastMessage.value = `${updatedUser.name}'s account was updated.`
+    setTimeout(() => {
+      toastMessage.value = ''
+    }, 3000)
+  } catch (error) {
+    console.error('Failed to update user:', error)
+    toastMessage.value = error.response?.data?.message || 'Failed to update user.'
+    setTimeout(() => {
+      toastMessage.value = ''
+    }, 3000)
+  }
+}
 </script>
 
 <template>
   <div>
     <div class="flex items-start justify-between">
       <PageIntro />
-      <button
-        class="flex items-center gap-2 rounded-lg bg-[#001d4c] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#012a63]"
-        @click="showCreateModal = true"
-      >
+<button
+  class="flex items-center gap-2 rounded-lg bg-[#001d4c] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#012a63]"
+  @click="editingUser = null; showCreateModal = true"
+>
         <Plus class="h-4 w-4" />
         New User Account
       </button>
@@ -225,12 +290,12 @@ async function handleCreateUser(newUser) {
             <td class="px-5 py-3 text-slate-500">{{ user.lastLogin }}</td>
             <td class="px-5 py-3">
               <div class="flex items-center justify-end gap-3 text-slate-400">
-                <button aria-label="Edit user" class="hover:text-slate-700">
-                  <Pencil class="h-4 w-4" />
-                </button>
-                <button aria-label="Delete user" class="hover:text-red-600">
-                  <Trash2 class="h-4 w-4" />
-                </button>
+<button aria-label="Edit user" class="hover:text-slate-700" @click="openEditModal(user)">
+  <Pencil class="h-4 w-4" />
+</button>
+<button aria-label="Delete user" class="hover:text-red-600" @click="handleDeleteUser(user)">
+  <Trash2 class="h-4 w-4" />
+</button>
               </div>
             </td>
           </tr>
@@ -274,10 +339,12 @@ async function handleCreateUser(newUser) {
       </div>
     </Transition>
     <!-- NEW: Create User Modal -->
-    <CreateUserModal
-      v-if="showCreateModal"
-      @close="showCreateModal = false"
-      @create="handleCreateUser"
-    />
+<CreateUserModal
+  v-if="showCreateModal"
+  :user="editingUser"
+  @close="closeModal"
+  @create="handleCreateUser"
+  @update="handleUpdateUser"
+/>
   </div>
 </template>
