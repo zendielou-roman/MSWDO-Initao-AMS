@@ -7,7 +7,7 @@ const savedLocale = localStorage.getItem('locale') || 'en'
 
 export const i18n = createI18n({
   legacy: false,        // required to use the Composition API version
-  locale: savedLocale,
+  locale: 'en',
   fallbackLocale: 'en',
   messages: { en, fil, ceb },
 })

@@ -251,7 +251,7 @@ function goToContactSection() {
               {{ t('contact.form.subheading') }} <span class="text-rose-500">*</span>
             </p>
 
-            <div class="grid sm:grid-cols-2 gap-5 mb-1">
+            <div class="grid sm:grid-cols-2 gap-5 mb-6">
               <!-- FULL NAME (or anonymous) -->
               <div class="flex flex-col gap-1.5">
                 <div class="flex items-center justify-between gap-2">
@@ -374,8 +374,18 @@ function goToContactSection() {
                 />
               </div>
 
-              <!-- SUBJECT (now inside the grid, same column width as Barangay) -->
-              <div class="flex flex-col gap-1.5">
+              <!-- CONTACT HINT / ERROR — spans full width, sits directly under Email & Mobile -->
+              <div class="sm:col-span-2 -mt-2.5">
+                <p v-if="touched.contact && errors.contact" class="text-rose-500 text-[0.75rem]">
+                  {{ errors.contact }}
+                </p>
+                <p v-else class="text-slate-400 text-[0.75rem]">
+                  {{ t('contact.form.contactHint') }}
+                </p>
+              </div>
+
+              <!-- SUBJECT — now spans the full width of the grid -->
+              <div class="flex flex-col gap-1.5 sm:col-span-2">
                 <label class="text-[#1f3a63] text-[0.78rem] font-bold tracking-wide uppercase">
                   {{ t('contact.form.subject') }} <span class="text-rose-500">*</span>
                 </label>
@@ -414,13 +424,6 @@ function goToContactSection() {
                 </p>
               </div>
             </div>
-
-            <p v-if="touched.contact && errors.contact" class="text-rose-500 text-[0.75rem] mb-4 sm:col-span-2">
-              {{ errors.contact }}
-            </p>
-            <p v-else class="text-slate-400 text-[0.75rem] mb-4">
-              {{ t('contact.form.contactHint') }}
-            </p>
 
             <div class="flex flex-col gap-1.5 mb-6">
               <label class="text-[#1f3a63] text-[0.78rem] font-bold tracking-wide uppercase">
