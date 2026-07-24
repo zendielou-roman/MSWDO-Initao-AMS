@@ -86,7 +86,7 @@ function nextSlide() {
 }
 
 function openCharter() {
-  window.open('/citizens-charter.pdf', '_blank')
+  window.open('/MSWDOInitao-CitizensCharter.pdf', '_blank')
 }
 </script>
 

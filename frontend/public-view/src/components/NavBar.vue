@@ -218,7 +218,12 @@ onBeforeUnmount(() => {
   class="flex flex-nowrap items-start justify-between gap-4 bg-white rounded-[16px] px-[1.6rem] py-[0.55rem] shadow-[0_6px_18px_rgba(0,0,0,0.1)]"
 >
  <div class="flex items-center gap-[1.1rem] min-w-0 flex-1 self-center">
-  <img :src="sealLogo" alt="MSWDO seal" class="w-[50px] h-[50px] object-contain shrink-0" />
+  <img
+  :src="sealLogo"
+  alt="MSWDO seal"
+  class="w-[50px] h-[50px] object-contain shrink-0 cursor-pointer transition-opacity hover:opacity-80"
+  @click="goToSection('home', 'nav.home')"
+/>
 
 <ul class="flex flex-wrap items-center gap-x-11 gap-y-2 list-none m-0 p-0 overflow-visible">
   <li
