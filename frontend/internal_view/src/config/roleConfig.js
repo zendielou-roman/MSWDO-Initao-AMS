@@ -14,17 +14,17 @@ export const roleConfig = {
     sidebar: ['dashboard', 'user-management', 'program-status', 'notifications'],
     canApprove: false,
   },
-  [ROLES.STAFF]: {
+ [ROLES.STAFF]: {
     label: 'Staff',
-    sidebar: ['dashboard', 'clients', 'assistance', 'relief', 'donations'],
+    sidebar: ['dashboard', 'clients', 'assistance', 'relief', 'donations', 'inquiries'],
     canApprove: false,
-  },
+},
   [ROLES.AICS_FOCAL]: {
     label: 'AICS Focal Person',
     sidebar: ['dashboard', 'clients', 'assistance', 'aics-application', 'aics-analytics'],
     canApprove: false,
   },
-  [ROLES.OIC]: {
+ [ROLES.OIC]: {
     label: 'Officer-in-Charge',
     sidebar: [
       'dashboard',
@@ -34,9 +34,10 @@ export const roleConfig = {
       'donations',
       'reports',
       'aics-analytics',
+      'inquiries',
     ],
     canApprove: true,
-  },
+},
   [ROLES.SOCPEN_FOCAL]: {
     label: 'Senior Citizen Focal Person',
     sidebar: ['dashboard', 'clients', 'assistance', 'masterlist'],
@@ -72,4 +73,5 @@ export const menuMeta = {
   'program-status': { label: 'Program Status Management', path: '/program-status', icon: 'Layers' },
   notifications: { label: 'Notifications', path: '/notifications', icon: 'Bell' },
   'aics-analytics': { label: 'AICS Analytics', path: '/aics-analytics', icon: 'TrendingUp' },
+  'inquiries': { label: 'Messages & Inquiries', path: '/messages-inquiries', icon: 'Mail' },
 }

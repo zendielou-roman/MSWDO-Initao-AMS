@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { menuMeta } from '@/config/roleConfig'
@@ -16,6 +16,7 @@ import {
   UserCog,
   Layers,
   Bell,
+  Mail,
   PanelLeftClose,
   PanelLeftOpen,
   LogOut,
@@ -38,6 +39,7 @@ const iconMap = {
   UserCog,
   Layers,
   Bell,
+  Mail,
   TrendingUp,
 }
 
@@ -52,6 +54,7 @@ const sharedKeys = [
   'user-management',
   'program-status',
   'notifications',
+  'inquiries',
 ]
 
 // labels shown above each role's unique focal module section

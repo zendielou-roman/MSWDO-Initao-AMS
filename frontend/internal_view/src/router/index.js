@@ -148,6 +148,17 @@ const routes = [
     component: () => import('@/views/AICSAnalyticsView.vue'),
     meta: { requiresAuth: true, permission: 'aics-analytics', title: 'AICS Analytics' },
   },
+  {
+  path: '/messages-inquiries',
+  name: 'MessagesInquiries',
+  component: () => import('@/views/MessagesInquiriesView.vue'),
+  meta: {
+    requiresAuth: true,
+    permission: 'inquiries',
+    title: 'Messages & Inquiries',
+    description: 'Review and respond to messages submitted through the public website.',
+  },
+  },
 ]
 
 const router = createRouter({

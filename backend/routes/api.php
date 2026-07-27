@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\ApplicationController;
+use App\Http\Controllers\Api\InquiryController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -30,3 +31,8 @@ Route::get('/applications', [ApplicationController::class, 'index']);
 Route::post('/applications', [ApplicationController::class, 'store']);
 Route::put('/applications/{application}', [ApplicationController::class, 'update']);
 Route::delete('/applications/{application}', [ApplicationController::class, 'destroy']);
+
+Route::get('/inquiries', [InquiryController::class, 'index']);
+Route::post('/inquiries', [InquiryController::class, 'store']);
+Route::put('/inquiries/{inquiry}', [InquiryController::class, 'update']);
+Route::delete('/inquiries/{inquiry}', [InquiryController::class, 'destroy']);
