@@ -2,6 +2,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { Search, Plus, FileText, CircleCheck, ClipboardList, CircleX } from 'lucide-vue-next'
+import { useAuthStore } from '@/stores/auth'
 import KPICard from '@/components/shared/KPICard.vue'
 import StatusBadge from '@/components/shared/StatusBadge.vue'
 import { assistanceTypes } from '@/data/mockApplications'
@@ -30,6 +31,9 @@ function handleApplicationSaved(record) {
   mockApplications.value.unshift(record)
 }
 
+const auth = useAuthStore()
+const isOIC = computed(() => auth.user?.role === 'oic')
+
 const period = ref('monthly')
 const statusTab = ref('all')
 const searchQuery = ref('')
@@ -57,6 +61,20 @@ const filteredApplications = computed(() => {
     return matchesTab && matchesSearch && matchesType
   })
 })
+
+async function handleUpdateStatus(app, newStatus) {
+  try {
+    const response = await api.put(`/applications/${app.id}`, {
+      status: newStatus,
+    })
+    const index = mockApplications.value.findIndex((a) => a.id === app.id)
+    if (index !== -1) {
+      mockApplications.value[index] = { ...mockApplications.value[index], ...response.data }
+    }
+  } catch (error) {
+    console.error('Failed to update application status:', error)
+  }
+}
 
 function formatCurrency(n) {
   return `₱${n.toLocaleString()}`
@@ -178,7 +196,34 @@ function formatCurrency(n) {
   <td class="px-5 py-3 text-slate-700">{{ formatCurrency(app.amount) }}</td>
   <td class="px-5 py-3 text-slate-600">{{ app.barangay }}</td>
   <td class="px-5 py-3 text-slate-500">{{ app.date_submitted }}</td>
-  <td class="px-5 py-3"><StatusBadge :status="app.status" /></td>
+  <td class="px-5 py-3">
+  <div class="flex items-center gap-2">
+    <StatusBadge :status="app.status" />
+    <template v-if="isOIC">
+      <div v-if="app.status === 'Pending'" class="flex gap-1" @click.stop>
+        <button
+          class="rounded-md bg-emerald-100 px-2 py-1 text-[11px] font-medium text-emerald-700 hover:bg-emerald-200"
+          @click="handleUpdateStatus(app, 'Approved')"
+        >
+          Approve
+        </button>
+        <button
+          class="rounded-md bg-red-100 px-2 py-1 text-[11px] font-medium text-red-700 hover:bg-red-200"
+          @click="handleUpdateStatus(app, 'Rejected')"
+        >
+          Reject
+        </button>
+      </div>
+      <button
+        v-else-if="app.status === 'Approved'"
+        class="rounded-md bg-blue-100 px-2 py-1 text-[11px] font-medium text-blue-700 hover:bg-blue-200"
+        @click.stop="handleUpdateStatus(app, 'Released')"
+      >
+        Mark Released
+      </button>
+    </template>
+  </div>
+</td>
 </tr>
           <tr v-if="filteredApplications.length === 0">
             <td colspan="7" class="px-5 py-8 text-center text-sm text-slate-400">

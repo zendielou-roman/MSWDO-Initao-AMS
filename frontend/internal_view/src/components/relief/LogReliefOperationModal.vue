@@ -5,17 +5,26 @@ import { reliefOperationTypes } from '@/data/mockReliefOperations'
 import BarangaySelect from '@/components/shared/BarangaySelect.vue'
 import ConfirmDialog from '@/components/shared/ConfirmDialog.vue'
 
-const emit = defineEmits(['close', 'create'])
+const props = defineProps({
+  operation: {
+    type: Object,
+    default: null,
+  },
+})
 
-const event = ref('')
-const type = ref('')
-const date = ref(new Date().toISOString().split('T')[0])
-const barangay = ref('')
-const beneficiaries = ref('')
-const beneficiaryUnit = ref('')
-const itemsDistributed = ref('')
-const itemUnit = ref('')
-const status = ref('Planned')
+const isEditMode = computed(() => !!props.operation)
+
+const emit = defineEmits(['close', 'create', 'update'])
+
+const event = ref(props.operation?.event ?? '')
+const type = ref(props.operation?.type ?? '')
+const date = ref(props.operation?.date ?? new Date().toISOString().split('T')[0])
+const barangay = ref(props.operation?.barangay ?? '')
+const beneficiaries = ref(props.operation?.beneficiaries ?? '')
+const beneficiaryUnit = ref(props.operation?.beneficiary_unit ?? '')
+const itemsDistributed = ref(props.operation?.items_distributed ?? '')
+const itemUnit = ref(props.operation?.item_unit ?? '')
+const status = ref(props.operation?.status ?? 'Planned')
 const errors = ref({})
 const confirmMode = ref(null)
 
@@ -71,7 +80,8 @@ function handleConfirm() {
     emit('close')
   } else if (confirmMode.value === 'create') {
     confirmMode.value = null
-    emit('create', {
+
+    const payload = {
       event: event.value.trim(),
       type: type.value,
       date: date.value,
@@ -81,7 +91,13 @@ function handleConfirm() {
       itemsDistributed: Number(itemsDistributed.value),
       itemUnit: itemUnit.value.trim(),
       status: status.value,
-    })
+    }
+
+    if (isEditMode.value) {
+      emit('update', { id: props.operation.id, payload })
+    } else {
+      emit('create', payload)
+    }
   }
 }
 
@@ -95,7 +111,9 @@ function handleCancelConfirm() {
     <div class="flex max-h-[90vh] w-full max-w-2xl flex-col rounded-xl bg-white shadow-xl">
       <!-- Header -->
       <div class="flex items-center justify-between rounded-t-xl bg-[#001d4c] px-6 py-5">
-        <h2 class="text-base font-semibold text-white">Log New Relief Operation</h2>
+        <h2 class="text-base font-semibold text-white">
+  {{ isEditMode ? 'Edit Relief Operation' : 'Log New Relief Operation' }}
+</h2>
         <button aria-label="Close" class="text-white/80 hover:text-white" @click="requestClose">
           <X class="h-5 w-5" />
         </button>
@@ -264,7 +282,7 @@ function handleCancelConfirm() {
           </h3>
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="text-xs font-semibold text-slate-600">Count</label>
+              <label class="text-xs font-semibold text-slate-700">Count</label>
               <div class="relative mt-1.5">
                 <Boxes class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                 <input
@@ -309,12 +327,12 @@ function handleCancelConfirm() {
         >
           Cancel
         </button>
-        <button
-          class="rounded-lg bg-[#001d4c] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#012a63]"
-          @click="requestSubmit"
-        >
-          Log Operation
-        </button>
+<button
+  class="rounded-lg bg-[#001d4c] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#012a63]"
+  @click="requestSubmit"
+>
+  {{ isEditMode ? 'Save Changes' : 'Log Operation' }}
+</button> 
       </div>
     </div>
   </div>

@@ -1,24 +1,74 @@
 <script setup>
-import { ref, computed } from 'vue'
-import { HandCoins, ListChecks, Clock, CircleCheck, Plus, Search } from 'lucide-vue-next'
+import { ref, computed, onMounted } from 'vue'
+import { HandCoins, ListChecks, Clock, CircleCheck, Plus, Search, Eye, Pencil } from 'lucide-vue-next'
 import KPICard from '@/components/shared/KPICard.vue'
 import DonationStatusBadge from '@/components/shared/DonationStatusBadge.vue'
 import RecordDonationModal from '@/components/donations/RecordDonationModal.vue'
-import { mockDonations, donationTypes } from '@/data/mockDonations'
+import DonationDetailsModal from '@/components/donations/DonationDetailsModal.vue'
+import { donationTypes } from '@/data/mockDonations'
 import { useAuthStore } from '@/stores/auth'
 import { ROLES } from '@/config/roleConfig'
+import api from '@/lib/api'
+
 
 const auth = useAuthStore()
 const canRecordDonation = computed(() => [ROLES.OIC, ROLES.STAFF].includes(auth.user?.role))
 
-const donations = ref([...mockDonations])
+const donations = ref([])
+const isLoading = ref(true)
+
+async function fetchDonations() {
+  try {
+    const response = await api.get('/donations')
+    donations.value = response.data.map((d) => ({
+      ...d,
+      dateReceived: d.date_received,
+      allocatedTo: d.allocated_to,
+    }))
+  } catch (error) {
+    console.error('Failed to fetch donations:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(fetchDonations)
+
+const viewingDonation = ref(null)
+
+async function handleUpdateStatus(donation, newStatus) {
+  try {
+    const response = await api.put(`/donations/${donation.id}`, {
+      status: newStatus,
+    })
+    const index = donations.value.findIndex((d) => d.id === donation.id)
+    if (index !== -1) {
+      donations.value[index] = { ...donations.value[index], status: response.data.status }
+    }
+  } catch (error) {
+    console.error('Failed to update donation status:', error)
+  }
+}
+
 const searchQuery = ref('')
 const typeFilter = ref('all')
 const statusFilter = ref('all')
 
 // NEW: modal + toast state
+// NEW: modal + toast state
 const showRecordModal = ref(false)
+const editingDonation = ref(null)
 const toastMessage = ref('')
+
+function openEditModal(donation) {
+  editingDonation.value = donation
+  showRecordModal.value = true
+}
+
+function closeRecordModal() {
+  showRecordModal.value = false
+  editingDonation.value = null
+}
 
 const kpis = computed(() => ({
   totalValue: donations.value.reduce((sum, d) => sum + (d.value || 0), 0),
@@ -42,25 +92,72 @@ function formatValue(d) {
 }
 
 // NEW: generates the next DN-#### id
-function nextDonationId() {
-  const nums = donations.value
-    .map((d) => parseInt(d.id.replace('DN-', ''), 10))
-    .filter((n) => !isNaN(n))
-  const max = nums.length ? Math.max(...nums) : 0
-  return `DN-${String(max + 1).padStart(4, '0')}`
+async function handleCreateDonation(newDonation) {
+  try {
+    const response = await api.post('/donations', {
+      donor: newDonation.donor,
+      type: newDonation.type,
+      value: newDonation.value,
+      date_received: newDonation.dateReceived,
+      allocated_to: newDonation.allocatedTo,
+      status: newDonation.status || 'Pending',
+      recorded_by: auth.user?.name || null,
+    })
+
+    donations.value.unshift({
+      ...response.data,
+      dateReceived: response.data.date_received,
+      allocatedTo: response.data.allocated_to,
+    })
+
+    showRecordModal.value = false
+
+    toastMessage.value = `Donation from ${newDonation.donor} recorded successfully`
+    setTimeout(() => {
+      toastMessage.value = ''
+    }, 3000)
+  } catch (error) {
+    console.error('Failed to record donation:', error)
+    toastMessage.value = 'Failed to record donation.'
+    setTimeout(() => {
+      toastMessage.value = ''
+    }, 3000)
+  }
 }
 
-function handleCreateDonation(newDonation) {
-  donations.value.unshift({
-    id: nextDonationId(),
-    ...newDonation,
-  })
-  showRecordModal.value = false
+async function handleUpdateDonation({ id, payload }) {
+  try {
+    const response = await api.put(`/donations/${id}`, {
+      donor: payload.donor,
+      type: payload.type,
+      value: payload.value,
+      date_received: payload.dateReceived,
+      allocated_to: payload.allocatedTo,
+      status: payload.status,
+    })
 
-  toastMessage.value = `Donation from ${newDonation.donor} recorded successfully`
-  setTimeout(() => {
-    toastMessage.value = ''
-  }, 3000)
+    const index = donations.value.findIndex((d) => d.id === id)
+    if (index !== -1) {
+      donations.value[index] = {
+        ...response.data,
+        dateReceived: response.data.date_received,
+        allocatedTo: response.data.allocated_to,
+      }
+    }
+
+    closeRecordModal()
+
+    toastMessage.value = `Donation from ${payload.donor} updated successfully`
+    setTimeout(() => {
+      toastMessage.value = ''
+    }, 3000)
+  } catch (error) {
+    console.error('Failed to update donation:', error)
+    toastMessage.value = 'Failed to update donation.'
+    setTimeout(() => {
+      toastMessage.value = ''
+    }, 3000)
+  }
 }
 </script>
 
@@ -70,11 +167,11 @@ function handleCreateDonation(newDonation) {
       <p class="text-sm text-slate-500">
         Track cash, goods, and in-kind donations received by MSWDO.
       </p>
-      <button
-        v-if="canRecordDonation"
-        class="flex shrink-0 items-center gap-2 rounded-lg bg-[#001d4c] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#012a63]"
-        @click="showRecordModal = true"
-      >
+<button
+  v-if="canRecordDonation"
+  class="flex shrink-0 items-center gap-2 rounded-lg bg-[#001d4c] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#012a63]"
+  @click="editingDonation = null; showRecordModal = true"
+>
         <Plus class="h-4 w-4" />
         Record New Donation
       </button>
@@ -135,6 +232,7 @@ function handleCreateDonation(newDonation) {
             <th class="px-5 py-3 font-medium">Received</th>
             <th class="px-5 py-3 font-medium">Allocated To</th>
             <th class="px-5 py-3 font-medium">Status</th>
+<th class="px-5 py-3 text-right font-medium">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -143,7 +241,7 @@ function handleCreateDonation(newDonation) {
             :key="d.id"
             class="cursor-pointer border-b border-slate-50 hover:bg-slate-50"
           >
-            <td class="px-5 py-3 text-slate-500">{{ d.id }}</td>
+            <td class="px-5 py-3 text-slate-500">{{ d.donation_code }}</td>
             <td class="px-5 py-3 font-medium text-slate-700">{{ d.donor }}</td>
             <td class="px-5 py-3 text-slate-600">{{ d.type }}</td>
             <td
@@ -155,6 +253,25 @@ function handleCreateDonation(newDonation) {
             <td class="px-5 py-3 text-slate-500">{{ d.dateReceived }}</td>
             <td class="px-5 py-3 text-slate-600">{{ d.allocatedTo }}</td>
             <td class="px-5 py-3"><DonationStatusBadge :status="d.status" /></td>
+<td class="px-5 py-3 text-right">
+  <div class="flex items-center justify-end gap-2">
+    <button
+      aria-label="View donation"
+      class="text-slate-400 hover:text-slate-700"
+      @click.stop="viewingDonation = d"
+    >
+      <Eye class="h-4 w-4" />
+    </button>
+    <button
+      v-if="canRecordDonation"
+      aria-label="Edit donation"
+      class="text-slate-400 hover:text-slate-700"
+      @click.stop="openEditModal(d)"
+    >
+      <Pencil class="h-4 w-4" />
+    </button>
+  </div>
+</td>
           </tr>
           <tr v-if="filteredDonations.length === 0">
             <td colspan="7" class="px-5 py-8 text-center text-sm text-slate-400">
@@ -165,12 +282,21 @@ function handleCreateDonation(newDonation) {
       </table>
     </div>
 
-    <!-- NEW: Record Donation Modal -->
-    <RecordDonationModal
-      v-if="showRecordModal"
-      @close="showRecordModal = false"
-      @create="handleCreateDonation"
-    />
+<RecordDonationModal
+  v-if="showRecordModal"
+  :donation="editingDonation"
+  @close="closeRecordModal"
+  @create="handleCreateDonation"
+  @update="handleUpdateDonation"
+/>
+
+    <DonationDetailsModal
+  v-if="viewingDonation"
+  :donation="viewingDonation"
+  :can-advance="canRecordDonation"
+  @close="viewingDonation = null"
+  @advance="(status) => { handleUpdateStatus(viewingDonation, status); viewingDonation = null }"
+/>
 
     <!-- NEW: Success toast -->
     <Transition

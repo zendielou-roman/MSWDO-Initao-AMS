@@ -1,24 +1,58 @@
 <script setup>
-import { ref, computed } from 'vue'
-import { Package, Users, Boxes, ClipboardList, Plus, Search } from 'lucide-vue-next'
+import { ref, computed, onMounted } from 'vue'
+import { Package, Users, Boxes, ClipboardList, Plus, Search, Eye, Pencil } from 'lucide-vue-next'
 import KPICard from '@/components/shared/KPICard.vue'
 import ReliefStatusBadge from '@/components/shared/ReliefStatusBadge.vue'
 import LogReliefOperationModal from '@/components/relief/LogReliefOperationModal.vue'
-import { mockReliefOperations, reliefOperationTypes } from '@/data/mockReliefOperations'
+import { reliefOperationTypes } from '@/data/mockReliefOperations'
 import { useAuthStore } from '@/stores/auth'
 import { ROLES } from '@/config/roleConfig'
+import api from '@/lib/api'
+import ReliefOperationDetailsModal from '@/components/relief/ReliefOperationDetailsModal.vue'
+
+const viewingOperation = ref(null)
 
 const auth = useAuthStore()
 const canLogRelief = computed(() => [ROLES.OIC, ROLES.STAFF].includes(auth.user?.role))
 
-const operations = ref([...mockReliefOperations])
+const operations = ref([])
+const isLoading = ref(true)
+
+async function fetchOperations() {
+  try {
+    const response = await api.get('/relief-operations')
+    operations.value = response.data.map((op) => ({
+      ...op,
+      beneficiaryUnit: op.beneficiary_unit,
+      itemsDistributed: op.items_distributed,
+      itemUnit: op.item_unit,
+    }))
+  } catch (error) {
+    console.error('Failed to fetch relief operations:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(fetchOperations)
 const searchQuery = ref('')
 const typeFilter = ref('all')
 const statusFilter = ref('all')
 
 // NEW: modal + toast state
 const showLogModal = ref(false)
+const editingOperation = ref(null)
 const toastMessage = ref('')
+
+function openEditModal(op) {
+  editingOperation.value = op
+  showLogModal.value = true
+}
+
+function closeLogModal() {
+  showLogModal.value = false
+  editingOperation.value = null
+}
 
 const kpis = computed(() => ({
   operationsThisQuarter: operations.value.length,
@@ -41,25 +75,100 @@ const filteredOperations = computed(() => {
 })
 
 // NEW: generates the next RO-#### id
-function nextOperationId() {
-  const nums = operations.value
-    .map((o) => parseInt(o.id.replace('RO-', ''), 10))
-    .filter((n) => !isNaN(n))
-  const max = nums.length ? Math.max(...nums) : 0
-  return `RO-${String(max + 1).padStart(4, '0')}`
+async function handleCreateOperation(newOp) {
+  try {
+    const response = await api.post('/relief-operations', {
+      event: newOp.event,
+      type: newOp.type,
+      date: newOp.date,
+      barangay: newOp.barangay,
+      beneficiaries: Number(newOp.beneficiaries),
+      beneficiary_unit: newOp.beneficiaryUnit,
+      items_distributed: Number(newOp.itemsDistributed),
+      item_unit: newOp.itemUnit,
+      status: newOp.status || 'Planned',
+      logged_by: auth.user?.name || null,
+    })
+
+    operations.value.unshift({
+      ...response.data,
+      beneficiaryUnit: response.data.beneficiary_unit,
+      itemsDistributed: response.data.items_distributed,
+      itemUnit: response.data.item_unit,
+    })
+
+    showLogModal.value = false
+
+    toastMessage.value = `Relief operation "${newOp.event}" logged successfully`
+    setTimeout(() => {
+      toastMessage.value = ''
+    }, 3000)
+  } catch (error) {
+    console.error('Failed to log relief operation:', error)
+    toastMessage.value = 'Failed to log relief operation.'
+    setTimeout(() => {
+      toastMessage.value = ''
+    }, 3000)
+  }
 }
 
-function handleCreateOperation(newOp) {
-  operations.value.unshift({
-    id: nextOperationId(),
-    ...newOp,
-  })
-  showLogModal.value = false
+async function handleUpdateOperation({ id, payload }) {
+  try {
+    const response = await api.put(`/relief-operations/${id}`, {
+      event: payload.event,
+      type: payload.type,
+      date: payload.date,
+      barangay: payload.barangay,
+      beneficiaries: Number(payload.beneficiaries),
+      beneficiary_unit: payload.beneficiaryUnit,
+      items_distributed: Number(payload.itemsDistributed),
+      item_unit: payload.itemUnit,
+    })
 
-  toastMessage.value = `Relief operation "${newOp.event}" logged successfully`
-  setTimeout(() => {
-    toastMessage.value = ''
-  }, 3000)
+    const index = operations.value.findIndex((o) => o.id === id)
+    if (index !== -1) {
+      operations.value[index] = {
+        ...response.data,
+        beneficiaryUnit: response.data.beneficiary_unit,
+        itemsDistributed: response.data.items_distributed,
+        itemUnit: response.data.item_unit,
+      }
+    }
+
+    closeLogModal()
+
+    toastMessage.value = `Relief operation "${payload.event}" updated successfully`
+    setTimeout(() => {
+      toastMessage.value = ''
+    }, 3000)
+  } catch (error) {
+    console.error('Failed to update relief operation:', error)
+    toastMessage.value = 'Failed to update relief operation.'
+    setTimeout(() => {
+      toastMessage.value = ''
+    }, 3000)
+  }
+}
+
+async function handleUpdateStatus(op, newStatus) {
+  try {
+    const response = await api.put(`/relief-operations/${op.id}`, {
+      status: newStatus,
+    })
+    const index = operations.value.findIndex((o) => o.id === op.id)
+    if (index !== -1) {
+      operations.value[index] = { ...operations.value[index], status: response.data.status }
+    }
+  } catch (error) {
+    console.error('Failed to update relief operation status:', error)
+  }
+}
+
+const STATUS_FLOW = ['Planned', 'Pending', 'Ongoing', 'Completed']
+
+function nextStatus(current) {
+  const i = STATUS_FLOW.indexOf(current)
+  return i >= 0 && i < STATUS_FLOW.length - 1 ? STATUS_FLOW[i + 1] : null
 }
 </script>
 
@@ -69,11 +178,11 @@ function handleCreateOperation(newOp) {
       <p class="text-sm text-slate-500">
         Log emergency responses and community relief distributions.
       </p>
-      <button
-        v-if="canLogRelief"
-        class="flex shrink-0 items-center gap-2 rounded-lg bg-[#001d4c] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#012a63]"
-        @click="showLogModal = true"
-      >
+<button
+  v-if="canLogRelief"
+  class="flex shrink-0 items-center gap-2 rounded-lg bg-[#001d4c] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#012a63]"
+  @click="editingOperation = null; showLogModal = true"
+>
         <Plus class="h-4 w-4" />
         Log New Relief Operation
       </button>
@@ -136,6 +245,7 @@ function handleCreateOperation(newOp) {
             <th class="px-5 py-3 font-medium">Beneficiaries</th>
             <th class="px-5 py-3 font-medium">Items Distributed</th>
             <th class="px-5 py-3 font-medium">Status</th>
+            <th class="px-5 py-3 text-right font-medium">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -144,7 +254,7 @@ function handleCreateOperation(newOp) {
             :key="op.id"
             class="cursor-pointer border-b border-slate-50 hover:bg-slate-50"
           >
-            <td class="px-5 py-3 text-slate-500">{{ op.id }}</td>
+            <td class="px-5 py-3 text-slate-500">{{ op.operation_code }}</td>
             <td class="px-5 py-3 font-medium text-slate-700">{{ op.event }}</td>
             <td class="px-5 py-3 text-slate-500">{{ op.date }}</td>
             <td class="px-5 py-3 text-slate-600">{{ op.barangay }}</td>
@@ -153,7 +263,28 @@ function handleCreateOperation(newOp) {
               {{ op.beneficiaries }} {{ op.beneficiaryUnit }}
             </td>
             <td class="px-5 py-3 text-slate-600">{{ op.itemsDistributed }} {{ op.itemUnit }}</td>
-            <td class="px-5 py-3"><ReliefStatusBadge :status="op.status" /></td>
+<td class="px-5 py-3"><ReliefStatusBadge :status="op.status" /></td>
+
+<td class="px-5 py-3 text-right">
+  <div class="flex items-center justify-end gap-2">
+    <button
+      aria-label="View operation"
+      class="text-slate-400 hover:text-slate-700"
+      @click.stop="viewingOperation = op"
+    >
+      <Eye class="h-4 w-4" />
+    </button>
+    <button
+      v-if="canLogRelief"
+      aria-label="Edit operation"
+      class="text-slate-400 hover:text-slate-700"
+      @click.stop="openEditModal(op)"
+    >
+      <Pencil class="h-4 w-4" />
+    </button>
+  </div>
+</td>
+
           </tr>
           <tr v-if="filteredOperations.length === 0">
             <td colspan="8" class="px-5 py-8 text-center text-sm text-slate-400">
@@ -165,11 +296,21 @@ function handleCreateOperation(newOp) {
     </div>
 
     <!-- NEW: Log Relief Operation Modal -->
-    <LogReliefOperationModal
-      v-if="showLogModal"
-      @close="showLogModal = false"
-      @create="handleCreateOperation"
-    />
+<LogReliefOperationModal
+  v-if="showLogModal"
+  :operation="editingOperation"
+  @close="closeLogModal"
+  @create="handleCreateOperation"
+  @update="handleUpdateOperation"
+/>
+
+<ReliefOperationDetailsModal
+  v-if="viewingOperation"
+  :operation="viewingOperation"
+  :can-advance="canLogRelief"
+  @close="viewingOperation = null"
+  @advance="(status) => { handleUpdateStatus(viewingOperation, status); viewingOperation = null }"
+/>
 
     <!-- NEW: Success toast -->
     <Transition

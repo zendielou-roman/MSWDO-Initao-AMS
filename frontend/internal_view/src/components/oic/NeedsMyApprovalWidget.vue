@@ -1,21 +1,45 @@
 <!-- src/components/oic/NeedsMyApprovalWidget.vue -->
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { CircleCheck, CircleX, ClipboardCheck } from 'lucide-vue-next'
-import { pendingApprovalQueue } from '@/data/mockOICApprovalQueue'
+import { getDisplayName } from '@/data/mockClients'
+import api from '@/lib/api'
 
-const queue = ref([...pendingApprovalQueue])
+const queue = ref([])
+const isLoading = ref(true)
+
+async function fetchQueue() {
+  try {
+    const response = await api.get('/applications')
+    queue.value = response.data.filter((a) => a.status === 'Pending')
+  } catch (error) {
+    console.error('Failed to fetch approval queue:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(fetchQueue)
 
 function formatAmount(a) {
-  return a === null ? '—' : `₱${a.toLocaleString()}`
+  return a === null || a === undefined ? '—' : `₱${Number(a).toLocaleString()}`
+}
+
+async function updateStatus(item, status) {
+  try {
+    await api.put(`/applications/${item.id}`, { status })
+    queue.value = queue.value.filter((q) => q.id !== item.id)
+  } catch (error) {
+    console.error('Failed to update application:', error)
+  }
 }
 
 function approve(item) {
-  queue.value = queue.value.filter((q) => q.id !== item.id)
+  updateStatus(item, 'Approved')
 }
 
 function reject(item) {
-  queue.value = queue.value.filter((q) => q.id !== item.id)
+  updateStatus(item, 'Rejected')
 }
 </script>
 
@@ -38,10 +62,12 @@ function reject(item) {
         class="flex items-center justify-between gap-3 rounded-lg bg-white p-3"
       >
         <div class="min-w-0">
-          <p class="truncate text-sm font-medium text-slate-700">{{ item.clientName }}</p>
-          <p class="text-xs text-slate-400">
-            {{ item.type }} · {{ item.id }} · by {{ item.submittedBy }}
-          </p>
+<p class="truncate text-sm font-medium text-slate-700">
+  {{ item.client ? getDisplayName(item.client) : '—' }}
+</p>
+<p class="text-xs text-slate-400">
+  {{ item.type }} · {{ item.application_code }} · by {{ item.submitted_by }}
+</p>
         </div>
         <div class="flex shrink-0 items-center gap-3">
           <span class="text-sm font-semibold text-slate-700">{{ formatAmount(item.amount) }}</span>

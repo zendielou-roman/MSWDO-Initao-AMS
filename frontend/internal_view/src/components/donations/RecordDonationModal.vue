@@ -4,14 +4,23 @@ import { X, User, Wallet, Calendar, Tag } from 'lucide-vue-next'
 import { donationTypes } from '@/data/mockDonations'
 import ConfirmDialog from '@/components/shared/ConfirmDialog.vue'
 
-const emit = defineEmits(['close', 'create'])
+const props = defineProps({
+  donation: {
+    type: Object,
+    default: null,
+  },
+})
 
-const donor = ref('')
-const type = ref('')
-const value = ref('')
-const dateReceived = ref(new Date().toISOString().split('T')[0])
-const allocatedTo = ref('')
-const status = ref('Pending')
+const isEditMode = computed(() => !!props.donation)
+
+const emit = defineEmits(['close', 'create', 'update'])
+
+const donor = ref(props.donation?.donor ?? '')
+const type = ref(props.donation?.type ?? '')
+const value = ref(props.donation?.value ?? '')
+const dateReceived = ref(props.donation?.date_received ?? new Date().toISOString().split('T')[0])
+const allocatedTo = ref(props.donation?.allocated_to ?? '')
+const status = ref(props.donation?.status ?? 'Pending')
 const errors = ref({})
 const confirmMode = ref(null)
 
@@ -63,14 +72,21 @@ function handleConfirm() {
     emit('close')
   } else if (confirmMode.value === 'create') {
     confirmMode.value = null
-    emit('create', {
+
+    const payload = {
       donor: donor.value.trim(),
       type: type.value,
       value: value.value ? Number(value.value) : null,
       dateReceived: dateReceived.value,
       allocatedTo: allocatedTo.value.trim(),
       status: status.value,
-    })
+    }
+
+    if (isEditMode.value) {
+      emit('update', { id: props.donation.id, payload })
+    } else {
+      emit('create', payload)
+    }
   }
 }
 
@@ -88,7 +104,9 @@ function formatDisplayValue() {
     <div class="flex max-h-[90vh] w-full max-w-2xl flex-col rounded-xl bg-white shadow-xl">
       <!-- Header -->
       <div class="flex items-center justify-between rounded-t-xl bg-[#001d4c] px-6 py-5">
-        <h2 class="text-base font-semibold text-white">Record New Donation</h2>
+        <h2 class="text-base font-semibold text-white">
+  {{ isEditMode ? 'Edit Donation' : 'Record New Donation' }}
+</h2>
         <button aria-label="Close" class="text-white/80 hover:text-white" @click="requestClose">
           <X class="h-5 w-5" />
         </button>
@@ -227,12 +245,12 @@ function formatDisplayValue() {
         >
           Cancel
         </button>
-        <button
-          class="rounded-lg bg-[#001d4c] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#012a63]"
-          @click="requestSubmit"
-        >
-          Record Donation
-        </button>
+<button
+  class="rounded-lg bg-[#001d4c] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#012a63]"
+  @click="requestSubmit"
+>
+  {{ isEditMode ? 'Save Changes' : 'Record Donation' }}
+</button>
       </div>
     </div>
   </div>
