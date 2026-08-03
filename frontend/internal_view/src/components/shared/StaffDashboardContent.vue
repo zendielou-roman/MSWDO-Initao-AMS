@@ -14,20 +14,17 @@ import {
 import { FileText, ClipboardList, CircleCheck, Users } from 'lucide-vue-next'
 import KPICard from '@/components/shared/KPICard.vue'
 import StatusBadge from '@/components/shared/StatusBadge.vue'
-import {
-  dashboardKpis,
-  applicationsTrend,
-  applicationsByType,
-  recentActivity,
-} from '@/data/mockDashboardShared'
+import { useDashboardData } from '@/composables/useDashboardData'
+
+const { dashboardKpis, applicationsTrend, applicationsByType, recentActivity } = useDashboardData()
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Tooltip)
 
 const trendData = computed(() => ({
-  labels: applicationsTrend.labels,
+  labels: applicationsTrend.value.labels,
   datasets: [
     {
-      data: applicationsTrend.data,
+      data: applicationsTrend.value.data,
       borderColor: '#001d4c',
       backgroundColor: '#001d4c',
       tension: 0.4,
@@ -48,10 +45,10 @@ const trendOptions = {
 }
 
 const typeData = computed(() => ({
-  labels: applicationsByType.labels,
+  labels: applicationsByType.value.labels,
   datasets: [
     {
-      data: applicationsByType.data,
+      data: applicationsByType.value.data,
       backgroundColor: '#001d4c',
       borderRadius: 6,
       maxBarThickness: 40,

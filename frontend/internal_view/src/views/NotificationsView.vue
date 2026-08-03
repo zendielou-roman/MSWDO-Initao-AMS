@@ -1,15 +1,38 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { CircleCheck, CircleAlert, Activity, ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import PageIntro from '@/components/shared/PageIntro.vue'
-import { mockNotifications } from '@/data/mockNotifications'
+import { useAuthStore } from '@/stores/auth'
+import api from '@/lib/api'
+
+const auth = useAuthStore()
 
 function selectTab(key) {
   activeTab.value = key
   currentPage.value = 1
 }
 
-const notifications = ref([...mockNotifications])
+const notifications = ref([])
+const isLoading = ref(true)
+
+async function fetchNotifications() {
+  try {
+    const response = await api.get('/notifications', {
+      params: { user_id: auth.user?.id },
+    })
+    notifications.value = response.data.map((n) => ({
+      ...n,
+      read: n.read,
+      timestamp: new Date(n.created_at).toLocaleString(),
+    }))
+  } catch (error) {
+    console.error('Failed to fetch notifications:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(fetchNotifications)
 const activeTab = ref('all')
 const currentPage = ref(1)
 const perPage = 8
@@ -39,12 +62,22 @@ const paginatedNotifications = computed(() => {
 })
 const totalPages = computed(() => Math.ceil(filteredNotifications.value.length / perPage) || 1)
 
-function markRead(notif) {
-  notif.read = true
+async function markRead(notif) {
+  try {
+    await api.put(`/notifications/${notif.id}`, { read: true })
+    notif.read = true
+  } catch (error) {
+    console.error('Failed to mark notification as read:', error)
+  }
 }
 
-function markAllRead() {
-  notifications.value.forEach((n) => (n.read = true))
+async function markAllRead() {
+  try {
+    await api.post('/notifications/mark-all-read', { user_id: auth.user?.id })
+    notifications.value.forEach((n) => (n.read = true))
+  } catch (error) {
+    console.error('Failed to mark all notifications as read:', error)
+  }
 }
 </script>
 

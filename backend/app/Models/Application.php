@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 #[Fillable([
     'application_code',
     'client_id',
+    'program_id',
     'submitted_by',
     'type',
     'amount',
@@ -38,4 +39,9 @@ class Application extends Model
     {
         return $this->belongsTo(Client::class);
     }
+
+    public function program()
+{
+    return $this->belongsTo(Program::class);
+}
 }

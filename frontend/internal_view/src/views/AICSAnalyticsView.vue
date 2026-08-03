@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { Bar, Pie } from 'vue-chartjs'
 import {
   Chart as ChartJS,
@@ -12,9 +12,42 @@ import {
 } from 'chart.js'
 import { Users, MapPin, AlertTriangle, Repeat } from 'lucide-vue-next'
 import KPICard from '@/components/shared/KPICard.vue'
-import { mockAICSApplications, barangaysOfInitao } from '@/data/mockAICSApplications'
+import { getDisplayName, getDisplayBarangay } from '@/data/mockClients'
+import api from '@/lib/api'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend)
+
+const allApplications = ref([])
+const isLoading = ref(true)
+
+async function fetchApplications() {
+  try {
+    const response = await api.get('/applications')
+    allApplications.value = response.data
+  } catch (error) {
+    console.error('Failed to fetch applications:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(fetchApplications)
+
+const mockAICSApplications = computed(() =>
+  allApplications.value
+    .filter((a) => a.type?.startsWith('AICS') && ['Approved', 'Released'].includes(a.status))
+    .map((a) => ({
+      id: a.application_code,
+      clientId: a.client_id,
+      clientName: a.client ? getDisplayName(a.client) : '—',
+      submittedBy: a.submitted_by,
+      type: a.type,
+      amount: a.amount,
+      barangay: a.client ? getDisplayBarangay(a.client) : a.barangay,
+      dateSubmitted: a.date_submitted,
+      status: a.status,
+    })),
+)
 
 // ===== QUARTER SELECTION =====
 const currentYear = new Date().getFullYear()
@@ -30,13 +63,13 @@ function getQuarter(dateStr) {
 }
 
 const quarterApplications = computed(() =>
-  mockAICSApplications.filter((a) => getQuarter(a.dateSubmitted) === selectedQuarter.value),
+  mockAICSApplications.value.filter((a) => getQuarter(a.dateSubmitted) === selectedQuarter.value),
 )
 
 // ===== 1. BENEFICIARIES + APPLICATIONS PER BARANGAY =====
 const barangayStats = computed(() => {
   const map = {}
-  mockAICSApplications.forEach((a) => {
+  mockAICSApplications.value.forEach((a) => {
     if (!map[a.barangay])
       map[a.barangay] = { barangay: a.barangay, clientIds: new Set(), applicationCount: 0 }
     map[a.barangay].clientIds.add(a.clientId)
@@ -80,7 +113,7 @@ const barangayChartOptions = {
 // ===== 2. ASSISTANCE TYPE DISTRIBUTION =====
 const typeStats = computed(() => {
   const map = {}
-  mockAICSApplications.forEach((a) => {
+  mockAICSApplications.value.forEach((a) => {
     map[a.type] = (map[a.type] || 0) + 1
   })
   return map
@@ -123,7 +156,7 @@ const repeatClients = computed(() => clientFrequency.value.filter((c) => c.count
 
 // ===== KPI SUMMARY =====
 const totalUniqueBeneficiaries = computed(
-  () => new Set(mockAICSApplications.map((a) => a.clientId)).size,
+  () => new Set(mockAICSApplications.value.map((a) => a.clientId)).size,
 )
 const topBarangay = computed(() => barangayStats.value[0]?.barangay || '—')
 const repeatCount = computed(() => repeatClients.value.length)

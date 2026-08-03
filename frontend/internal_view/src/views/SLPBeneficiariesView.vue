@@ -1,26 +1,84 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { Search, Plus, Sprout } from 'lucide-vue-next'
 import KPICard from '@/components/shared/KPICard.vue'
 import { Handshake, HandCoins } from 'lucide-vue-next'
-import { mockSLPBeneficiaries, slpTracks } from '@/data/mockSLPBeneficiaries'
+import { slpTracks } from '@/data/mockSLPBeneficiaries'
+import AddSLPBeneficiaryModal from '@/components/slp/AddSLPBeneficiaryModal.vue'
+import { useAuthStore } from '@/stores/auth'
+import api from '@/lib/api'
+
+const auth = useAuthStore()
+
+const beneficiaries = ref([])
+const isLoading = ref(true)
+
+async function fetchBeneficiaries() {
+  try {
+    const response = await api.get('/slp-beneficiaries')
+    beneficiaries.value = response.data.map((b) => ({
+      ...b,
+      dateEnrolled: b.date_enrolled,
+    }))
+  } catch (error) {
+    console.error('Failed to fetch SLP beneficiaries:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(fetchBeneficiaries)
+
+const showAddModal = ref(false)
+const toastMessage = ref('')
 
 const searchQuery = ref('')
 const trackFilter = ref('All tracks')
 
-const totalBeneficiaries = computed(() => mockSLPBeneficiaries.length)
+const totalBeneficiaries = computed(() => beneficiaries.value.length)
 const microEnterpriseCount = computed(
-  () => mockSLPBeneficiaries.filter((b) => b.track === 'Micro-enterprise Development').length,
+  () => beneficiaries.value.filter((b) => b.track === 'Micro-enterprise Development').length,
 )
 const employmentCount = computed(
-  () => mockSLPBeneficiaries.filter((b) => b.track === 'Employment Facilitation').length,
+  () => beneficiaries.value.filter((b) => b.track === 'Employment Facilitation').length,
 )
 const totalCapitalDisbursed = computed(() =>
-  mockSLPBeneficiaries.reduce((sum, b) => sum + b.capital, 0),
+  beneficiaries.value.reduce((sum, b) => sum + b.capital, 0),
 )
 
+async function handleAddBeneficiary(newBeneficiary) {
+  try {
+    const response = await api.post('/slp-beneficiaries', {
+      name: newBeneficiary.name,
+      barangay: newBeneficiary.barangay,
+      track: newBeneficiary.track,
+      project: newBeneficiary.project,
+      capital: newBeneficiary.capital,
+      enrolled_by: auth.user?.name || null,
+    })
+
+    beneficiaries.value.unshift({
+      ...response.data,
+      dateEnrolled: response.data.date_enrolled,
+    })
+
+    showAddModal.value = false
+
+    toastMessage.value = `${newBeneficiary.name} added to SLP Beneficiaries`
+    setTimeout(() => {
+      toastMessage.value = ''
+    }, 3000)
+  } catch (error) {
+    console.error('Failed to add SLP beneficiary:', error)
+    toastMessage.value = error.response?.data?.message || 'Failed to add beneficiary.'
+    setTimeout(() => {
+      toastMessage.value = ''
+    }, 3000)
+  }
+}
+
 const filteredBeneficiaries = computed(() => {
-  return mockSLPBeneficiaries.filter((b) => {
+  return beneficiaries.value.filter((b) => {
     const q = searchQuery.value.toLowerCase()
     const matchesSearch = b.name.toLowerCase().includes(q) || b.id.toLowerCase().includes(q)
     const matchesTrack = trackFilter.value === 'All tracks' || b.track === trackFilter.value
@@ -45,12 +103,13 @@ function formatCurrency(n) {
       <p class="text-sm text-slate-500">
         Sustainable Livelihood Program — ownership module of the SLP Focal Person.
       </p>
-      <button
-        class="flex shrink-0 items-center gap-2 rounded-lg bg-[#001d4c] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#012a63]"
-      >
-        <Plus class="h-4 w-4" />
-        Add SLP Beneficiary
-      </button>
+<button
+  class="flex shrink-0 items-center gap-2 rounded-lg bg-[#001d4c] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#012a63]"
+  @click="showAddModal = true"
+>
+  <Plus class="h-4 w-4" />
+  Add SLP Beneficiary
+</button>
     </div>
 
     <!-- KPI CARDS -->
@@ -113,7 +172,7 @@ function formatCurrency(n) {
         </thead>
         <tbody>
           <tr v-for="b in filteredBeneficiaries" :key="b.id" class="border-b border-slate-50">
-            <td class="px-5 py-3 text-slate-500">{{ b.id }}</td>
+            <td class="px-5 py-3 text-slate-500">{{ b.beneficiary_code }}</td>
             <td class="px-5 py-3 font-medium text-slate-700">{{ b.name }}</td>
             <td class="px-5 py-3 text-slate-600">{{ b.barangay }}</td>
             <td class="px-5 py-3 text-blue-600">{{ b.track }}</td>
@@ -138,5 +197,26 @@ function formatCurrency(n) {
         </tbody>
       </table>
     </div>
+    <AddSLPBeneficiaryModal
+  v-if="showAddModal"
+  @close="showAddModal = false"
+  @create="handleAddBeneficiary"
+/>
+
+<Transition
+  enter-active-class="transition duration-300 ease-out"
+  enter-from-class="translate-y-2 opacity-0"
+  enter-to-class="translate-y-0 opacity-100"
+  leave-active-class="transition duration-200 ease-in"
+  leave-from-class="opacity-100"
+  leave-to-class="opacity-0"
+>
+  <div
+    v-if="toastMessage"
+    class="fixed bottom-6 right-6 z-[60] rounded-lg bg-[#001d4c] px-4 py-3 text-sm font-medium text-white shadow-lg"
+  >
+    {{ toastMessage }}
+  </div>
+</Transition>
   </div>
 </template>

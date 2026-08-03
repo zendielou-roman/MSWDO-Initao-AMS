@@ -1,26 +1,129 @@
 <script setup>
-import { ref, computed } from 'vue'
-import { Search, Download } from 'lucide-vue-next'
+import { ref, computed, onMounted } from 'vue'
+import { Search, Download, Plus } from 'lucide-vue-next'
 import KPICard from '@/components/shared/KPICard.vue'
 import { Users, MapPin, ShieldCheck } from 'lucide-vue-next'
-import {
-  mockRegionalMasterlist,
-  mockLocalMasterlist,
-  barangaysForFilter,
-} from '@/data/mockSocialPensionMasterlist'
+import { barangaysForFilter } from '@/data/mockSocialPensionMasterlist'
+import RegisterPensionerModal from '@/components/masterlist/RegisterPensionerModal.vue'
+import ConfirmDialog from '@/components/shared/ConfirmDialog.vue'
+import { useAuthStore } from '@/stores/auth'
+import api from '@/lib/api'
+
+const auth = useAuthStore()
+
+const allBeneficiaries = ref([])
+const isLoading = ref(true)
+
+async function fetchBeneficiaries() {
+  try {
+    const response = await api.get('/social-pension-beneficiaries')
+    allBeneficiaries.value = response.data.map((p) => ({
+      ...p,
+      oscaId: p.osca_id,
+      dateRegistered: p.date_registered,
+      lastPayout: p.last_payout || '—',
+    }))
+  } catch (error) {
+    console.error('Failed to fetch beneficiaries:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(fetchBeneficiaries)
+
+const regionalList = computed(() => allBeneficiaries.value.filter((p) => p.source === 'Regional'))
+const localList = computed(() => allBeneficiaries.value.filter((p) => p.source === 'Local'))
+
+const showRegisterModal = ref(false)
+const showExportConfirm = ref(false)
+const toastMessage = ref('')
 
 const activeTab = ref('regional')
 const searchQuery = ref('')
 const barangayFilter = ref('All barangays')
 
 const currentList = computed(() =>
-  activeTab.value === 'regional' ? mockRegionalMasterlist : mockLocalMasterlist,
+  activeTab.value === 'regional' ? regionalList.value : localList.value,
 )
 
-const activeRolls = computed(() => {
-  const combined = [...mockRegionalMasterlist, ...mockLocalMasterlist]
-  return combined.filter((p) => p.status === 'Active').length
-})
+const activeRolls = computed(() => allBeneficiaries.value.filter((p) => p.status === 'Active').length)
+
+async function handleRegisterPensioner(newPensioner) {
+  try {
+    const response = await api.post('/social-pension-beneficiaries', {
+      name: newPensioner.name,
+      age: newPensioner.age,
+      barangay: newPensioner.barangay,
+      osca_id: newPensioner.oscaId,
+      source: newPensioner.source,
+      registered_by: auth.user?.name || null,
+    })
+
+    allBeneficiaries.value.unshift({
+      ...response.data,
+      oscaId: response.data.osca_id,
+      dateRegistered: response.data.date_registered,
+      lastPayout: response.data.last_payout || '—',
+    })
+
+    showRegisterModal.value = false
+
+    toastMessage.value = `${newPensioner.name} registered to the ${newPensioner.source} masterlist`
+    setTimeout(() => {
+      toastMessage.value = ''
+    }, 3000)
+  } catch (error) {
+    console.error('Failed to register pensioner:', error)
+    toastMessage.value = error.response?.data?.message || 'Failed to register pensioner.'
+    setTimeout(() => {
+      toastMessage.value = ''
+    }, 3000)
+  }
+}
+
+function requestExport() {
+  showExportConfirm.value = true
+}
+
+function confirmExport() {
+  showExportConfirm.value = false
+  exportToCSV()
+
+  toastMessage.value = `Exported ${filteredList.value.length} record(s) from the ${activeTab.value === 'regional' ? 'Regional' : 'Local'} masterlist`
+  setTimeout(() => {
+    toastMessage.value = ''
+  }, 3000)
+}
+
+function exportToCSV() {
+  const headers = ['ID', 'Name', 'Age', 'Barangay', 'OSCA ID', 'Registered', 'Last Payout', 'Status']
+
+  const rows = filteredList.value.map((p) => [
+    p.pension_code,
+    p.name,
+    p.age,
+    p.barangay,
+    p.oscaId,
+    p.dateRegistered,
+    p.lastPayout,
+    p.status,
+  ])
+
+  const csvContent = [headers, ...rows]
+    .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+    .join('\n')
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = `social-pension-${activeTab.value}-masterlist-${new Date().toISOString().split('T')[0]}.csv`
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(url)
+}
 
 const filteredList = computed(() => {
   return currentList.value.filter((p) => {
@@ -46,11 +149,20 @@ const statusStyles = {
         Ownership module of the Senior Citizen Focal Person — maintained for both Regional and Local
         pension rolls.
       </p>
-      <button
-        class="flex shrink-0 items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50"
-      >
-        <Download class="h-4 w-4" /> Export
-      </button>
+<div class="flex shrink-0 items-center gap-2">
+<button
+  class="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50"
+  @click="requestExport"
+>
+  <Download class="h-4 w-4" /> Export
+</button>
+  <button
+    class="flex items-center gap-2 rounded-lg bg-[#001d4c] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#012a63]"
+    @click="showRegisterModal = true"
+  >
+    <Plus class="h-4 w-4" /> Register Pensioner
+  </button>
+</div>
     </div>
 
     <!-- KPI CARDS -->
@@ -64,9 +176,9 @@ const statusStyles = {
             <MapPin class="h-4 w-4 text-amber-600" />
           </div>
         </div>
-        <p class="mt-2 font-anton text-2xl text-slate-800">{{ mockRegionalMasterlist.length }}</p>
+        <p class="mt-2 font-anton text-2xl text-slate-800">{{ regionalList.length }}</p>
       </div>
-      <KPICard label="Local Beneficiaries" :value="mockLocalMasterlist.length" :icon="Users" />
+      <KPICard label="Local Beneficiaries" :value="localList.length" :icon="Users" />
       <KPICard
         label="Active Rolls"
         :value="activeRolls"
@@ -140,7 +252,7 @@ const statusStyles = {
         </thead>
         <tbody>
           <tr v-for="p in filteredList" :key="p.id" class="border-b border-slate-50">
-            <td class="px-5 py-3 text-slate-500">{{ p.id }}</td>
+            <td class="px-5 py-3 text-slate-500">{{ p.pension_code }}</td>
             <td class="px-5 py-3 font-medium text-slate-700">{{ p.name }}</td>
             <td class="px-5 py-3 text-slate-600">{{ p.age }}</td>
             <td class="px-5 py-3 text-slate-600">{{ p.barangay }}</td>
@@ -165,5 +277,37 @@ const statusStyles = {
         </tbody>
       </table>
     </div>
+    <RegisterPensionerModal
+  v-if="showRegisterModal"
+  @close="showRegisterModal = false"
+  @create="handleRegisterPensioner"
+/>
+
+<ConfirmDialog
+  v-if="showExportConfirm"
+  title="Export this masterlist?"
+  :message="`This will download ${filteredList.length} record(s) from the ${activeTab === 'regional' ? 'Regional' : 'Local'} masterlist as a CSV file, based on your current search and filter.`"
+  confirm-label="Export CSV"
+  cancel-label="Cancel"
+  variant="default"
+  @confirm="confirmExport"
+  @cancel="showExportConfirm = false"
+/>
+
+<Transition
+  enter-active-class="transition duration-300 ease-out"
+  enter-from-class="translate-y-2 opacity-0"
+  enter-to-class="translate-y-0 opacity-100"
+  leave-active-class="transition duration-200 ease-in"
+  leave-from-class="opacity-100"
+  leave-to-class="opacity-0"
+>
+  <div
+    v-if="toastMessage"
+    class="fixed bottom-6 right-6 z-[60] rounded-lg bg-[#001d4c] px-4 py-3 text-sm font-medium text-white shadow-lg"
+  >
+    {{ toastMessage }}
+  </div>
+</Transition>
   </div>
 </template>

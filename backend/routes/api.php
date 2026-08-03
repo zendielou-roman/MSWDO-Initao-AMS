@@ -8,6 +8,9 @@ use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\ApplicationController;
 use App\Http\Controllers\Api\ReliefOperationController;
 use App\Http\Controllers\Api\DonationController;
+use App\Http\Controllers\Api\SocialPensionBeneficiaryController;
+use App\Http\Controllers\Api\SlpBeneficiaryController;
+use App\Http\Controllers\Api\NotificationController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -40,3 +43,15 @@ Route::put('/relief-operations/{reliefOperation}', [ReliefOperationController::c
 Route::get('/donations', [DonationController::class, 'index']);
 Route::post('/donations', [DonationController::class, 'store']);
 Route::put('/donations/{donation}', [DonationController::class, 'update']);
+
+Route::get('/social-pension-beneficiaries', [SocialPensionBeneficiaryController::class, 'index']);
+Route::post('/social-pension-beneficiaries', [SocialPensionBeneficiaryController::class, 'store']);
+Route::put('/social-pension-beneficiaries/{socialPensionBeneficiary}', [SocialPensionBeneficiaryController::class, 'update']);
+
+Route::get('/slp-beneficiaries', [SlpBeneficiaryController::class, 'index']);
+Route::post('/slp-beneficiaries', [SlpBeneficiaryController::class, 'store']);
+Route::put('/slp-beneficiaries/{slpBeneficiary}', [SlpBeneficiaryController::class, 'update']);
+
+Route::get('/notifications', [NotificationController::class, 'index']);
+Route::put('/notifications/{notification}', [NotificationController::class, 'update']);
+Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllRead']);

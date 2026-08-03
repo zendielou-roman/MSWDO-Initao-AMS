@@ -1,9 +1,8 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import {
   FolderKanban,
   ClipboardList,
-  Stethoscope,
   PackageCheck,
   Search,
   Plus,
@@ -12,13 +11,61 @@ import {
 } from 'lucide-vue-next'
 import KPICard from '@/components/shared/KPICard.vue'
 import AICSStatusBadge from '@/components/focal/AICSStatusBadge.vue'
-import {
-  mockAICSApplications,
-  aicsStageStats,
-  aicsAssistanceTypes,
-} from '@/data/mockAICSApplications'
+import CreateApplicationModal from '@/components/shared/CreateApplicationModal.vue'
+import { getDisplayName, getDisplayBarangay } from '@/data/mockClients'
+import api from '@/lib/api'
 
-// ===== TOP SECTION: process-stage overview =====
+const showCreateModal = ref(false)
+
+function handleApplicationSaved(newApp) {
+  allApplications.value.unshift(newApp)
+  showCreateModal.value = false
+}
+
+const allApplications = ref([])
+const isLoading = ref(true)
+
+async function fetchApplications() {
+  try {
+    const response = await api.get('/applications')
+    allApplications.value = response.data
+  } catch (error) {
+    console.error('Failed to fetch applications:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(fetchApplications)
+
+// Only AICS-type applications belong on this focal person's page
+const mockAICSApplications = computed(() =>
+  allApplications.value
+    .filter((a) => a.type?.startsWith('AICS'))
+    .map((a) => ({
+      id: a.application_code,
+      clientId: a.client_id,
+      clientName: a.client ? getDisplayName(a.client) : '—',
+      submittedBy: a.submitted_by,
+      type: a.type,
+      amount: a.amount,
+      barangay: a.client ? getDisplayBarangay(a.client) : a.barangay,
+      dateSubmitted: a.date_submitted,
+      status: a.status,
+    })),
+)
+
+const aicsAssistanceTypes = [
+  'AICS - Medical',
+  'AICS - Food',
+  'AICS - Burial',
+  'AICS - Financial Assistance',
+  'AICS - Shelter',
+  'AICS - Legal Assistance',
+  'AICS - Transportation',
+  'AICS - Others',
+]
+
 function formatCurrency(n) {
   return `₱${n.toLocaleString()}`
 }
@@ -32,21 +79,21 @@ const typeFilter = ref('all') // for future use if we want to filter by assistan
 const tabs = ['all', 'pending', 'for review', 'approved', 'rejected', 'released']
 
 const outcomeKpis = computed(() => {
-  const total = mockAICSApplications.length
-  const approved = mockAICSApplications.filter((a) => a.status === 'Approved').length
-  const pending = mockAICSApplications.filter((a) => a.status === 'Pending').length
-  const forReview = mockAICSApplications.filter((a) => a.status === 'For Review').length
-  const rejected = mockAICSApplications.filter((a) => a.status === 'Rejected').length
-  const released = mockAICSApplications.filter((a) => a.status === 'Released').length
-  // Approval rate calculated against RESOLVED applications only (Approved + Rejected + Released),
-  // not against total — otherwise still-pending cases artificially drag the rate down.
+  const list = mockAICSApplications.value
+  const total = list.length
+  const totalRequested = list.reduce((sum, a) => sum + a.amount, 0)
+  const approved = list.filter((a) => a.status === 'Approved').length
+  const pending = list.filter((a) => a.status === 'Pending').length
+  const forReview = list.filter((a) => a.status === 'For Review').length
+  const rejected = list.filter((a) => a.status === 'Rejected').length
+  const released = list.filter((a) => a.status === 'Released').length
   const resolved = approved + rejected + released
   const approvalRate = resolved ? Math.round(((approved + released) / resolved) * 100) : 0
-  return { total, approved, pending, forReview, rejected, released, approvalRate }
+  return { total, totalRequested, approved, pending, forReview, rejected, released, approvalRate }
 })
 
 const filteredApplications = computed(() => {
-  return mockAICSApplications.filter((a) => {
+  return mockAICSApplications.value.filter((a) => {
     const matchesTab = statusTab.value === 'all' || a.status.toLowerCase() === statusTab.value
     const matchesSearch =
       a.clientName.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
@@ -61,59 +108,29 @@ const filteredApplications = computed(() => {
   <div>
     <!-- ============ TOP: AICS APPLICATION PROCESS OVERVIEW ============ -->
     <p class="text-sm text-slate-500">
-      Assistance to Individuals in Crisis Situations — DSWD 3-step process (Screening → Social
-      Worker Interview → Approval & Release).
+     A consolidated view of every AICS-related application submitted across the system.
     </p>
-
-    <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <div class="rounded-xl border border-amber-200 bg-amber-50 p-4">
-        <div class="flex items-start justify-between">
-          <p class="text-[11px] font-semibold uppercase tracking-wide text-amber-700">
-            Total AICS Cases
-          </p>
-          <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-100">
-            <FolderKanban class="h-4 w-4 text-amber-600" />
-          </div>
-        </div>
-        <p class="mt-2 font-anton text-2xl text-slate-800">{{ aicsStageStats.totalCases }}</p>
-        <p class="mt-1 text-xs text-amber-600">
-          {{ formatCurrency(aicsStageStats.totalRequested) }} requested
-        </p>
-      </div>
-
-      <KPICard label="At Screening" :value="aicsStageStats.atScreening" :icon="ClipboardList" />
-      <KPICard label="SW Interview" :value="aicsStageStats.swInterview" :icon="Stethoscope" />
-      <KPICard
-        label="Approval / Release"
-        :value="aicsStageStats.approvalRelease"
-        :icon="PackageCheck"
-      />
-    </div>
 
     <!-- OWNERSHIP BANNER -->
     <div class="mt-4 rounded-xl bg-gradient-to-r from-[#001d4c] to-slate-600 p-4">
       <p class="text-xs font-bold uppercase tracking-wide text-amber-400">AICS Focal — Ownership</p>
       <p class="mt-1 text-sm text-white/80">
-        This masterlist is maintained by the AICS Focal Person. All AICS-tagged applications
-        submitted anywhere in the system appear here with their step tracker.
+       Assistance to Individuals in Crisis Situations — DSWD 3-step process (Screening → Social
+      Worker Interview → Approval & Release).
       </p>
     </div>
 
-    <!-- ============ BOTTOM: AICS APPLICATIONS TABLE ============ -->
-    <div class="mt-8 flex items-start justify-between">
-      <div>
-        <p class="font-anton text-lg text-slate-800">AICS Applications</p>
-        <p class="text-sm text-slate-500">
-          Submit, screen, and process assistance applications. Approvals are handled by the OIC.
-        </p>
-      </div>
-      <button
-        class="flex shrink-0 items-center gap-2 rounded-lg bg-[#001d4c] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#012a63]"
-      >
-        <Plus class="h-4 w-4" />
-        Create New Application
-      </button>
-    </div>
+<!-- ============ BOTTOM: AICS APPLICATIONS TABLE ============ -->
+<div class="mt-8 flex items-center justify-between">
+  <p class="font-anton text-lg text-slate-800">AICS Applications Trend</p>
+  <button
+    class="flex shrink-0 items-center gap-2 rounded-lg bg-[#001d4c] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#012a63]"
+    @click="showCreateModal = true"
+  >
+    <Plus class="h-4 w-4" />
+    Create New Application
+  </button>
+</div>
 
     <div class="mt-4 flex items-center gap-1 text-sm">
       <span class="mr-1 text-xs font-semibold text-slate-400">View:</span>
@@ -129,12 +146,12 @@ const filteredApplications = computed(() => {
     </div>
 
     <div class="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
-      <KPICard
-        :label="`Total Applications (${period})`"
-        :value="outcomeKpis.total"
-        note="All programs"
-        :icon="FolderKanban"
-      />
+<KPICard
+  :label="`Total Applications (${period})`"
+  :value="outcomeKpis.total"
+  :note="`${formatCurrency(outcomeKpis.totalRequested)} requested`"
+  :icon="FolderKanban"
+/>
       <KPICard
         label="Approved"
         :value="outcomeKpis.approved"
@@ -231,5 +248,10 @@ const filteredApplications = computed(() => {
         </tbody>
       </table>
     </div>
+    <CreateApplicationModal
+  v-if="showCreateModal"
+  @close="showCreateModal = false"
+  @saved="handleApplicationSaved"
+/>
   </div>
 </template>

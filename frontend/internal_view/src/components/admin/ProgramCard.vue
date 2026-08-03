@@ -25,18 +25,13 @@ const statusStyles = {
         <p class="text-[11px] font-medium text-slate-400">{{ program.program_code }}</p>
         <p class="font-anton text-lg text-slate-800">{{ program.name }}</p>
       </div>
-      <span
-        class="rounded-full px-2.5 py-1 text-xs font-semibold"
-        :class="statusStyles[program.status]"
-      >
-        {{
-          program.status === 'Active'
-            ? '● Active'
-            : program.status === 'On Hold'
-              ? '● On Hold'
-              : program.status
-        }}
-      </span>
+<span
+  class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-semibold"
+  :class="statusStyles[program.status]"
+>
+  <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-current"></span>
+  {{ program.status }}
+</span>
     </div>
 
     <p class="mt-1 text-xs text-slate-400">{{ program.description }}</p>

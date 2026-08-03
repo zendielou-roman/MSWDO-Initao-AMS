@@ -2,6 +2,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { CircleCheck, CircleX, ClipboardCheck } from 'lucide-vue-next'
+import ConfirmDialog from '@/components/shared/ConfirmDialog.vue'
 import { getDisplayName } from '@/data/mockClients'
 import api from '@/lib/api'
 
@@ -25,21 +26,30 @@ function formatAmount(a) {
   return a === null || a === undefined ? '—' : `₱${Number(a).toLocaleString()}`
 }
 
-async function updateStatus(item, status) {
+const pendingAction = ref(null) // { item, status } | null
+
+function approve(item) {
+  pendingAction.value = { item, status: 'Approved' }
+}
+
+function reject(item) {
+  pendingAction.value = { item, status: 'Rejected' }
+}
+
+function cancelAction() {
+  pendingAction.value = null
+}
+
+async function confirmAction() {
+  const { item, status } = pendingAction.value
+  pendingAction.value = null
+
   try {
     await api.put(`/applications/${item.id}`, { status })
     queue.value = queue.value.filter((q) => q.id !== item.id)
   } catch (error) {
     console.error('Failed to update application:', error)
   }
-}
-
-function approve(item) {
-  updateStatus(item, 'Approved')
-}
-
-function reject(item) {
-  updateStatus(item, 'Rejected')
 }
 </script>
 
@@ -92,5 +102,19 @@ function reject(item) {
         All caught up — nothing pending your approval.
       </p>
     </div>
+    <ConfirmDialog
+  v-if="pendingAction"
+  :title="pendingAction.status === 'Approved' ? 'Approve this application?' : 'Reject this application?'"
+  :message="
+    pendingAction.status === 'Approved'
+      ? `This will approve ${formatAmount(pendingAction.item.amount)} in assistance for ${pendingAction.item.clientName}. This action cannot be undone from here.`
+      : `This will reject ${pendingAction.item.clientName}'s application. This action cannot be undone from here.`
+  "
+  :confirm-label="pendingAction.status === 'Approved' ? 'Approve' : 'Reject'"
+  cancel-label="Cancel"
+  :variant="pendingAction.status === 'Approved' ? 'default' : 'danger'"
+  @confirm="confirmAction"
+  @cancel="cancelAction"
+/>
   </div>
 </template>

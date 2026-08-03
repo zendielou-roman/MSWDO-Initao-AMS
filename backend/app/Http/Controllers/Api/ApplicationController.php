@@ -13,7 +13,7 @@ class ApplicationController extends Controller
      */
     public function index()
     {
-        $applications = Application::with('client')->get();
+        $applications = Application::with(['client', 'program'])->get();
 
         return response()->json($applications);
     }
@@ -25,6 +25,7 @@ class ApplicationController extends Controller
     {
         $validated = $request->validate([
             'client_id' => 'required|exists:clients,id',
+            'program_id' => 'nullable|exists:programs,id',
             'type' => 'nullable|string|max:255',
             'amount' => 'required|integer|min:0',
             'barangay' => 'nullable|string|max:255',
@@ -51,9 +52,21 @@ class ApplicationController extends Controller
         $validated['application_code'] = $this->nextApplicationCode();
         $validated['date_submitted'] = now()->toDateString();
 
-        $application = Application::create($validated);
+$application = Application::create($validated);
+$application->load(['client', 'program']);
 
-        return response()->json($application->load('client'), 201);
+$clientName = $application->client
+    ? trim($application->client->first_name . ' ' . $application->client->surname)
+    : 'a client';
+
+NotificationController::notifyRole(
+    'oic',
+    "New {$application->type} application from {$clientName} ({$application->application_code}) needs review",
+    'approvals',
+    'approval',
+);
+
+return response()->json($application, 201);
     }
 
     /**
@@ -67,9 +80,19 @@ class ApplicationController extends Controller
             'recommendation' => 'nullable|string',
         ]);
 
+        $wasReleased = in_array($application->status, ['Approved', 'Released']);
         $application->update($validated);
+        $isNowReleased = in_array($application->status, ['Approved', 'Released']);
 
-        return response()->json($application->load('client'));
+        if ($application->program_id) {
+            if (!$wasReleased && $isNowReleased) {
+                $application->program->increment('released', $application->amount);
+            } elseif ($wasReleased && !$isNowReleased) {
+                $application->program->decrement('released', $application->amount);
+            }
+        }
+
+        return response()->json($application->load(['client', 'program']));
     }
 
     /**

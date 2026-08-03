@@ -1,7 +1,7 @@
 <!-- src/components/shared/AssistanceManagementTable.vue -->
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { Search, Plus, FileText, CircleCheck, ClipboardList, CircleX } from 'lucide-vue-next'
+import { Search, Plus, FileText, CircleCheck, ClipboardList, CircleX, Eye } from 'lucide-vue-next'
 import { useAuthStore } from '@/stores/auth'
 import KPICard from '@/components/shared/KPICard.vue'
 import StatusBadge from '@/components/shared/StatusBadge.vue'
@@ -9,6 +9,16 @@ import { assistanceTypes } from '@/data/mockApplications'
 import { getDisplayName, getDisplayBarangay } from '@/data/mockClients'
 import CreateApplicationModal from '@/components/shared/CreateApplicationModal.vue'
 import api from '@/lib/api'
+import ApplicationDetailsModal from '@/components/shared/ApplicationDetailsModal.vue'
+import ClientDetailsModal from '@/components/shared/ClientDetailsModal.vue'
+
+const viewingApplication = ref(null)
+const viewingClient = ref(null)
+
+function handleViewClient(client) {
+  viewingClient.value = client
+  viewingApplication.value = null
+}
 
 const mockApplications = ref([])
 const isLoading = ref(true)
@@ -179,6 +189,7 @@ function formatCurrency(n) {
             <th class="px-5 py-3 font-medium">Barangay</th>
             <th class="px-5 py-3 font-medium">Submitted</th>
             <th class="px-5 py-3 font-medium">Status</th>
+<th class="w-px whitespace-nowrap py-3 pl-2 pr-5 text-center font-medium">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -188,15 +199,15 @@ function formatCurrency(n) {
   class="cursor-pointer border-b border-slate-50 hover:bg-slate-50"
 >
   <td class="px-5 py-3 text-slate-500">{{ app.application_code }}</td>
-  <td class="px-5 py-3">
-    <p class="font-medium text-slate-700">{{ app.client ? getDisplayName(app.client) : '—' }}</p>
-    <p class="text-[10px] text-slate-400">assessed by {{ app.submitted_by }}</p>
-  </td>
+<td class="px-5 py-3">
+  <p class="font-medium text-slate-700">{{ app.client ? getDisplayName(app.client) : '—' }}</p>
+  <p class="text-[10px] text-slate-400">assessed by {{ app.submitted_by }}</p>
+</td> 
   <td class="px-5 py-3 text-blue-600">{{ app.type }}</td>
   <td class="px-5 py-3 text-slate-700">{{ formatCurrency(app.amount) }}</td>
   <td class="px-5 py-3 text-slate-600">{{ app.barangay }}</td>
   <td class="px-5 py-3 text-slate-500">{{ app.date_submitted }}</td>
-  <td class="px-5 py-3">
+ <td class="px-5 py-3">
   <div class="flex items-center gap-2">
     <StatusBadge :status="app.status" />
     <template v-if="isOIC">
@@ -224,6 +235,15 @@ function formatCurrency(n) {
     </template>
   </div>
 </td>
+<td class="w-px whitespace-nowrap py-3 pl-2 pr-5 text-center">
+  <button
+    aria-label="View application details"
+    class="text-slate-400 hover:text-slate-700"
+    @click.stop="viewingApplication = app"
+  >
+    <Eye class="h-4 w-4" />
+  </button>
+</td>
 </tr>
           <tr v-if="filteredApplications.length === 0">
             <td colspan="7" class="px-5 py-8 text-center text-sm text-slate-400">
@@ -232,11 +252,24 @@ function formatCurrency(n) {
           </tr>
         </tbody>
       </table>
-      <CreateApplicationModal
-        v-if="showCreateModal"
-        @close="showCreateModal = false"
-        @saved="handleApplicationSaved"
-      />
+<CreateApplicationModal
+  v-if="showCreateModal"
+  @close="showCreateModal = false"
+  @saved="handleApplicationSaved"
+/>
+
+<ApplicationDetailsModal
+  v-if="viewingApplication"
+  :application="viewingApplication"
+  @close="viewingApplication = null"
+  @view-client="handleViewClient"
+/>
+
+<ClientDetailsModal
+  v-if="viewingClient"
+  :client="viewingClient"
+  @close="viewingClient = null"
+/>
     </div>
   </div>
 </template>

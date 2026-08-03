@@ -10,13 +10,20 @@ import {
   Trash2,
   ChevronLeft,
   ChevronRight,
+  Eye,
+  UserX,
+  UserCheck2,
 } from 'lucide-vue-next'
 import KPICard from '@/components/shared/KPICard.vue'
 import PageIntro from '@/components/shared/PageIntro.vue'
 import CreateUserModal from '@/components/users/CreateUserModal.vue'
+import ConfirmDialog from '@/components/shared/ConfirmDialog.vue'
 import { roleDisplayLabels, roleBadgeStyles } from '@/data/mockUsers'
 import api from '@/lib/api'
 import { ROLES } from '@/config/roleConfig'
+import UserDetailsModal from '@/components/users/UserDetailsModal.vue'
+
+const viewingUser = ref(null)
 
 const users = ref([])
 const isLoading = ref(true)
@@ -125,21 +132,37 @@ async function handleCreateUser(newUser) {
   }
 }
 
-async function handleDeleteUser(user) {
-  const confirmed = confirm(`Delete ${user.name}'s account? This cannot be undone.`)
-  if (!confirmed) return
+const userToToggle = ref(null)
+
+function requestToggleUserStatus(user) {
+  userToToggle.value = user
+}
+
+function cancelToggleUserStatus() {
+  userToToggle.value = null
+}
+
+async function confirmToggleUserStatus() {
+  const user = userToToggle.value
+  if (!user) return
+
+  const newStatus = user.status === 'Active' ? 'Inactive' : 'Active'
+  userToToggle.value = null
 
   try {
-    await api.delete(`/users/${user.id}`)
-    users.value = users.value.filter((u) => u.id !== user.id)
+    const response = await api.put(`/users/${user.id}`, { status: newStatus })
+    const index = users.value.findIndex((u) => u.id === user.id)
+    if (index !== -1) {
+      users.value[index] = { ...users.value[index], status: response.data.status }
+    }
 
-    toastMessage.value = `${user.name}'s account was deleted.`
+    toastMessage.value = `${user.name}'s account was ${newStatus === 'Active' ? 'reactivated' : 'deactivated'}.`
     setTimeout(() => {
       toastMessage.value = ''
     }, 3000)
   } catch (error) {
-    console.error('Failed to delete user:', error)
-    toastMessage.value = 'Failed to delete user.'
+    console.error('Failed to update user status:', error)
+    toastMessage.value = 'Failed to update user status.'
     setTimeout(() => {
       toastMessage.value = ''
     }, 3000)
@@ -251,7 +274,7 @@ async function handleUpdateUser(updatedUser) {
             <th class="px-5 py-3 font-medium">Status</th>
             <th class="px-5 py-3 font-medium">Date Created</th>
             <th class="px-5 py-3 font-medium">Last Login</th>
-            <th class="px-5 py-3 text-right font-medium">Actions</th>
+            <th class="w-px whitespace-nowrap py-3 pl-2 pr-5 font-medium">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -288,13 +311,21 @@ async function handleUpdateUser(updatedUser) {
             </td>
             <td class="px-5 py-3 text-slate-500">{{ user.dateCreated }}</td>
             <td class="px-5 py-3 text-slate-500">{{ user.lastLogin }}</td>
-            <td class="px-5 py-3">
-              <div class="flex items-center justify-end gap-3 text-slate-400">
-<button aria-label="Edit user" class="hover:text-slate-700" @click="openEditModal(user)">
+<td class="w-px whitespace-nowrap py-3 pl-2 pr-5">
+  <div class="flex items-center gap-2 text-slate-400">
+<button aria-label="View user" class="hover:text-slate-700" @click="viewingUser = user">
+  <Eye class="h-4 w-4" />
+</button>
+
+                <button aria-label="Edit user" class="hover:text-slate-700" @click="openEditModal(user)">
   <Pencil class="h-4 w-4" />
 </button>
-<button aria-label="Delete user" class="hover:text-red-600" @click="handleDeleteUser(user)">
-  <Trash2 class="h-4 w-4" />
+<button
+  :aria-label="user.status === 'Active' ? 'Deactivate user' : 'Reactivate user'"
+  :class="user.status === 'Active' ? 'hover:text-red-600' : 'hover:text-emerald-600'"
+  @click="requestToggleUserStatus(user)"
+>
+  <component :is="user.status === 'Active' ? UserX : UserCheck2" class="h-4 w-4" />
 </button>
               </div>
             </td>
@@ -339,6 +370,23 @@ async function handleUpdateUser(updatedUser) {
       </div>
     </Transition>
     <!-- NEW: Create User Modal -->
+     <UserDetailsModal v-if="viewingUser" :user="viewingUser" @close="viewingUser = null" />
+
+     <ConfirmDialog
+  v-if="userToToggle"
+  :title="userToToggle.status === 'Active' ? 'Deactivate this account?' : 'Reactivate this account?'"
+  :message="
+    userToToggle.status === 'Active'
+      ? `${userToToggle.name} will no longer be able to log in. You can reactivate their account anytime.`
+      : `${userToToggle.name} will regain access to the system.`
+  "
+  :confirm-label="userToToggle.status === 'Active' ? 'Deactivate' : 'Reactivate'"
+  cancel-label="Cancel"
+  :variant="userToToggle.status === 'Active' ? 'danger' : 'default'"
+  @confirm="confirmToggleUserStatus"
+  @cancel="cancelToggleUserStatus"
+/>
+
 <CreateUserModal
   v-if="showCreateModal"
   :user="editingUser"

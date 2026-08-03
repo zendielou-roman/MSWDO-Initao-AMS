@@ -26,6 +26,7 @@ const stepLabels = ['Select Client', 'Assessment', 'Evaluation & Recommendation'
 const clientSearch = ref('')
 const selectedClient = ref(null)
 const clients = ref([])
+const programs = ref([])
 
 async function fetchClientsForSelection() {
   try {
@@ -36,6 +37,16 @@ async function fetchClientsForSelection() {
   }
 }
 fetchClientsForSelection()
+
+async function fetchProgramsForSelection() {
+  try {
+    const response = await api.get('/programs')
+    programs.value = response.data
+  } catch (error) {
+    console.error('Failed to fetch programs:', error)
+  }
+}
+fetchProgramsForSelection()
 
 const filteredClients = computed(() => {
   const q = clientSearch.value.toLowerCase()
@@ -54,6 +65,7 @@ const otherProblem = ref('')
 const clientCategories = ref([])
 const specificFindings = ref('')
 const requestedAmount = ref('')
+const selectedProgramId = ref('')
 
 function toggleProblem(opt) {
   const i = problemsPresented.value.indexOf(opt)
@@ -108,11 +120,12 @@ async function handleSave() {
     return
   }
 
-  const payload = {
-    client_id: selectedClient.value.id,
-    submitted_by: auth.user?.name || 'Staff',
-    type: primaryAssistanceType.value,
-    amount: Number(requestedAmount.value),
+const payload = {
+  client_id: selectedClient.value.id,
+  program_id: selectedProgramId.value || null,
+  submitted_by: auth.user?.name || 'Staff',
+  type: primaryAssistanceType.value,
+  amount: Number(requestedAmount.value),
     barangay: getDisplayBarangay(selectedClient.value),
     status: eligibility.value === 'Eligible' ? 'Pending' : 'Rejected',
 
@@ -315,17 +328,31 @@ function confirmSave() {
             />
           </div>
 
-          <div>
-            <p class="mb-2 text-sm font-medium text-slate-700">
-              Requested Amount (₱) <span class="text-red-500">*</span>
-            </p>
-            <input
-              v-model="requestedAmount"
-              type="number"
-              placeholder="0.00"
-              :class="[inputClass(attemptedNext && !requestedAmount), 'w-full']"
-            />
-          </div>
+<div>
+  <p class="mb-2 text-sm font-medium text-slate-700">
+    Requested Amount (₱) <span class="text-red-500">*</span>
+  </p>
+  <input
+    v-model="requestedAmount"
+    type="number"
+    placeholder="0.00"
+    :class="[inputClass(attemptedNext && !requestedAmount), 'w-full']"
+  />
+</div>
+
+<div>
+  <p class="mb-2 text-sm font-medium text-slate-700">Charge to Program</p>
+  <select
+    v-model="selectedProgramId"
+    class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-slate-400"
+  >
+    <option value="">— None / Not linked to a specific program —</option>
+    <option v-for="p in programs" :key="p.id" :value="p.id">{{ p.name }}</option>
+  </select>
+  <p class="mt-1 text-xs text-slate-400">
+    Optional — links this request to a program's budget for tracking.
+  </p>
+</div>
 
           <div>
             <p class="mb-2 text-sm font-medium text-slate-700">Client Category</p>

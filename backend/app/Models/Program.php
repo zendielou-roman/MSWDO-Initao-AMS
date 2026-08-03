@@ -18,5 +18,8 @@ use Illuminate\Database\Eloquent\Model;
 ])]
 class Program extends Model
 {
-    //
+    public function applications()
+    {
+        return $this->hasMany(Application::class);
+    }
 }

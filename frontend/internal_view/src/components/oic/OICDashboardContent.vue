@@ -14,20 +14,17 @@ import { FileText, ClipboardList, CircleCheck, Users } from 'lucide-vue-next'
 import KPICard from '@/components/shared/KPICard.vue'
 import StatusBadge from '@/components/shared/StatusBadge.vue'
 import NeedsMyApprovalWidget from '@/components/oic/NeedsMyApprovalWidget.vue'
-import {
-  dashboardKpis,
-  applicationsTrend,
-  budgetUtilization,
-  recentActivity,
-} from '@/data/mockDashboardShared'
+import { useDashboardData } from '@/composables/useDashboardData'
+
+const { dashboardKpis, applicationsTrend, budgetUtilization, recentActivity } = useDashboardData()
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip)
 
 const chartData = computed(() => ({
-  labels: applicationsTrend.labels,
+  labels: applicationsTrend.value.labels,
   datasets: [
     {
-      data: applicationsTrend.data,
+      data: applicationsTrend.value.data,
       borderColor: '#001d4c',
       backgroundColor: '#001d4c',
       tension: 0.4,
